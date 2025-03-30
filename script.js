@@ -103,7 +103,7 @@ function sendMessage() {
         } else if (message === "5") {
             displayMessage("Escolha uma opção relacionada entre os canais de contato:\n1 - Emergências 24h\n2 - Supervisor de rota\n3 - RH Motoristas\n4 - Ouvidoria", "bot-message");
             if (message === "1") {
-                displayMessage("Emergências:\n(XX) 99999-9999\nSOS Estradas: 0800-XXX-XXXX", "bot-message");
+                displayMessage("Emergências: 192 \nSOS Estradas:\n0800 055 5510 para o DER-SP\n0800 773 6699 para a CCR RodoAnel\n0800 77 01 101 para a EcoRodovias\n0800 000 0290 para a CCR ViaSul\n0800 055 9696 para o Sistema de Ajuda ao Usuário (SAU) das Renovias", "bot-message");
             } else if (message === "2") {
                 displayMessage("Supervisor João - (XX) 98888-8888\nPlantão das 6h às 22h", "bot-message");
             } else if (message === "3") {
