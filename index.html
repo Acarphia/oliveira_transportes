@@ -11,8 +11,16 @@
         <div class="chat-box" id="chat-box">
             <div class="message bot-message">Olá! Sou o assistente virtual da Oliveira Transportes. Digite seu CPF, somente em números.</div>
         </div>
-        <input type="text" id="user-input" placeholder="Digite aqui..." />
-        <button onclick="sendMessage()">Enviar</button>
+        <div class="input-container">
+            <!-- Campo de texto para digitar a mensagem -->
+            <input type="text" id="user-input" placeholder="Digite aqui..." />
+            
+            <!-- Campo de upload para foto -->
+            <input type="file" id="file-input" accept="image/*" />
+            
+            <!-- Botão para enviar -->
+            <button onclick="sendMessage()">Enviar</button>
+        </div>
     </div>
 
     <script src="script.js"></script>
