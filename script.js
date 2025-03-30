@@ -1,6 +1,7 @@
 let cpf = "";
 let chatBox = document.getElementById("chat-box");
 let userInput = document.getElementById("user-input");
+let fileInput = document.getElementById("file-input");
 
 const usersData = {
     "15347693665": {
@@ -18,19 +19,34 @@ const usersData = {
 
 function sendMessage() {
     const message = userInput.value.trim();
-    if (message === "") return;
+    if (message === "" && !fileInput.files.length) return;
 
     // Mostrar mensagem do usuário
-    displayMessage(message, "user-message");
+    displayMessage(message || "Foto enviada!", "user-message");
 
     // Limpar campo de input
     userInput.value = "";
+
+    // Se houver foto, exibe
+    if (fileInput.files.length > 0) {
+        const file = fileInput.files[0];
+        const reader = new FileReader();
+        reader.onloadend = function() {
+            const img = document.createElement('img');
+            img.src = reader.result;
+            img.style.width = '200px'; // Limitar o tamanho da imagem
+            chatBox.appendChild(img);
+            chatBox.scrollTop = chatBox.scrollHeight;
+        };
+        reader.readAsDataURL(file);
+        fileInput.value = ""; // Limpar o campo de arquivo após o envio
+    }
 
     // Se ainda não for solicitado CPF
     if (!cpf) {
         cpf = message;
         if (usersData[cpf]) {
-            displaymessage(`Como posso ajudar hoje ${usersData[cpf].nome}? \n1 - Embarque da Carga\n2 - Rota da Viagem\n3 - Desembarque da Carga\n4 - Pós-Viagem\n5 - Fale Conosco", "bot-message");`, "bot-message");
+            displayMessage(`Como posso ajudar hoje ${usersData[cpf].nome}? \n1 - Embarque da Carga\n2 - Rota da Viagem\n3 - Desembarque da Carga\n4 - Pós-Viagem\n5 - Fale Conosco`, "bot-message");
         } else {
             displayMessage("Seu CPF não foi encontrado, digite somente com números.", "bot-message");
         }
@@ -47,28 +63,17 @@ function sendMessage() {
             } else if (message === "3") { // Observações sobre a carga
                 const { observacoesCarga } = usersData[cpf];
                 displayMessage(`As observações sobre a carga são: ${observacoesCarga}.`, "bot-message");
-            }
             } else if (message === "4") { // Registro fotográfico da carga no embarque
+                displayMessage(`Mande a foto da carga.`, "bot-message");
             }
-            } else if (message === "5") { // KM inicial registrado
-            }
-        } else if (message === "2") {
-            displayMessage("Escolha uma opção relacionada à rota da viagem:\n1 - Melhor caminho e condições das estradas\n2 - Paradas para descanso, alimentação e abastecimento\n3 - Viagem pré-registrada no GPS\n4 - Registro de custos", "bot-message");
         } else if (message === "3") {
             displayMessage("Escolha uma opção relacionada ao desembarque da carga:\n1 - Local e responsável pelo desembarque\n2 - Registro fotográfico da carga no desembarque\n3 - KM final registrado", "bot-message");
             if (message === "1") { // Local e responsável pelo desembarque
                 const { desembarqueLocal, desembarqueResponsavel } = usersData[cpf];
                 displayMessage(`O local de desembarque é ${desembarqueLocal} e o responsável pelo desembarque é ${desembarqueResponsavel}.`, "bot-message");
             } else if (message === "2") { // Registro fotográfico no desembarque
+                displayMessage(`Mande a foto da carga.`, "bot-message");
             }
-            } else if (message === "3") { // KM final registrado
-            }
-        } else if (message === "4") {
-            displayMessage("Para questões pós-viagem, mande mensagem para +55 34 9894-2493.", "bot-message");
-        } else if (message === "5") {
-            displayMessage("Por favor, envie sua dúvida ou solicitação. Nossa equipe entrará em contato o mais breve possível.", "bot-message");
-        } else {
-            displayMessage("Opção inválida. Por favor, digite um número de 1 a 5.", "bot-message");
         }
     }
 }
