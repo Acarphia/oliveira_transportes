@@ -5,8 +5,10 @@ let userInput = document.getElementById("user-input");
 const usersData = {
     "15347693665": {
         nome: "Luiza",
-        local: "Uberlandia",
-        responsavel: "Vitor"
+        embarqueLocal: "",
+        embarqueResponsavel: "",
+        desembarqueLocal: "",
+        desembarqueResponsavel: ""
     },
     // Adicione outros CPFs e informações conforme necessário
 };
@@ -25,8 +27,7 @@ function sendMessage() {
     if (!cpf) {
         cpf = message;
         if (usersData[cpf]) {
-            displayMessage(`Olá ${usersData[cpf].nome}, sou o assistente virtual. Como posso ajudar hoje?`, "bot-message");
-            displayMessage("1 - Embarque da Carga\n2 - Rota da Viagem\n3 - Desembarque da Carga\n4 - Pós-Viagem\n5 - Fale Conosco", "bot-message");
+            displaymessage(`Olá ${usersData[cpf].nome}, como posso ajudar hoje?\n1 - Embarque da Carga\n2 - Rota da Viagem\n3 - Desembarque da Carga\n4 - Pós-Viagem\n5 - Fale Conosco", "bot-message");`, "bot-message");
         } else {
             displayMessage("CPF não encontrado. Tente novamente.", "bot-message");
         }
@@ -39,7 +40,7 @@ function sendMessage() {
         } else if (message === "3") {
             displayMessage("Escolha uma opção relacionada ao desembarque da carga:\n1 - Local e responsável pelo recebimento\n2 - Registro fotográfico no desembarque\n3 - KM final registrado", "bot-message");
         } else if (message === "4") {
-            displayMessage("Para questões pós-viagem, entre em contato com o responsável financeiro.", "bot-message");
+            displayMessage("Para questões pós-viagem, mande mensagem para +55 34 9894-2493.", "bot-message");
         } else if (message === "5") {
             displayMessage("Por favor, envie sua dúvida ou solicitação. Nossa equipe entrará em contato o mais breve possível.", "bot-message");
         } else {
