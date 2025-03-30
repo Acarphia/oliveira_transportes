@@ -27,7 +27,7 @@ function sendMessage() {
     if (!cpf) {
         cpf = message;
         if (usersData[cpf]) {
-            displaymessage(`Olá ${usersData[cpf].nome}, como posso ajudar hoje?\n1 - Embarque da Carga\n2 - Rota da Viagem\n3 - Desembarque da Carga\n4 - Pós-Viagem\n5 - Fale Conosco", "bot-message");`, "bot-message");
+            displaymessage(`Que bom ver você ${usersData[cpf].nome}, como posso ajudar hoje?\n1 - Embarque da Carga\n2 - Rota da Viagem\n3 - Desembarque da Carga\n4 - Pós-Viagem\n5 - Fale Conosco", "bot-message");`, "bot-message");
         } else {
             displayMessage("CPF não encontrado. Tente novamente.", "bot-message");
         }
