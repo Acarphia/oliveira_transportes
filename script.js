@@ -3,17 +3,16 @@ let chatBox = document.getElementById("chat-box");
 let userInput = document.getElementById("user-input");
 let fileInput = document.getElementById("file-input");
 let attachButton = document.getElementById("attach-button");
-let sendButton = document.getElementById("send-button"); // Adicionado esta linha
 
-// Configura os event listeners
+// Configura o event listener para o botão de anexo
 attachButton.addEventListener('click', function() {
     fileInput.click();
 });
 
-// Adiciona o event listener para o botão Enviar
-sendButton.addEventListener('click', sendMessage);
+// Configura o event listener para o botão enviar (CORREÇÃO PRINCIPAL)
+document.getElementById("send-button").addEventListener('click', sendMessage);
 
-// Adiciona também para responder ao Enter
+// Configura o event listener para o Enter no input
 userInput.addEventListener('keypress', function(e) {
     if (e.key === 'Enter') {
         sendMessage();
@@ -28,7 +27,6 @@ const usersData = {
         embarqueResponsavel: "",
         desembarqueLocal: "",
         desembarqueResponsavel: "",
-        registrodeCusto: "",
         paradasProgramadas: ""
     },
     // Adicione outros CPFs e informações conforme necessário
@@ -38,38 +36,32 @@ function sendMessage() {
     const message = userInput.value.trim();
     if (message === "" && !fileInput.files.length) return;
 
-    // Se houver mensagem de texto, mostra no chat
-    if (message) {
-        displayMessage(message, "user-message");
-        userInput.value = "";
-    }
+    // Mostrar mensagem do usuário
+    displayMessage(message, "user-message");
 
-    // Se houver foto, exibe apenas a imagem
+    // Limpar campo de input
+    userInput.value = "";
+
+    // Se houver foto, exibe
     if (fileInput.files.length > 0) {
         const file = fileInput.files[0];
-        if (file.type.match('image.*')) {
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const img = document.createElement('img');
-                img.src = e.target.result;
-                img.style.maxWidth = '200px';
-                img.style.borderRadius = '8px';
-                img.classList.add('user-message');
-                chatBox.appendChild(img);
-                chatBox.scrollTop = chatBox.scrollHeight;
-            };
-            reader.readAsDataURL(file);
-        } else {
-            displayMessage("Por favor, envie apenas imagens.", "bot-message");
-        }
-        fileInput.value = "";
+        const reader = new FileReader();
+        reader.onloadend = function() {
+            const img = document.createElement('img');
+            img.src = reader.result;
+            img.style.width = '200px'; // Limitar o tamanho da imagem
+            chatBox.appendChild(img);
+            chatBox.scrollTop = chatBox.scrollHeight;
+        };
+        reader.readAsDataURL(file);
+        fileInput.value = ""; // Limpar o campo de arquivo após o envio
     }
 
     // Se ainda não for solicitado CPF
     if (!cpf) {
         cpf = message;
         if (usersData[cpf]) {
-            displayMessage(`Como posso ajudar hoje ${usersData[cpf].nome}? \n1 - Embarque da Carga\n2 - Rota da Viagem\n3 - Desembarque da Carga\n4 - Pós-Viagem\n5 - Fale Conosco`, "bot-message");
+            displayMessage(`Como posso ajudar ${usersData[cpf].nome}? \n1 - Embarque da Carga\n2 - Rota da Viagem\n3 - Desembarque da Carga\n4 - Pós-Viagem\n5 - Fale Conosco`, "bot-message");
         } else {
             displayMessage("Seu CPF não foi encontrado, digite somente com números.", "bot-message");
         }
@@ -91,9 +83,9 @@ function sendMessage() {
         } else if (message === "2") {
                 displayMessage("Escolha uma opção da Rota da Viagem:\na - Melhor caminho e condições\nb - Paradas programadas\nc - Viagem no GPS\nd - Observações da carga\ne - Registro de custos", "bot-message");
                 if (message === "a") {
-                    displayMessage("Melhor caminho e condições: ");
+                    displayMessage("Melhor caminho e condições: ", "bot-message");
                 } else if (message === "b") {
-                    displayMessage(`Suas paradas programadas são: ${paradasProgramadas}.`, "bot-message");
+                    displayMessage(`Suas paradas programadas são: ${usersData[cpf].paradasProgramadas}.`, "bot-message");
                 } else if (message === "c") {
                     displayMessage("Viagem no GPS: ", "bot-message");
                 } else if (message === "d") {
@@ -112,7 +104,7 @@ function sendMessage() {
                 displayMessage(`Registre o KM final.`, "bot-message");
             }
         } else if (message === "4") {
-            displayMessage("Para procedimentos pós-viagem favor mandar mensagem para o Otávio, (34) 99894-2493"); 
+            displayMessage("Para procedimentos pós-viagem favor mandar mensagem para o Otávio, (34) 99894-2493", "bot-message"); 
         } else if (message === "5") {
             displayMessage("Escolha uma opção relacionada entre os canais de contato:\na - Emergências 24h\nb - Supervisor de rota\nc - Ouvidoria", "bot-message");
             if (message === "a") {
@@ -124,6 +116,8 @@ function sendMessage() {
             }
         }
     }
+}
+
 // Função para exibir a mensagem
 function displayMessage(message, className) {
     const messageDiv = document.createElement("div");
