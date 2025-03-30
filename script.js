@@ -3,10 +3,21 @@ let chatBox = document.getElementById("chat-box");
 let userInput = document.getElementById("user-input");
 let fileInput = document.getElementById("file-input");
 let attachButton = document.getElementById("attach-button");
+let sendButton = document.getElementById("send-button"); // Adicionado esta linha
 
-// Vincula o botão de anexo ao input file
+// Configura os event listeners
 attachButton.addEventListener('click', function() {
     fileInput.click();
+});
+
+// Adiciona o event listener para o botão Enviar
+sendButton.addEventListener('click', sendMessage);
+
+// Adiciona também para responder ao Enter
+userInput.addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') {
+        sendMessage();
+    }
 });
 
 const usersData = {
