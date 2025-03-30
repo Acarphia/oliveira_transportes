@@ -24,19 +24,22 @@ body {
 }
 
 .chat-box {
-    overflow-y: scroll;
+    overflow-y: auto;
     height: 300px;
     margin-bottom: 20px;
     padding: 10px;
     border: 1px solid #ddd;
     border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
 }
 
 .message {
-    margin: 10px 0;
     padding: 10px;
     border-radius: 8px;
     max-width: 80%;
+    word-wrap: break-word;
 }
 
 .bot-message {
@@ -49,51 +52,62 @@ body {
     align-self: flex-end;
 }
 
-input[type="text"] {
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    margin-bottom: 10px;
-    width: 80%;
-}
-
-button {
-    background-color: #4CAF50;
-    color: white;
-    padding: 10px;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    width: 15%;
-}
-
-button:hover {
-    background-color: #45a049;
-}
-
+/* Área de input */
 .input-container {
     display: flex;
-    justify-content: space-between;
+    gap: 8px;
     align-items: center;
 }
 
-.input-container input[type="file"],
-.input-container input[type="text"] {
-    width: 80%;
+#user-input {
+    flex: 1;
     padding: 10px;
     border: 1px solid #ddd;
-    border-radius: 8px;
-    margin-right: 10px;
+    border-radius: 20px;
+    outline: none;
 }
 
-.input-container input[type="file"] {
-    padding: 5px;
+/* Botão de anexo (+) */
+.attach-btn {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    font-size: 18px;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
-.input-container button {
-    width: 15%;
-}
-
-.input-container button:hover {
+.attach-btn:hover {
     background-color: #45a049;
+}
+
+/* Botão de enviar */
+#send-button {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 20px;
+    padding: 10px 15px;
+    cursor: pointer;
+}
+
+#send-button:hover {
+    background-color: #45a049;
+}
+
+/* Campo de arquivo oculto */
+#file-input {
+    display: none;
+}
+
+/* Estilo para imagens enviadas */
+.chat-box img {
+    max-width: 200px;
+    border-radius: 8px;
+    margin-top: 5px;
 }
