@@ -37,19 +37,23 @@ function sendMessage() {
     } else {
         // Respostas para as opções depois do CPF
         if (message === "1") {
-            displayMessage("Escolha uma opção relacionada ao embarque da carga:\n1 - Local e responsável pelo embarque\n2 - Tipo de carga\n3 - Registro fotográfico da carga no embarque\n4 - KM inicial registrado", "bot-message");
+            displayMessage("Escolha uma opção relacionada ao embarque da carga:\n1 - Local e responsável pelo embarque\n2 - Tipo de carga\n3 - Observações sobre a carga\n4 - Registro fotográfico da carga no embarque\n5 - KM inicial registrado", "bot-message");
             if (message === "1") { // Local e responsável pelo embarque
                 const { embarqueLocal, embarqueResponsavel } = usersData[cpf];
                 displayMessage(`O seu local para embarque é ${embarqueLocal} e o responsável pelo embarque é ${embarqueResponsavel}.`, "bot-message");
             } else if (message === "2") { // Tipo de carga
                 const { tipoCarga } = usersData[cpf];
                 displayMessage(`O seu tipo de carga é ${tipoCarga}.`, "bot-message");
-            } else if (message === "3") { // Registro fotográfico da carga no embarque
+            } else if (message === "3") { // Observações sobre a carga
+                const { observacoesCarga } = usersData[cpf];
+                displayMessage(`As observações sobre a carga são: ${observacoesCarga}.`, "bot-message");
             }
-            } else if (message === "4") { // KM inicial registrado
+            } else if (message === "4") { // Registro fotográfico da carga no embarque
+            }
+            } else if (message === "5") { // KM inicial registrado
             }
         } else if (message === "2") {
-            displayMessage("Escolha uma opção relacionada à rota da viagem:\n1 - Melhor caminho e condições das estradas\n2 - Paradas para descanso, alimentação e abastecimento\n3 - Viagem pré-registrada no GPS\n4 - Observações sobre a carga\n5 - Registro de custos", "bot-message");
+            displayMessage("Escolha uma opção relacionada à rota da viagem:\n1 - Melhor caminho e condições das estradas\n2 - Paradas para descanso, alimentação e abastecimento\n3 - Viagem pré-registrada no GPS\n4 - Registro de custos", "bot-message");
         } else if (message === "3") {
             displayMessage("Escolha uma opção relacionada ao desembarque da carga:\n1 - Local e responsável pelo desembarque\n2 - Registro fotográfico da carga no desembarque\n3 - KM final registrado", "bot-message");
             if (message === "1") { // Local e responsável pelo desembarque
