@@ -22,7 +22,7 @@ function sendMessage() {
     if (message === "" && !fileInput.files.length) return;
 
     // Mostrar mensagem do usuário
-    displayMessage(message || "Foto enviada!", "user-message");
+    displayMessage(message, "user-message");
 
     // Limpar campo de input
     userInput.value = "";
