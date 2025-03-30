@@ -55,7 +55,10 @@ function sendMessage() {
             if (message === "1") { // Local e responsável pelo desembarque
                 const { desembarqueLocal, desembarqueResponsavel } = usersData[cpf];
                 displayMessage(`O local de desembarque é ${desembarqueLocal} e o responsável pelo desembarque é ${desembarqueResponsavel}.`, "bot-message");
-    } else if (message === "2") { // Registro fotográfico no desembarque
+            } else if (message === "2") { // Registro fotográfico no desembarque
+            }
+            } else if (message === "2") { // KM final registrado
+            }
         } else if (message === "4") {
             displayMessage("Para questões pós-viagem, mande mensagem para +55 34 9894-2493.", "bot-message");
         } else if (message === "5") {
