@@ -3,10 +3,10 @@ let chatBox = document.getElementById("chat-box");
 let userInput = document.getElementById("user-input");
 
 const usersData = {
-    "123445789": {
-        nome: "João",
-        local: "Jaguatirica",
-        responsavel: "Pedro"
+    "15347693665": {
+        nome: "Luiza",
+        local: "Uberlandia",
+        responsavel: "Vitor"
     },
     // Adicione outros CPFs e informações conforme necessário
 };
