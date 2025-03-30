@@ -32,7 +32,7 @@ function sendMessage() {
         if (usersData[cpf]) {
             displaymessage(`Como posso ajudar hoje ${usersData[cpf].nome}? \n1 - Embarque da Carga\n2 - Rota da Viagem\n3 - Desembarque da Carga\n4 - Pós-Viagem\n5 - Fale Conosco", "bot-message");`, "bot-message");
         } else {
-            displayMessage("Seu CPF não foi encontrado, escreva somente com números.", "bot-message");
+            displayMessage("Seu CPF não foi encontrado, digite somente com números.", "bot-message");
         }
     } else {
         // Respostas para as opções depois do CPF
@@ -61,7 +61,7 @@ function sendMessage() {
                 displayMessage(`O local de desembarque é ${desembarqueLocal} e o responsável pelo desembarque é ${desembarqueResponsavel}.`, "bot-message");
             } else if (message === "2") { // Registro fotográfico no desembarque
             }
-            } else if (message === "2") { // KM final registrado
+            } else if (message === "3") { // KM final registrado
             }
         } else if (message === "4") {
             displayMessage("Para questões pós-viagem, mande mensagem para +55 34 9894-2493.", "bot-message");
