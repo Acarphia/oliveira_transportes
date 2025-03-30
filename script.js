@@ -22,12 +22,12 @@ document.addEventListener("DOMContentLoaded", function () {
     const usersData = {
         "15347693665": {
             nome: "Luiza",
-            tipoCarga: "Alimentos",
-            embarqueLocal: "Armazém Central",
-            embarqueResponsavel: "João Silva",
-            desembarqueLocal: "Centro de Distribuição",
-            desembarqueResponsavel: "Maria Souza",
-            paradasProgramadas: "Posto Shell, Restaurante Bom Prato"
+            tipoCarga: "Alimentos.",
+            embarqueLocal: "Uberlandia.",
+            embarqueResponsavel: "Eduarda.",
+            desembarqueLocal: "Londrina.",
+            desembarqueResponsavel: "Augusto.",
+            paradasProgramadas: "Sem paradas."
         },
     };
 
