@@ -102,15 +102,13 @@ function sendMessage() {
         } else if (message === "4") {
             displayMessage("Para procedimentos pós-viagem favor mandar mensagem para o Otávio, (34) 99894-2493"); 
         } else if (message === "5") {
-            displayMessage("Escolha uma opção relacionada entre os canais de contato:\n1 - Emergências 24h\n2 - Supervisor de rota\n3 - RH Motoristas\n4 - Ouvidoria", "bot-message");
-            if (message === "1") {
+            displayMessage("Escolha uma opção relacionada entre os canais de contato:\na - Emergências 24h\nb - Supervisor de rota\nc - Ouvidoria", "bot-message");
+            if (message === "a") {
                 displayMessage("Emergências: 192 \nSOS Estradas:\n0800 055 5510 para o DER-SP\n0800 773 6699 para a CCR RodoAnel\n0800 77 01 101 para a EcoRodovias\n0800 000 0290 para a CCR ViaSul\n0800 055 9696 para o Sistema de Ajuda ao Usuário (SAU) das Renovias", "bot-message");
-            } else if (message === "2") {
-                displayMessage("Supervisor João - (XX) 98888-8888\nPlantão das 6h às 22h", "bot-message");
-            } else if (message === "3") {
-                displayMessage("RH Motoristas:\nrh.motoristas@empresa.com\n(XX) 3333-3333", "bot-message");
-            } else if (message === "4") {
-                displayMessage("Ouvidoria:\nouvidoria@empresa.com\n0800-XXX-XXXX", "bot-message");
+            } else if (message === "b") {
+                displayMessage("Otávio - (34) 99894-2493", "bot-message");
+           } else if (message === "c") {
+                displayMessage("Ouvidoria:\nouvidoria@oliveiratransportes.com", "bot-message");
             }
         }
     }
