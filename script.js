@@ -122,7 +122,7 @@ document.addEventListener("DOMContentLoaded", function () {
     function displayMessage(message, className) {
         const messageDiv = document.createElement("div");
         messageDiv.classList.add("message", className);
-        messageDiv.textContent = message;
+        messageDiv.innerHTML = message.replace(/\n/g, "<br>");
         chatBox.appendChild(messageDiv);
         chatBox.scrollTop = chatBox.scrollHeight;
     }
