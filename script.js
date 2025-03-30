@@ -64,7 +64,7 @@ function sendMessage() {
                 const { observacoesCarga } = usersData[cpf];
                 displayMessage(`As observações sobre a carga são: ${observacoesCarga}.`, "bot-message");
             } else if (message === "4") { // Registro fotográfico da carga no embarque
-                displayMessage(`Mande a foto da carga.`, "bot-message");
+                displayMessage(`Envie a foto da carga.`, "bot-message");
             }
         } else if (message === "3") {
             displayMessage("Escolha uma opção relacionada ao desembarque da carga:\n1 - Local e responsável pelo desembarque\n2 - Registro fotográfico da carga no desembarque\n3 - KM final registrado", "bot-message");
@@ -72,7 +72,7 @@ function sendMessage() {
                 const { desembarqueLocal, desembarqueResponsavel } = usersData[cpf];
                 displayMessage(`O local de desembarque é ${desembarqueLocal} e o responsável pelo desembarque é ${desembarqueResponsavel}.`, "bot-message");
             } else if (message === "2") { // Registro fotográfico no desembarque
-                displayMessage(`Mande a foto da carga.`, "bot-message");
+                displayMessage(`Envie a foto da carga.`, "bot-message");
             }
         }
     }
