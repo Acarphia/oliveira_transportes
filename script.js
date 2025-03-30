@@ -5,10 +5,13 @@ let userInput = document.getElementById("user-input");
 const usersData = {
     "15347693665": {
         nome: "Luiza",
+        tipoCarga: "",
+        observacoesCarga: "",
         embarqueLocal: "",
         embarqueResponsavel: "",
         desembarqueLocal: "",
-        desembarqueResponsavel: ""
+        desembarqueResponsavel: "",
+        registrodeCusto: ""
     },
     // Adicione outros CPFs e informações conforme necessário
 };
@@ -34,11 +37,11 @@ function sendMessage() {
     } else {
         // Respostas para as opções depois do CPF
         if (message === "1") {
-            displayMessage("Escolha uma opção relacionada ao embarque da carga:\n1 - Local e responsável\n2 - Tipo de carga\n3 - Registro fotográfico da carga\n4 - KM inicial registrado", "bot-message");
+            displayMessage("Escolha uma opção relacionada ao embarque da carga:\n1 - Local e responsável pelo embarque\n2 - Tipo de carga\n3 - Registro fotográfico da carga\n4 - KM inicial registrado", "bot-message");
         } else if (message === "2") {
             displayMessage("Escolha uma opção relacionada à rota da viagem:\n1 - Melhor caminho e condições das estradas\n2 - Paradas para descanso, alimentação e abastecimento\n3 - Viagem pré-registrada no GPS\n4 - Observações sobre a carga\n5 - Registro de custos", "bot-message");
         } else if (message === "3") {
-            displayMessage("Escolha uma opção relacionada ao desembarque da carga:\n1 - Local e responsável pelo recebimento\n2 - Registro fotográfico no desembarque\n3 - KM final registrado", "bot-message");
+            displayMessage("Escolha uma opção relacionada ao desembarque da carga:\n1 - Local e responsável pelo desembarque\n2 - Registro fotográfico no desembarque\n3 - KM final registrado", "bot-message");
         } else if (message === "4") {
             displayMessage("Para questões pós-viagem, mande mensagem para +55 34 9894-2493.", "bot-message");
         } else if (message === "5") {
