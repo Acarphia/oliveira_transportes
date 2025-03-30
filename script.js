@@ -30,9 +30,9 @@ function sendMessage() {
     if (!cpf) {
         cpf = message;
         if (usersData[cpf]) {
-            displaymessage(`Que bom ver você ${usersData[cpf].nome}, como posso ajudar hoje?\n1 - Embarque da Carga\n2 - Rota da Viagem\n3 - Desembarque da Carga\n4 - Pós-Viagem\n5 - Fale Conosco", "bot-message");`, "bot-message");
+            displaymessage(`Como posso ajudar hoje ${usersData[cpf].nome}? \n1 - Embarque da Carga\n2 - Rota da Viagem\n3 - Desembarque da Carga\n4 - Pós-Viagem\n5 - Fale Conosco", "bot-message");`, "bot-message");
         } else {
-            displayMessage("CPF não encontrado. Tente novamente.", "bot-message");
+            displayMessage("Seu CPF não foi encontrado, escreva somente com números.", "bot-message");
         }
     } else {
         // Respostas para as opções depois do CPF
