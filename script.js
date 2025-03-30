@@ -17,7 +17,8 @@ const usersData = {
         embarqueResponsavel: "",
         desembarqueLocal: "",
         desembarqueResponsavel: "",
-        registrodeCusto: ""
+        registrodeCusto: "",
+        paradasProgramadas: ""
     },
     // Adicione outros CPFs e informações conforme necessário
 };
@@ -81,7 +82,7 @@ function sendMessage() {
                 if (message === "a") {
                     displayMessage("Melhor caminho e condições: ");
                 } else if (message === "b") {
-                    displayMessage("Paradas programadas: ", "bot-message");
+                    displayMessage(`Suas paradas programadas são: ${paradasProgramadas}.`, "bot-message");
                 } else if (message === "c") {
                     displayMessage("Viagem no GPS: ", "bot-message");
                 } else if (message === "d") {
