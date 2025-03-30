@@ -2,6 +2,12 @@ let cpf = "";
 let chatBox = document.getElementById("chat-box");
 let userInput = document.getElementById("user-input");
 let fileInput = document.getElementById("file-input");
+let attachButton = document.getElementById("attach-button");
+
+// Vincula o botão de anexo ao input file
+attachButton.addEventListener('click', function() {
+    fileInput.click();
+});
 
 const usersData = {
     "15347693665": {
@@ -20,25 +26,31 @@ function sendMessage() {
     const message = userInput.value.trim();
     if (message === "" && !fileInput.files.length) return;
 
-    // Mostrar mensagem do usuário
-    displayMessage(message, "user-message");
+    // Se houver mensagem de texto, mostra no chat
+    if (message) {
+        displayMessage(message, "user-message");
+        userInput.value = "";
+    }
 
-    // Limpar campo de input
-    userInput.value = "";
-
-    // Se houver foto, exibe
+    // Se houver foto, exibe apenas a imagem
     if (fileInput.files.length > 0) {
         const file = fileInput.files[0];
-        const reader = new FileReader();
-        reader.onloadend = function() {
-            const img = document.createElement('img');
-            img.src = reader.result;
-            img.style.width = '200px'; // Limitar o tamanho da imagem
-            chatBox.appendChild(img);
-            chatBox.scrollTop = chatBox.scrollHeight;
-        };
-        reader.readAsDataURL(file);
-        fileInput.value = ""; // Limpar o campo de arquivo após o envio
+        if (file.type.match('image.*')) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const img = document.createElement('img');
+                img.src = e.target.result;
+                img.style.maxWidth = '200px';
+                img.style.borderRadius = '8px';
+                img.classList.add('user-message');
+                chatBox.appendChild(img);
+                chatBox.scrollTop = chatBox.scrollHeight;
+            };
+            reader.readAsDataURL(file);
+        } else {
+            displayMessage("Por favor, envie apenas imagens.", "bot-message");
+        }
+        fileInput.value = "";
     }
 
     // Se ainda não for solicitado CPF
