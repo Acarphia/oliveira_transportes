@@ -54,6 +54,7 @@ input[type="text"] {
     border: 1px solid #ddd;
     border-radius: 8px;
     margin-bottom: 10px;
+    width: 80%;
 }
 
 button {
@@ -63,8 +64,36 @@ button {
     border: none;
     border-radius: 8px;
     cursor: pointer;
+    width: 15%;
 }
 
 button:hover {
+    background-color: #45a049;
+}
+
+.input-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.input-container input[type="file"],
+.input-container input[type="text"] {
+    width: 80%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    margin-right: 10px;
+}
+
+.input-container input[type="file"] {
+    padding: 5px;
+}
+
+.input-container button {
+    width: 15%;
+}
+
+.input-container button:hover {
     background-color: #45a049;
 }
