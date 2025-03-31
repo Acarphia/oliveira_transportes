@@ -37,9 +37,8 @@ body {
 }
 
 .message {
-    max-width: 75%; /* Limita a largura da mensagem */
+    max-width: 75%;
     padding: 12px;
-    background-color: #dcf8c6; /* Cor de fundo similar ao WhatsApp */
     border-radius: 18px;
     display: inline-block;
     word-wrap: break-word;
@@ -49,15 +48,15 @@ body {
 }
 
 .bot-message {
-    background-color: #ffffff; /* Cor de fundo branca para a mensagem do bot */
-    margin-left: 10px;  /* Bot aparece à esquerda */
+    background-color: #ffffff; /* Branco para o bot */
+    margin-left: 10px; /* Alinha à esquerda */
     margin-right: auto;
     border-radius: 18px;
 }
 
 .user-message {
-    background-color: #dcf8c6; /* Cor para a mensagem do usuário */
-    margin-left: auto;  /* Usuário aparece à direita */
+    background-color: #dcf8c6; /* Verde para o usuário */
+    margin-left: auto; /* Alinha à direita */
     margin-right: 10px;
     border-radius: 18px;
 }
@@ -65,24 +64,21 @@ body {
 .image-message {
     width: 100%;
     height: auto;
-    max-width: 180px; /* Limita o tamanho da imagem */
+    max-width: 180px;
     border-radius: 8px;
     display: block;
-    margin: 0 auto;
-}
-
-/* Para imagens enviadas pelo cliente, que devem aparecer dentro da caixa do usuário (verde) */
-.image-message.user-image {
-    background-color: #dcf8c6; /* Fundo verde do cliente */
-    margin-left: auto;  /* Coloca a imagem à direita */
-    margin-right: 10px;
-    border-radius: 8px;
 }
 
 .image-message img {
     width: 100%;
     height: auto;
     display: block;
+}
+
+/* Garante que as imagens enviadas pelo usuário fiquem no lado direito */
+.user-message .image-message {
+    margin-left: auto;
+    margin-right: 0;
 }
 
 .input-container {
