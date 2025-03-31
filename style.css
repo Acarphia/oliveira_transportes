@@ -36,15 +36,14 @@ body {
     background-color: #e5ddd5;
 }
 
+/* Estilo base para todas as mensagens */
 .message {
     max-width: 75%;
     padding: 12px;
-    border-radius: 18px;
-    display: inline-block;
     word-wrap: break-word;
     line-height: 1.4;
-    position: relative;
     font-size: 14px;
+    position: relative;
 }
 
 /* Mensagens do BOT - esquerda, branco */
@@ -53,6 +52,7 @@ body {
     margin-right: auto;
     margin-left: 10px;
     border-radius: 18px 18px 18px 0;
+    align-self: flex-start;
 }
 
 /* Mensagens do USUÁRIO - direita, verde */
@@ -61,26 +61,27 @@ body {
     margin-left: auto;
     margin-right: 10px;
     border-radius: 18px 18px 0 18px;
+    align-self: flex-end;
 }
 
-/* Container de imagens */
-.image-container {
-    max-width: 200px;
-    margin-top: 5px;
-}
-
-/* Imagens nas mensagens do usuário (alinhadas à direita) */
+/* Container de imagens - específico para usuário */
 .user-message .image-container {
+    max-width: 200px;
+    background-color: #dcf8c6;
+    padding: 8px;
+    border-radius: 18px 18px 0 18px;
     margin-left: auto;
+    margin-right: 0;
 }
 
-/* Estilo das imagens */
-.image-message {
-    max-width: 100%;
+/* Imagens em si */
+.user-message .image-container img {
+    width: 100%;
     border-radius: 8px;
     display: block;
 }
 
+/* Input area */
 .input-container {
     display: flex;
     padding: 10px;
@@ -142,7 +143,7 @@ body {
     display: none;
 }
 
-/* Scrollbar */
+/* Estilização da scrollbar */
 .chat-box::-webkit-scrollbar {
     width: 6px;
 }
@@ -154,4 +155,11 @@ body {
 .chat-box::-webkit-scrollbar-thumb {
     background: #c1c1c1;
     border-radius: 3px;
+}
+
+/* Garante que quebras de linha sejam respeitadas */
+.message br {
+    content: "";
+    display: block;
+    margin-bottom: 8px;
 }
