@@ -1,17 +1,3 @@
-//Use esse modelo
-const usersData = {
-    //CPF:
-    "15347693665": {
-        nome: "Luiza",
-        tipoCarga: "Alimentos.",
-        embarqueLocal: "Uberlândia.",
-        embarqueResponsavel: "Eduarda.",
-        desembarqueLocal: "Londrina.",
-        desembarqueResponsavel: "Augusto.",
-        paradasProgramadas: "Sem paradas."
-    },
-};
-
 document.addEventListener("DOMContentLoaded", function () {
     let cpf = "";
     let chatBox = document.getElementById("chat-box");
@@ -23,38 +9,15 @@ document.addEventListener("DOMContentLoaded", function () {
     let lastOptionSelected = "";
     let expectingTextInput = false;
 
-    // Enviar mensagem
-    function sendMessage(message) {
-        if (message !== "") {
-            displayMessage(message, "user-message");
-            userInput.value = ""; // Limpa o campo de texto após o envio
-        }
-    }
-
-    // Botão enviar
-    sendButton.addEventListener('click', function() {
-        const message = userInput.value.trim();
-        sendMessage(message);
-    });
-
-    // Tecla Enter
-    userInput.addEventListener('keydown', function (e) {
-        if (e.key === 'Enter' && !e.shiftKey) {
-            e.preventDefault();
-            const message = userInput.value.trim();
-            sendMessage(message);
-        }
-    });
-
     // Timer para contagem de inatividade
     let inactivityTimer = null;
     let countdownTimer = null;
-
+    
     // Inicia o contador de inatividade
     function startInactivityTimer() {
         // Se houver um timer anterior, limpa
         if (inactivityTimer) clearTimeout(inactivityTimer);
-
+        
         // Inicia o timer de inatividade
         inactivityTimer = setTimeout(function() {
             resetSession();
@@ -66,8 +29,9 @@ document.addEventListener("DOMContentLoaded", function () {
     setTimeout(function () {
         displayMessage("Olá! Sou o assistente virtual da Oliveira Transportes. Digite seu CPF, somente em números.", "bot-message");
     }, 2000); // Exibe após 2 segundos
+}
 
-    // Reseta a sessão
+// Reseta a sessão
     function resetSession() {
         cpf = "";
         currentContext = "";
@@ -75,7 +39,7 @@ document.addEventListener("DOMContentLoaded", function () {
         expectingTextInput = false;
         if (inactivityTimer) clearTimeout(inactivityTimer);
         if (countdownTimer) clearInterval(countdownTimer);
-    }
+}
 
     // Exibe a mensagem no chat
     function displayMessage(content, className) {
@@ -148,19 +112,41 @@ document.addEventListener("DOMContentLoaded", function () {
         reader.readAsDataURL(file);
     }
 
-    // Processa a mensagem
-    if (!cpf) {
-        handleCPFInput(message);
-        return;
+    // Enviar mensagem
+    function sendMessage(message) {
+        if (message !== "") {
+            displayMessage(message, "user-message");
+            userInput.value = "";
+
+            // Processa a mensagem
+            if (!cpf) {
+                handleCPFInput(message);
+                return;
+            }
+
+            if (!currentContext) {
+                handleMainMenu(message.toLowerCase());
+                return;
+            }
+
+            handleContextResponses(message);
+        }
     }
 
-    if (!currentContext) {
-        handleMainMenu(message.toLowerCase());
-        return;
-    }
+    // Botão enviar
+    sendButton.addEventListener('click', function() {
+        const message = userInput.value.trim();
+        sendMessage(message);
+    });
 
-    handleContextResponses(message);
-});
+    // Tecla Enter
+    userInput.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            const message = userInput.value.trim();
+            sendMessage(message);
+        }
+    });
 
     // Lida com a entrada de CPF
     function handleCPFInput(message) {
