@@ -17,9 +17,6 @@ document.addEventListener("DOMContentLoaded", function() {
     let currentContext = "";
     let lastOptionSelected = "";
 
-    // Mensagem inicial (sem duplicação)
-    displayMessage("Olá! Sou o assistente virtual da Oliveira Transportes. Digite seu CPF, somente em números.", "bot-message");
-
     // Função principal
     function processUserMessage(message) {
         if (!cpf) {
