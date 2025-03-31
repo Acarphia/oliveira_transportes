@@ -47,38 +47,38 @@ body {
     font-size: 14px;
 }
 
+/* Mensagens do BOT - esquerda, branco */
 .bot-message {
-    background-color: #ffffff; /* Branco para o bot */
-    margin-left: 10px; /* Alinha à esquerda */
+    background-color: white;
     margin-right: auto;
-    border-radius: 18px;
+    margin-left: 10px;
+    border-radius: 18px 18px 18px 0;
 }
 
+/* Mensagens do USUÁRIO - direita, verde */
 .user-message {
-    background-color: #dcf8c6; /* Verde para o usuário */
-    margin-left: auto; /* Alinha à direita */
+    background-color: #dcf8c6;
+    margin-left: auto;
     margin-right: 10px;
-    border-radius: 18px;
+    border-radius: 18px 18px 0 18px;
 }
 
+/* Container de imagens */
+.image-container {
+    max-width: 200px;
+    margin-top: 5px;
+}
+
+/* Imagens nas mensagens do usuário (alinhadas à direita) */
+.user-message .image-container {
+    margin-left: auto;
+}
+
+/* Estilo das imagens */
 .image-message {
-    width: 100%;
-    height: auto;
-    max-width: 180px;
+    max-width: 100%;
     border-radius: 8px;
     display: block;
-}
-
-.image-message img {
-    width: 100%;
-    height: auto;
-    display: block;
-}
-
-/* Garante que as imagens enviadas pelo usuário fiquem no lado direito */
-.user-message .image-message {
-    margin-left: auto;
-    margin-right: 0;
 }
 
 .input-container {
@@ -88,7 +88,6 @@ body {
     border-top: 1px solid #eee;
     gap: 10px;
     align-items: center;
-    border-radius: 10px;
 }
 
 #user-input {
@@ -143,7 +142,7 @@ body {
     display: none;
 }
 
-/* Scrollbar personalizada */
+/* Scrollbar */
 .chat-box::-webkit-scrollbar {
     width: 6px;
 }
