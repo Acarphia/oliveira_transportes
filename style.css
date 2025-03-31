@@ -49,15 +49,16 @@ body {
 }
 
 .bot-message {
-    background-color: #d1f1f9; /* Cor para a mensagem do bot */
-    margin-left: auto;
-    margin-right: 10px;
+    background-color: #ffffff; /* Cor de fundo branca para a mensagem do bot */
+    margin-left: 10px;
+    margin-right: auto;
+    border-radius: 18px;
 }
 
 .user-message {
     background-color: #dcf8c6; /* Cor para a mensagem do usuário */
-    margin-left: 10px;
-    margin-right: auto;
+    margin-left: auto;
+    margin-right: 10px;
     border-radius: 18px;
 }
 
@@ -152,6 +153,8 @@ body {
     border-radius: 3px;
 }
 
-.chat-box::-webkit-scrollbar-thumb:hover {
-    background: #a8a8a8;
+/* Mudança na posição das imagens para que apareçam dentro da caixa do cliente */
+.image-message.user-image {
+    margin-left: 10px;
+    margin-right: auto;
 }
