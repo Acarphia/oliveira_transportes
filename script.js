@@ -116,9 +116,14 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
         currentContext = "";
-        displayMessage("Escolha outra categoria: 1 - Embarque | 2 - Rota | 3 - Desembarque | 4 - Pós-viagem | 5 - Canais de contato", "bot-message");
+        displayMessage(`Escolha outra categoria:
+1 - Embarque da carga
+2 - Rota da viagem
+3 - Desembarque da carga
+4 - Pós-viagem
+5 - Canais de contato`, "bot-message");
     }
-
+    
     function displayMessage(message, className) {
         const messageDiv = document.createElement("div");
         messageDiv.classList.add("message", className);
