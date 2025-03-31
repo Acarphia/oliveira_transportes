@@ -37,32 +37,34 @@ body {
 }
 
 .message {
-    max-width: 80%;
-    padding: 12px 16px;
-    border-radius: 18px;
-    line-height: 1.4;
+    max-width: 70%; /* Limite a largura da mensagem */
+    margin: 10px 0;
+    padding: 10px;
+    background-color: #f1f1f1;
+    border-radius: 10px;
+    display: inline-block;
     word-wrap: break-word;
-    position: relative;
 }
 
 .bot-message {
-    background-color: #e3f2fd;
-    align-self: flex-start;
-    border-bottom-left-radius: 4px;
-    color: #333;
+    background-color: #d1f1f9; /* Cor de fundo para a mensagem do bot */
+    margin-left: auto;
+    margin-right: 10px;
 }
 
 .user-message {
-    background-color: #dcf8c6;
-    align-self: flex-end;
-    border-bottom-right-radius: 4px;
-    color: #333;
+    background-color: #e1f7d5; /* Cor de fundo para a mensagem do usuário */
+    margin-left: 10px;
+    margin-right: auto;
 }
 
 .image-message {
-    padding: 0;
-    overflow: hidden;
-    max-width: 70%;
+    width: 100%; /* A imagem vai ocupar a largura total da caixa de mensagem */
+    height: auto; /* A altura será ajustada proporcionalmente */
+    max-width: 200px; /* Limita o tamanho da imagem */
+    border-radius: 8px; /* Borda arredondada para a imagem */
+    display: block; /* Garante que a imagem não fique fora da estrutura de caixa */
+    margin: 0 auto; /* Centraliza a imagem dentro da caixa */
 }
 
 .image-message img {
