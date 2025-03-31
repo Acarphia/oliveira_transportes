@@ -21,43 +21,25 @@ document.addEventListener("DOMContentLoaded", function () {
     let lastOptionSelected = "";
     let expectingTextInput = false;
 
-    // Enviar mensagem
-    function sendMessage(message) {
-        if (message !== "") {
-            displayMessage(message, "user-message");
-            userInput.value = "";
-            processUserMessage(message); // Adicionado para processar a mensagem
-            startInactivityTimer(); // Reinicia o timer de inatividade
-        }
-    }
-
-    // Processar mensagem do usuário
-    function processUserMessage(message) {
-        if (!cpf) {
-            handleCPFInput(message);
-            return;
-        }
-
-        if (!currentContext) {
-            handleMainMenu(message.toLowerCase());
-            return;
-        }
-
-        handleContextResponses(message);
-    }
-
-    // Botão enviar
-    sendButton.addEventListener('click', function () {
+  // Função básica para enviar mensagem
+    function sendMessage() {
         const message = userInput.value.trim();
-        sendMessage(message);
-    });
+        if (message === "") return;
+        
+        displayMessage(message, "user-message");
+        userInput.value = "";
+        
+        // Processa a mensagem do usuário
+        processUserMessage(message);
+    }
 
-    // Tecla Enter
-    userInput.addEventListener('keydown', function (e) {
-        if (e.key === 'Enter' && !e.shiftKey) {
-            e.preventDefault();
-            const message = userInput.value.trim();
-            sendMessage(message);
+    // Evento de clique no botão
+    sendButton.addEventListener('click', sendMessage);
+
+    // Evento de tecla Enter
+    userInput.addEventListener('keypress', function (e) {
+        if (e.key === 'Enter') {
+            sendMessage();
         }
     });
 
