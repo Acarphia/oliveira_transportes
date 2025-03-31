@@ -1,16 +1,8 @@
-const usersData = {
-    "15347693665": {
-        "nome": "Luiza",
-        "tipoCarga": "Alimentos.",
-        "embarqueLocal": "Uberlândia.",
-        "embarqueResponsavel": "Eduarda.",
-        "desembarqueLocal": "Londrina.",
-        "desembarqueResponsavel": "Augusto.",
-        "paradasProgramadas": "Sem paradas."
-    }
-};
-
 document.addEventListener("DOMContentLoaded", function () {
+    // Evitar inicialização múltipla
+    if (window.chatInitialized) return;
+    window.chatInitialized = true;
+    
     let cpf = "";
     let chatBox = document.getElementById("chat-box");
     let userInput = document.getElementById("user-input");
@@ -20,6 +12,18 @@ document.addEventListener("DOMContentLoaded", function () {
     let currentContext = "";
     let lastOptionSelected = "";
     let expectingTextInput = false;
+    
+    const usersData = {
+        "15347693665": {
+            "nome": "Luiza",
+            "tipoCarga": "Alimentos.",
+            "embarqueLocal": "Uberlândia.",
+            "embarqueResponsavel": "Eduarda.",
+            "desembarqueLocal": "Londrina.",
+            "desembarqueResponsavel": "Augusto.",
+            "paradasProgramadas": "Sem paradas."
+        }
+    };
 
     // Função para processar mensagens do usuário
     function processUserMessage(message) {
@@ -36,7 +40,7 @@ document.addEventListener("DOMContentLoaded", function () {
         handleContextResponses(message);
     }
 
-    // Função básica para enviar mensagem
+    // Função básica para enviar mensagem (corrigida)
     function sendMessage() {
         const message = userInput.value.trim();
         if (message === "") return;
@@ -46,17 +50,34 @@ document.addEventListener("DOMContentLoaded", function () {
         
         // Processa a mensagem do usuário
         processUserMessage(message);
+        return false; // Impede comportamento padrão
     }
 
-    // Evento de clique no botão
-    sendButton.addEventListener('click', sendMessage);
-
-    // Evento de tecla Enter
-    userInput.addEventListener('keypress', function (e) {
-        if (e.key === 'Enter') {
+    // Corrigindo os eventos de envio
+    if (sendButton) {
+        // Remover qualquer listener anterior caso exista
+        sendButton.removeEventListener('click', sendMessage);
+        
+        // Adicionar novo listener com garantia de funcionamento
+        sendButton.addEventListener('click', function(e) {
+            e.preventDefault();
             sendMessage();
-        }
-    });
+        });
+    }
+
+    // Corrigindo o evento de Enter
+    if (userInput) {
+        // Remover listener anterior caso exista
+        userInput.removeEventListener('keypress', function(){});
+        
+        // Adicionar novo listener com garantia de funcionamento
+        userInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                sendMessage();
+            }
+        });
+    }
 
     // Timer para contagem de inatividade
     let inactivityTimer = null;
@@ -119,6 +140,19 @@ document.addEventListener("DOMContentLoaded", function () {
             }, 1000);
         };
         reader.readAsDataURL(file);
+    }
+
+    // Configurar evento de arquivo, se existir
+    if (fileInput && attachButton) {
+        attachButton.addEventListener('click', function() {
+            fileInput.click();
+        });
+        
+        fileInput.addEventListener('change', function() {
+            if (fileInput.files.length > 0) {
+                sendImage(fileInput.files[0]);
+            }
+        });
     }
 
     // Lida com a entrada de CPF
@@ -271,6 +305,21 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Lida com as respostas no contexto de Desembarque
     function handleDesembarqueResponses(message, user) {
+        if (lastOptionSelected === "3" && message !== "3") {
+            if (!isNaN(message) && message.trim() !== "") {
+                displayMessage("KM final registrado: " + message, "bot-message");
+                lastOptionSelected = "";
+                resetContextAfterDelay();
+                return;
+            } else {
+                displayMessage("Formato inválido. Digite apenas números para o KM.", "bot-message");
+                return;
+            }
+        }
+
+        lastOptionSelected = message;
+        expectingTextInput = false;
+
         const responses = {
             "1": `Local: ${user.desembarqueLocal}\nResponsável: ${user.desembarqueResponsavel}`,
             "2": "Envie a foto da carga.",
