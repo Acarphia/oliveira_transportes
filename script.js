@@ -1,4 +1,4 @@
-document.addEventListener("DOMContentLoaded", function () {
+ document.addEventListener("DOMContentLoaded", function () {
     // Evitar inicialização múltipla
     if (window.chatInitialized) return;
     window.chatInitialized = true;
@@ -339,9 +339,9 @@ document.addEventListener("DOMContentLoaded", function () {
     // Lida com as respostas no contexto de Contato
     function handleContatoResponses(message) {
         const responses = {
-            "1": "Ligue para a Emergência 24h:\n192\nSOS Estradas:\n0800 055 5510 (DER-SP)\n0800 773 6699 (CCR RodoAnel)",
+            "1": "Ligue para a Emergência 24h:\n192\nSOS Estradas:\nhttps://postocidadedemarilia.com.br/telefone-de-emergencia-das-rodovias-guia/",
             "2": "Ligue para o supervisor Otávio: (34) 9 9894 2493.",
-            "3": "Ouvidoria: ouvidoria@empresa.com.br"
+            "3": "Ouvidoria: ouvidoria@oliveiratransportes.com.br"
         };
 
         if (responses[message]) {
