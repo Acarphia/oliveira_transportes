@@ -332,8 +332,8 @@ document.addEventListener("DOMContentLoaded", function () {
     // Lida com as respostas no contexto de Contato
     function handleContatoResponses(message) {
         const responses = {
-            "1": "Ligue para a Emergência 24h: (34) 99999-9999.",
-            "2": "Ligue para o supervisor: (34) 98888-8888.",
+            "1": "Ligue para a Emergência 24h:/n164/nSOS Estradas:/n0800 055 5510 para o DER-SP/n0800 773 6699 para a CCR RodoAnel/n0800 77 01 101 para a EcoRodovias/n0800 000 0290 para a CCR ViaSul/n0800 055 9696 para o Sistema de Ajuda ao Usuário (SAU) das Renovias",
+            "2": "Ligue para o supervisor Otávio: (34) 9 9894 2493.",
             "3": "Ouvidoria: ouvidoria@empresa.com.br"
         };
 
