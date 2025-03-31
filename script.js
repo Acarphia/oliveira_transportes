@@ -24,27 +24,21 @@ document.addEventListener("DOMContentLoaded", function () {
     function sendImage(file) {
         const reader = new FileReader();
         reader.onloadend = function() {
-            // 1. Cria a div principal da mensagem do USUÁRIO
             const messageDiv = document.createElement('div');
             messageDiv.classList.add('message', 'user-message');
             
-            // 2. Cria o container da imagem (com fundo verde)
             const imgContainer = document.createElement('div');
             imgContainer.classList.add('image-container');
             
-            // 3. Cria a imagem
             const img = document.createElement('img');
             img.src = reader.result;
             
-            // 4. Monta a hierarquia CORRETA:
-            imgContainer.appendChild(img);    // Imagem dentro do container
-            messageDiv.appendChild(imgContainer); // Container dentro da mensagem
-            chatBox.appendChild(messageDiv); // Mensagem dentro do chat
+            imgContainer.appendChild(img);
+            messageDiv.appendChild(imgContainer);
+            chatBox.appendChild(messageDiv);
             
-            // 5. Rolagem automática
             chatBox.scrollTop = chatBox.scrollHeight;
             
-            // Resposta automática para foto enviada
             setTimeout(() => {
                 displayMessage("Foto enviada.", "bot-message");
             }, 1000);
@@ -78,9 +72,8 @@ document.addEventListener("DOMContentLoaded", function () {
         },
     };
 
-    // Função principal para enviar mensagem
     function sendMessage() {
-        const message = userInput.value.trim().toLowerCase();
+        const message = userInput.value.trim();
         if (message === "" && !fileInput.files.length) return;
 
         // Exibe a mensagem do usuário
@@ -94,14 +87,13 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
         if (!currentContext) {
-            handleMainMenu(message);
+            handleMainMenu(message.toLowerCase());
             return;
         }
 
         handleContextResponses(message);
     }
 
-    // Função para lidar com o CPF
     function handleCPFInput(message) {
         cpf = message;
         if (usersData[cpf]) {
@@ -117,7 +109,6 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
-    // Função para o menu principal
     function handleMainMenu(message) {
         switch(message) {
             case "1":
@@ -144,7 +135,6 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
-    // Função para exibir menus
     function displayMenu(menuType) {
         const menus = {
             embarque: "Escolha uma opção do Embarque:\n1 - Local e responsável\n2 - Tipo de carga\n3 - Registro fotográfico\n4 - KM inicial",
@@ -155,7 +145,6 @@ document.addEventListener("DOMContentLoaded", function () {
         displayMessage(menus[menuType], "bot-message");
     }
 
-    // Função para respostas contextuais
     function handleContextResponses(message) {
         const user = usersData[cpf];
         
@@ -174,32 +163,28 @@ document.addEventListener("DOMContentLoaded", function () {
             displayMessage("Registro fotográfico recebido.", "bot-message");
             lastOptionSelected = "";
         } else if (lastOptionSelected === "4" && currentContext === "embarque" && message !== "4") {
-            displayMessage("KM inicial registrado.", "bot-message");
+            displayMessage("KM inicial registrado: " + message, "bot-message");
             lastOptionSelected = "";
         } else if (lastOptionSelected === "4" && currentContext === "rota" && message !== "4") {
-            displayMessage("Observações registradas.", "bot-message");
-            lastOptionSelected = "";
-        } else if (lastOptionSelected === "5" && currentContext === "rota" && message !== "5") {
-            displayMessage("Custos registrados.", "bot-message");
+            displayMessage("Observações registradas: " + message, "bot-message");
             lastOptionSelected = "";
         } else if (lastOptionSelected === "2" && currentContext === "desembarque" && message !== "2") {
             displayMessage("Registro fotográfico recebido.", "bot-message");
             lastOptionSelected = "";
         } else if (lastOptionSelected === "3" && currentContext === "desembarque" && message !== "3") {
-            displayMessage("KM final registrado.", "bot-message");
+            displayMessage("KM final registrado: " + message, "bot-message");
             lastOptionSelected = "";
         }
         
         resetContextAfterDelay();
     }
 
-    // Funções de tratamento para cada contexto
     function handleEmbarqueResponses(message, user) {
         lastOptionSelected = message;
         const responses = {
             "1": `Local: ${user.embarqueLocal}\nResponsável: ${user.embarqueResponsavel}`,
             "2": `Tipo de carga: ${user.tipoCarga}`,
-            "3": "Envie a foto da carga.",
+            "3": "Envie a foto da carga no embarque.",
             "4": "Registre o KM inicial."
         };
         displayMessage(responses[message] || "Opção inválida", "bot-message");
@@ -208,12 +193,20 @@ document.addEventListener("DOMContentLoaded", function () {
     function handleRotaResponses(message, user) {
         lastOptionSelected = message;
         const responses = {
-            "1": "Melhor caminho: Consulte o GPS.",
+            "1": "Baixe o aplicativo Waze, disponível para Android e IOS, ou acesse o link: https://www.waze.com/pt-BR/live-map/",
             "2": `Paradas: ${user.paradasProgramadas}`,
-            "3": "Acompanhe pelo GPS.",
+            "3": "Baixe o aplicativo Waze, disponível para Android e IOS, ou acesse o link: https://www.waze.com/pt-BR/live-map/",
             "4": "Registre observações.",
             "5": "Registre os custos."
         };
+        
+        // Se a última opção foi 5 (custos) e a mensagem atual é um número
+        if (lastOptionSelected === "5" && !isNaN(message) && message.trim() !== "") {
+            displayMessage("Custos registrados: R$ " + parseFloat(message).toFixed(2).replace('.', ','), "bot-message");
+            lastOptionSelected = "";
+            return;
+        }
+        
         displayMessage(responses[message] || "Opção inválida", "bot-message");
     }
 
@@ -221,7 +214,7 @@ document.addEventListener("DOMContentLoaded", function () {
         lastOptionSelected = message;
         const responses = {
             "1": `Local: ${user.desembarqueLocal}\nResponsável: ${user.desembarqueResponsavel}`,
-            "2": "Envie a foto no desembarque.",
+            "2": "Envie a foto da carga no desembarque.",
             "3": "Registre o KM final."
         };
         displayMessage(responses[message] || "Opção inválida", "bot-message");
@@ -236,7 +229,6 @@ document.addEventListener("DOMContentLoaded", function () {
         displayMessage(responses[message] || "Opção inválida", "bot-message");
     }
 
-    // Resetar contexto após 10 segundos
     function resetContextAfterDelay() {
         setTimeout(() => {
             if (currentContext && !lastOptionSelected) {
@@ -251,7 +243,6 @@ document.addEventListener("DOMContentLoaded", function () {
         }, 10000);
     }
 
-    // Função para exibir mensagens
     function displayMessage(content, className) {
         const messageDiv = document.createElement("div");
         messageDiv.classList.add("message", className);
