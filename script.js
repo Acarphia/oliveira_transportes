@@ -1,5 +1,6 @@
-// Dados dos usuários
+// Use esse mesmo modelo!
 const usersData = {
+    //CPF:
     "15347693665": {
         nome: "Luiza",
         tipoCarga: "Alimentos.",
@@ -46,7 +47,7 @@ document.addEventListener("DOMContentLoaded", function () {
     fileInput.addEventListener('change', function () {
         if (fileInput.files.length > 0) {
             if (!cpf) {
-                displayMessage("Formato inválido. Por favor, primeiro digite seu CPF (apenas números).", "bot-message");
+                displayMessage("Formato inválido. Por favor, digite seu CPF, somente números.", "bot-message");
                 fileInput.value = "";
                 return;
             }
@@ -140,7 +141,7 @@ document.addEventListener("DOMContentLoaded", function () {
 4 - Pós-viagem
 5 - Canais de contato`, "bot-message");
         } else {
-            displayMessage("CPF não encontrado. Digite novamente.", "bot-message");
+            displayMessage("CPF não encontrado.", "bot-message");
             cpf = "";
         }
     }
@@ -233,7 +234,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 expectingTextInput = true;
             }
         } else {
-            displayMessage("Opção inválida", "bot-message");
+            displayMessage("Opção inválida.", "bot-message");
         }
     }
 
@@ -273,7 +274,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 expectingTextInput = true;
             }
         } else {
-            displayMessage("Opção inválida", "bot-message");
+            displayMessage("Opção inválida.", "bot-message");
         }
     }
 
@@ -311,7 +312,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 expectingTextInput = true;
             }
         } else {
-            displayMessage("Opção inválida", "bot-message");
+            displayMessage("Opção inválida.", "bot-message");
         }
     }
 
@@ -327,7 +328,7 @@ document.addEventListener("DOMContentLoaded", function () {
             displayMessage(responses[message], "bot-message");
             resetContextAfterDelay();
         } else {
-            displayMessage("Opção inválida", "bot-message");
+            displayMessage("Opção inválida.", "bot-message");
         }
     }
 
