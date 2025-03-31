@@ -1,15 +1,3 @@
-const usersData = {
-    "15347693665": {
-        nome: "Luiza",
-        tipoCarga: "Alimentos.",
-        embarqueLocal: "Uberlândia.",
-        embarqueResponsavel: "Eduarda.",
-        desembarqueLocal: "Londrina.",
-        desembarqueResponsavel: "Augusto.",
-        paradasProgramadas: "Sem paradas."
-    },
-};
-
 document.addEventListener("DOMContentLoaded", function () {
     let cpf = "";
     let chatBox = document.getElementById("chat-box");
@@ -27,32 +15,23 @@ document.addEventListener("DOMContentLoaded", function () {
     
     // Inicia o contador de inatividade
     function startInactivityTimer() {
+        // Se houver um timer anterior, limpa
         if (inactivityTimer) clearTimeout(inactivityTimer);
+        
+        // Inicia o timer de inatividade
         inactivityTimer = setTimeout(function() {
-            startCountdown();
-        }, 180000); // 1 minuto de inatividade
+            resetSession();
+            displayMessage("Escolha uma das opções abaixo para continuar:\n1 - Embarque\n2 - Rota\n3 - Desembarque\n4 - Pós-viagem\n5 - Canais de contato", "bot-message");
+        }, 30000); // 30 segundos de inatividade
     }
 
-    // Inicia a contagem regressiva
-    function startCountdown() {
-        let countdown = 10;
-        countdownTimer = setInterval(function() {
-            displayMessage(`Atendimento será finalizado em ${countdown} segundos.`, "bot-message");
-            countdown--;
-            if (countdown < 0) {
-                clearInterval(countdownTimer);
-                endSession();
-            }
-        }, 1000);
-    }
+    // Exibe a mensagem inicial novamente
+    setTimeout(function () {
+        displayMessage("Olá! Sou o assistente virtual da Oliveira Transportes. Digite seu CPF, somente em números.", "bot-message");
+    }, 2000); // Exibe após 2 segundos
+}
 
-    // Finaliza a sessão
-    function endSession() {
-        displayMessage("Atendimento finalizado. Até logo!", "bot-message");
-        resetSession();
-    }
-
-    // Reseta a sessão
+// Reseta a sessão
     function resetSession() {
         cpf = "";
         currentContext = "";
@@ -60,7 +39,7 @@ document.addEventListener("DOMContentLoaded", function () {
         expectingTextInput = false;
         if (inactivityTimer) clearTimeout(inactivityTimer);
         if (countdownTimer) clearInterval(countdownTimer);
-    }
+}
 
     // Exibe a mensagem no chat
     function displayMessage(content, className) {
@@ -171,23 +150,17 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Lida com a entrada de CPF
     function handleCPFInput(message) {
-        cpf = message.trim();
-
-        // Valida o CPF
-        if (cpf.length === 11 && !isNaN(cpf)) {
-            if (usersData[cpf]) {
-                displayMessage(`Como posso ajudar ${usersData[cpf].nome}?
+        cpf = message;
+        if (usersData[cpf]) {
+            displayMessage(`Como posso ajudar ${usersData[cpf].nome}?
 1 - Embarque da carga
 2 - Rota da viagem
 3 - Desembarque da carga
 4 - Pós-viagem
 5 - Canais de contato`, "bot-message");
-            } else {
-                displayMessage("CPF não encontrado. Tente novamente.", "bot-message");
-                cpf = "";
-            }
         } else {
-            displayMessage("Formato inválido. Por favor, digite um CPF válido, somente números.", "bot-message");
+            displayMessage("CPF não encontrado.", "bot-message");
+            cpf = "";
         }
     }
 
@@ -325,16 +298,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Lida com as respostas no contexto de Desembarque
     function handleDesembarqueResponses(message, user) {
-        if (lastOptionSelected === "3" && message !== "3") {
-            displayMessage("KM final registrado: " + message, "bot-message");
-            lastOptionSelected = "";
-            resetContextAfterDelay();
-            return;
-        }
-
-        lastOptionSelected = message;
-        expectingTextInput = false;
-
         const responses = {
             "1": `Local: ${user.desembarqueLocal}\nResponsável: ${user.desembarqueResponsavel}`,
             "2": "Envie a foto da carga.",
@@ -354,9 +317,9 @@ document.addEventListener("DOMContentLoaded", function () {
     // Lida com as respostas no contexto de Contato
     function handleContatoResponses(message) {
         const responses = {
-            "1": "Ligue para emergências 24h: 0800-1234-5678",
-            "2": "Entre em contato com o supervisor pelo e-mail supervisor@empresa.com",
-            "3": "Ouvidoria: ouvidoria@empresa.com"
+            "1": "Ligue para a Emergência 24h: (34) 99999-9999.",
+            "2": "Ligue para o supervisor: (34) 98888-8888.",
+            "3": "Ouvidoria: ouvidoria@empresa.com.br"
         };
 
         if (responses[message]) {
@@ -366,12 +329,15 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
-    // Resetar contexto após breve espera
+    // Reseta o contexto após uma opção
     function resetContextAfterDelay() {
-        setTimeout(() => {
+        setTimeout(function() {
             currentContext = "";
             lastOptionSelected = "";
-            expectingTextInput = false;
-        }, 3000);
+            displayMessage("Escolha uma das opções abaixo para continuar:\n1 - Embarque\n2 - Rota\n3 - Desembarque\n4 - Pós-viagem\n5 - Canais de contato", "bot-message");
+        }, 2000);
     }
+
+    // Inicia o timer de inatividade
+    startInactivityTimer();
 });
