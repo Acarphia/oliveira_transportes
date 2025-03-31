@@ -58,14 +58,19 @@ body {
     margin-right: auto;
 }
 
-/* Ajustando a exibição da imagem dentro da caixa de mensagem */
 .image-message {
     width: 100%; /* A imagem vai ocupar a largura total da caixa de mensagem */
     height: auto; /* A altura será ajustada proporcionalmente */
-    max-width: 200px; /* Limita o tamanho máximo da imagem */
+    max-width: 200px; /* Limita o tamanho da imagem */
     border-radius: 8px; /* Borda arredondada para a imagem */
     display: block; /* Garante que a imagem não fique fora da estrutura de caixa */
     margin: 0 auto; /* Centraliza a imagem dentro da caixa */
+}
+
+.image-message img {
+    width: 100%;
+    height: auto;
+    display: block;
 }
 
 .input-container {
