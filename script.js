@@ -1,3 +1,17 @@
+//Use esse modelo
+const usersData = {
+    //CPF:
+    "15347693665": {
+        nome: "Luiza",
+        tipoCarga: "Alimentos.",
+        embarqueLocal: "Uberlândia.",
+        embarqueResponsavel: "Eduarda.",
+        desembarqueLocal: "Londrina.",
+        desembarqueResponsavel: "Augusto.",
+        paradasProgramadas: "Sem paradas."
+    },
+};
+
 document.addEventListener("DOMContentLoaded", function () {
     let cpf = "";
     let chatBox = document.getElementById("chat-box");
