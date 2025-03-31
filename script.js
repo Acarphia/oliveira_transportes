@@ -1,3 +1,15 @@
+const usersData = {
+    "15347693665": {
+        nome: "Luiza",
+        tipoCarga: "Alimentos.",
+        embarqueLocal: "Uberlândia.",
+        embarqueResponsavel: "Eduarda.",
+        desembarqueLocal: "Londrina.",
+        desembarqueResponsavel: "Augusto.",
+        paradasProgramadas: "Sem paradas."
+    },
+};
+
 document.addEventListener("DOMContentLoaded", function () {
     let cpf = "";
     let chatBox = document.getElementById("chat-box");
@@ -12,7 +24,7 @@ document.addEventListener("DOMContentLoaded", function () {
     // Timer para contagem de inatividade
     let inactivityTimer = null;
     let countdownTimer = null;
-    
+
     // Inicia o contador de inatividade
     function startInactivityTimer() {
         // Se houver um timer anterior, limpa
@@ -29,9 +41,8 @@ document.addEventListener("DOMContentLoaded", function () {
     setTimeout(function () {
         displayMessage("Olá! Sou o assistente virtual da Oliveira Transportes. Digite seu CPF, somente em números.", "bot-message");
     }, 2000); // Exibe após 2 segundos
-}
 
-// Reseta a sessão
+    // Reseta a sessão
     function resetSession() {
         cpf = "";
         currentContext = "";
@@ -39,7 +50,7 @@ document.addEventListener("DOMContentLoaded", function () {
         expectingTextInput = false;
         if (inactivityTimer) clearTimeout(inactivityTimer);
         if (countdownTimer) clearInterval(countdownTimer);
-}
+    }
 
     // Exibe a mensagem no chat
     function displayMessage(content, className) {
