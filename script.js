@@ -26,8 +26,24 @@ document.addEventListener("DOMContentLoaded", function () {
         if (message !== "") {
             displayMessage(message, "user-message");
             userInput.value = "";
+            processUserMessage(message); // Adicionado para processar a mensagem
             startInactivityTimer(); // Reinicia o timer de inatividade
         }
+    }
+
+    // Processar mensagem do usuário
+    function processUserMessage(message) {
+        if (!cpf) {
+            handleCPFInput(message);
+            return;
+        }
+
+        if (!currentContext) {
+            handleMainMenu(message.toLowerCase());
+            return;
+        }
+
+        handleContextResponses(message);
     }
 
     // Botão enviar
@@ -145,20 +161,6 @@ document.addEventListener("DOMContentLoaded", function () {
             }, 1000);
         };
         reader.readAsDataURL(file);
-    }
-
-    // Processa a mensagem
-    if (!cpf) {
-        handleCPFInput(message);
-        return;
-    }
-
-    if (!currentContext) {
-        handleMainMenu(message.toLowerCase());
-        return;
-    }
-
-    handleContextResponses(message);
     }
 
     // Lida com a entrada de CPF
