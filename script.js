@@ -7,17 +7,23 @@ document.addEventListener("DOMContentLoaded", function () {
     let sendButton = document.getElementById("send-button");
     let currentContext = "";
     let lastOptionSelected = "";
+    let expectingTextInput = false;
 
     // Botão de anexo
     attachButton.addEventListener('click', function () {
         fileInput.click();
     });
 
-    // Envio de imagem
+    // Envio de imagem - agora verifica se é permitido
     fileInput.addEventListener('change', function () {
         if (fileInput.files.length > 0) {
-            sendImage(fileInput.files[0]);
-            fileInput.value = "";
+            if (expectingTextInput) {
+                displayMessage("Formato inválido. Por favor, digite a informação solicitada.", "bot-message");
+                fileInput.value = "";
+            } else {
+                sendImage(fileInput.files[0]);
+                fileInput.value = "";
+            }
         }
     });
 
@@ -76,21 +82,23 @@ document.addEventListener("DOMContentLoaded", function () {
         const message = userInput.value.trim();
         if (message === "" && !fileInput.files.length) return;
 
-        // Exibe a mensagem do usuário
-        displayMessage(message, "user-message");
-        userInput.value = "";
-
         // Lógica do chatbot
         if (!cpf) {
+            displayMessage(message, "user-message");
+            userInput.value = "";
             handleCPFInput(message);
             return;
         }
 
         if (!currentContext) {
+            displayMessage(message, "user-message");
+            userInput.value = "";
             handleMainMenu(message.toLowerCase());
             return;
         }
 
+        displayMessage(message, "user-message");
+        userInput.value = "";
         handleContextResponses(message);
     }
 
@@ -157,67 +165,126 @@ document.addEventListener("DOMContentLoaded", function () {
         } else if (currentContext === "contato") {
             handleContatoResponses(message);
         }
-        
-        // Verifica se é uma resposta a um registro solicitado
-        if (lastOptionSelected === "3" && currentContext === "embarque" && message !== "3") {
-            displayMessage("Registro fotográfico recebido.", "bot-message");
-            lastOptionSelected = "";
-        } else if (lastOptionSelected === "4" && currentContext === "embarque" && message !== "4") {
-            displayMessage("KM inicial registrado: " + message, "bot-message");
-            lastOptionSelected = "";
-        } else if (lastOptionSelected === "4" && currentContext === "rota" && message !== "4") {
-            displayMessage("Observações registradas: " + message, "bot-message");
-            lastOptionSelected = "";
-        } else if (lastOptionSelected === "2" && currentContext === "desembarque" && message !== "2") {
-            displayMessage("Registro fotográfico recebido.", "bot-message");
-            lastOptionSelected = "";
-        } else if (lastOptionSelected === "3" && currentContext === "desembarque" && message !== "3") {
-            displayMessage("KM final registrado: " + message, "bot-message");
-            lastOptionSelected = "";
-        }
-        
-        resetContextAfterDelay();
     }
 
     function handleEmbarqueResponses(message, user) {
+        // Verifica se é uma resposta a uma solicitação anterior
+        if (lastOptionSelected === "3" && message !== "3") {
+            displayMessage("Registro fotográfico recebido.", "bot-message");
+            lastOptionSelected = "";
+            resetContextAfterDelay();
+            return;
+        } else if (lastOptionSelected === "4" && message !== "4") {
+            if (!isNaN(message) && message.trim() !== "") {
+                displayMessage("KM inicial registrado: " + message, "bot-message");
+                lastOptionSelected = "";
+                resetContextAfterDelay();
+                return;
+            } else {
+                displayMessage("Formato inválido. Digite apenas números para o KM.", "bot-message");
+                return;
+            }
+        }
+
+        // Se não for resposta, trata como nova opção
         lastOptionSelected = message;
+        expectingTextInput = false;
+        
         const responses = {
             "1": `Local: ${user.embarqueLocal}\nResponsável: ${user.embarqueResponsavel}`,
             "2": `Tipo de carga: ${user.tipoCarga}`,
-            "3": "Envie a foto da carga no embarque.",
-            "4": "Registre o KM inicial."
+            "3": "Envie a foto da carga.",
+            "4": "Digite o KM inicial:"
         };
-        displayMessage(responses[message] || "Opção inválida", "bot-message");
+        
+        if (responses[message]) {
+            displayMessage(responses[message], "bot-message");
+            if (message === "4") {
+                expectingTextInput = true;
+            }
+        } else {
+            displayMessage("Opção inválida", "bot-message");
+        }
     }
 
     function handleRotaResponses(message, user) {
+        // Verifica se é uma resposta a uma solicitação anterior
+        if (lastOptionSelected === "4" && message !== "4") {
+            displayMessage("Observações registradas: " + message, "bot-message");
+            lastOptionSelected = "";
+            resetContextAfterDelay();
+            return;
+        } else if (lastOptionSelected === "5" && message !== "5") {
+            if (!isNaN(message) && message.trim() !== "") {
+                displayMessage("Custos registrados: R$ " + parseFloat(message).toFixed(2).replace('.', ','), "bot-message");
+                lastOptionSelected = "";
+                resetContextAfterDelay();
+                return;
+            } else {
+                displayMessage("Formato inválido. Digite apenas números para os custos.", "bot-message");
+                return;
+            }
+        }
+
+        // Se não for resposta, trata como nova opção
         lastOptionSelected = message;
+        expectingTextInput = false;
+        
         const responses = {
             "1": "Baixe o aplicativo Waze, disponível para Android e IOS, ou acesse o link: https://www.waze.com/pt-BR/live-map/",
             "2": `Paradas: ${user.paradasProgramadas}`,
             "3": "Baixe o aplicativo Waze, disponível para Android e IOS, ou acesse o link: https://www.waze.com/pt-BR/live-map/",
-            "4": "Registre observações.",
-            "5": "Registre os custos."
+            "4": "Digite suas observações:",
+            "5": "Digite o valor dos custos:"
         };
         
-        // Se a última opção foi 5 (custos) e a mensagem atual é um número
-        if (lastOptionSelected === "5" && !isNaN(message) && message.trim() !== "") {
-            displayMessage("Custos registrados: R$ " + parseFloat(message).toFixed(2).replace('.', ','), "bot-message");
-            lastOptionSelected = "";
-            return;
+        if (responses[message]) {
+            displayMessage(responses[message], "bot-message");
+            if (message === "4" || message === "5") {
+                expectingTextInput = true;
+            }
+        } else {
+            displayMessage("Opção inválida", "bot-message");
         }
-        
-        displayMessage(responses[message] || "Opção inválida", "bot-message");
     }
 
     function handleDesembarqueResponses(message, user) {
+        // Verifica se é uma resposta a uma solicitação anterior
+        if (lastOptionSelected === "2" && message !== "2") {
+            displayMessage("Registro fotográfico recebido.", "bot-message");
+            lastOptionSelected = "";
+            resetContextAfterDelay();
+            return;
+        } else if (lastOptionSelected === "3" && message !== "3") {
+            if (!isNaN(message) && message.trim() !== "") {
+                displayMessage("KM final registrado: " + message, "bot-message");
+                lastOptionSelected = "";
+                resetContextAfterDelay();
+                return;
+            } else {
+                displayMessage("Formato inválido. Digite apenas números para o KM.", "bot-message");
+                return;
+            }
+        }
+
+        // Se não for resposta, trata como nova opção
         lastOptionSelected = message;
+        expectingTextInput = false;
+        
         const responses = {
             "1": `Local: ${user.desembarqueLocal}\nResponsável: ${user.desembarqueResponsavel}`,
-            "2": "Envie a foto da carga no desembarque.",
-            "3": "Registre o KM final."
+            "2": "Envie a foto no desembarque.",
+            "3": "Digite o KM final:"
         };
-        displayMessage(responses[message] || "Opção inválida", "bot-message");
+        
+        if (responses[message]) {
+            displayMessage(responses[message], "bot-message");
+            if (message === "3") {
+                expectingTextInput = true;
+            }
+        } else {
+            displayMessage("Opção inválida", "bot-message");
+        }
     }
 
     function handleContatoResponses(message) {
@@ -226,7 +293,13 @@ document.addEventListener("DOMContentLoaded", function () {
             "2": "Supervisor: Otávio - (34) 99894-2493",
             "3": "Ouvidoria: ouvidoria@oliveiratransportes.com"
         };
-        displayMessage(responses[message] || "Opção inválida", "bot-message");
+        
+        if (responses[message]) {
+            displayMessage(responses[message], "bot-message");
+            resetContextAfterDelay();
+        } else {
+            displayMessage("Opção inválida", "bot-message");
+        }
     }
 
     function resetContextAfterDelay() {
@@ -254,6 +327,9 @@ document.addEventListener("DOMContentLoaded", function () {
         }
         
         chatBox.appendChild(messageDiv);
+        chatBox.scrollTop = chatBox.scrollHeight;
+    }
+});
         chatBox.scrollTop = chatBox.scrollHeight;
     }
 });
