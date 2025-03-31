@@ -18,8 +18,8 @@ body {
     width: 100%;
     max-width: 400px;
     background-color: white;
-    border-radius: 12px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    border-radius: 20px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
     overflow: hidden;
     display: flex;
     flex-direction: column;
@@ -32,39 +32,42 @@ body {
     overflow-y: auto;
     display: flex;
     flex-direction: column;
-    gap: 12px;
-    background-color: #f9f9f9;
+    gap: 10px;
+    background-color: #e5ddd5;
 }
 
 .message {
-    max-width: 70%; /* Limite a largura da mensagem */
-    margin: 10px 0;
-    padding: 10px;
-    background-color: #f1f1f1;
-    border-radius: 10px;
+    max-width: 75%; /* Limita a largura da mensagem */
+    padding: 12px;
+    background-color: #dcf8c6; /* Cor de fundo similar ao WhatsApp */
+    border-radius: 18px;
     display: inline-block;
     word-wrap: break-word;
+    line-height: 1.4;
+    position: relative;
+    font-size: 14px;
 }
 
 .bot-message {
-    background-color: #d1f1f9; /* Cor de fundo para a mensagem do bot */
+    background-color: #d1f1f9; /* Cor para a mensagem do bot */
     margin-left: auto;
     margin-right: 10px;
 }
 
 .user-message {
-    background-color: #e1f7d5; /* Cor de fundo para a mensagem do usuário */
+    background-color: #dcf8c6; /* Cor para a mensagem do usuário */
     margin-left: 10px;
     margin-right: auto;
+    border-radius: 18px;
 }
 
 .image-message {
-    width: 100%; /* A imagem vai ocupar a largura total da caixa de mensagem */
-    height: auto; /* A altura será ajustada proporcionalmente */
-    max-width: 200px; /* Limita o tamanho da imagem */
-    border-radius: 8px; /* Borda arredondada para a imagem */
-    display: block; /* Garante que a imagem não fique fora da estrutura de caixa */
-    margin: 0 auto; /* Centraliza a imagem dentro da caixa */
+    width: 100%;
+    height: auto;
+    max-width: 180px; /* Limita o tamanho da imagem */
+    border-radius: 8px;
+    display: block;
+    margin: 0 auto;
 }
 
 .image-message img {
@@ -75,11 +78,12 @@ body {
 
 .input-container {
     display: flex;
-    padding: 12px;
+    padding: 10px;
     background-color: #fff;
     border-top: 1px solid #eee;
-    gap: 8px;
+    gap: 10px;
     align-items: center;
+    border-radius: 10px;
 }
 
 #user-input {
@@ -97,7 +101,7 @@ body {
 }
 
 .attach-btn {
-    background-color: #4CAF50;
+    background-color: #25D366;
     color: white;
     border: none;
     border-radius: 50%;
@@ -112,11 +116,11 @@ body {
 }
 
 .attach-btn:hover {
-    background-color: #43a047;
+    background-color: #128C7E;
 }
 
 #send-button {
-    background-color: #4CAF50;
+    background-color: #25D366;
     color: white;
     border: none;
     border-radius: 24px;
@@ -127,7 +131,7 @@ body {
 }
 
 #send-button:hover {
-    background-color: #43a047;
+    background-color: #128C7E;
 }
 
 #file-input {
