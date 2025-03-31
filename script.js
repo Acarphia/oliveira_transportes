@@ -1,13 +1,13 @@
 const usersData = {
     "15347693665": {
-        nome: "Luiza",
-        tipoCarga: "Alimentos.",
-        embarqueLocal: "Uberlândia.",
-        embarqueResponsavel: "Eduarda.",
-        desembarqueLocal: "Londrina.",
-        desembarqueResponsavel: "Augusto.",
-        paradasProgramadas: "Sem paradas."
-    },
+        "nome": "Luiza",
+        "tipoCarga": "Alimentos.",
+        "embarqueLocal": "Uberlândia.",
+        "embarqueResponsavel": "Eduarda.",
+        "desembarqueLocal": "Londrina.",
+        "desembarqueResponsavel": "Augusto.",
+        "paradasProgramadas": "Sem paradas."
+    }
 };
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -21,7 +21,25 @@ document.addEventListener("DOMContentLoaded", function () {
     let lastOptionSelected = "";
     let expectingTextInput = false;
 
-  // Função básica para enviar mensagem
+    // Exibe a mensagem inicial
+    displayMessage("Olá! Sou o assistente virtual da Oliveira Transportes. Digite seu CPF, somente em números.", "bot-message");
+
+    // Função para processar mensagens do usuário
+    function processUserMessage(message) {
+        if (!cpf) {
+            handleCPFInput(message);
+            return;
+        }
+
+        if (!currentContext) {
+            handleMainMenu(message);
+            return;
+        }
+
+        handleContextResponses(message);
+    }
+
+    // Função básica para enviar mensagem
     function sendMessage() {
         const message = userInput.value.trim();
         if (message === "") return;
@@ -45,24 +63,15 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Timer para contagem de inatividade
     let inactivityTimer = null;
-    let countdownTimer = null;
     
     // Inicia o contador de inatividade
     function startInactivityTimer() {
-        // Se houver um timer anterior, limpa
         if (inactivityTimer) clearTimeout(inactivityTimer);
-        
-        // Inicia o timer de inatividade
         inactivityTimer = setTimeout(function() {
             resetSession();
             displayMessage("Escolha uma das opções abaixo para continuar:\n1 - Embarque\n2 - Rota\n3 - Desembarque\n4 - Pós-viagem\n5 - Canais de contato", "bot-message");
-        }, 30000); // 30 segundos de inatividade
+        }, 30000);
     }
-
-    // Exibe a mensagem inicial novamente
-    setTimeout(function () {
-        displayMessage("Olá! Sou o assistente virtual da Oliveira Transportes. Digite seu CPF, somente em números.", "bot-message");
-    }, 2000); // Exibe após 2 segundos
 
     // Reseta a sessão
     function resetSession() {
@@ -71,47 +80,17 @@ document.addEventListener("DOMContentLoaded", function () {
         lastOptionSelected = "";
         expectingTextInput = false;
         if (inactivityTimer) clearTimeout(inactivityTimer);
-        if (countdownTimer) clearInterval(countdownTimer);
     }
 
     // Exibe a mensagem no chat
     function displayMessage(content, className) {
         const messageDiv = document.createElement("div");
         messageDiv.classList.add("message", className);
-
-        if (typeof content === 'string') {
-            messageDiv.innerHTML = content.replace(/\n/g, "<br>");
-        } else if (content instanceof HTMLElement) {
-            messageDiv.appendChild(content);
-        }
-
+        messageDiv.innerHTML = content.replace(/\n/g, "<br>");
         chatBox.appendChild(messageDiv);
         chatBox.scrollTop = chatBox.scrollHeight;
+        startInactivityTimer(); // Reinicia o timer a cada mensagem
     }
-
-    // Botão de anexo
-    attachButton.addEventListener('click', function () {
-        fileInput.click();
-    });
-
-    // Envio de imagem
-    fileInput.addEventListener('change', function () {
-        if (fileInput.files.length > 0) {
-            if (!cpf) {
-                displayMessage("Formato inválido. Por favor, digite seu CPF, somente números.", "bot-message");
-                fileInput.value = "";
-                return;
-            }
-
-            if (expectingTextInput) {
-                displayMessage("Formato inválido. Por favor, digite a informação solicitada.", "bot-message");
-                fileInput.value = "";
-            } else {
-                sendImage(fileInput.files[0]);
-                fileInput.value = "";
-            }
-        }
-    });
 
     function sendImage(file) {
         const reader = new FileReader();
@@ -314,7 +293,7 @@ document.addEventListener("DOMContentLoaded", function () {
     // Lida com as respostas no contexto de Contato
     function handleContatoResponses(message) {
         const responses = {
-            "1": "Ligue para a Emergência 24h:/n164/nSOS Estradas:/n0800 055 5510 para o DER-SP/n0800 773 6699 para a CCR RodoAnel/n0800 77 01 101 para a EcoRodovias/n0800 000 0290 para a CCR ViaSul/n0800 055 9696 para o Sistema de Ajuda ao Usuário (SAU) das Renovias",
+            "1": "Ligue para a Emergência 24h:/n192/nSOS Estradas:/n0800 055 5510 para o DER-SP/n0800 773 6699 para a CCR RodoAnel/n0800 77 01 101 para a EcoRodovias/n0800 000 0290 para a CCR ViaSul/n0800 055 9696 para o Sistema de Ajuda ao Usuário (SAU) das Renovias.",
             "2": "Ligue para o supervisor Otávio: (34) 9 9894 2493.",
             "3": "Ouvidoria: ouvidoria@empresa.com.br"
         };
@@ -332,6 +311,6 @@ document.addEventListener("DOMContentLoaded", function () {
             currentContext = "";
             lastOptionSelected = "";
             expectingTextInput = false;
-        }, 2000); // tempo de delay para reset
+        }, 2000);
     }
 });
