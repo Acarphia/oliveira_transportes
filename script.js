@@ -33,12 +33,15 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Correção para enviar mensagem ao clicar no botão
     sendButton.addEventListener('click', function() {
+        console.log('Botão Enviar clicado');
         sendMessage();
     });
 
     // Correção para enviar mensagem ao pressionar Enter
     userInput.addEventListener('keydown', function (e) {
         if (e.key === 'Enter' && !e.shiftKey) {
+            console.log('Enter pressionado');
+            e.preventDefault(); // Impede que uma nova linha seja adicionada
             sendMessage();
         }
     });
