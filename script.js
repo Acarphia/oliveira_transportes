@@ -9,7 +9,6 @@ document.addEventListener("DOMContentLoaded", function () {
     let lastOptionSelected = "";
     let expectingTextInput = false;
 
-    // Função para exibir mensagens
     function displayMessage(content, className) {
         const messageDiv = document.createElement("div");
         messageDiv.classList.add("message", className);
@@ -32,6 +31,12 @@ document.addEventListener("DOMContentLoaded", function () {
     // Envio de imagem
     fileInput.addEventListener('change', function () {
         if (fileInput.files.length > 0) {
+            if (!cpf) {
+                displayMessage("Formato inválido. Por favor, primeiro digite seu CPF (apenas números).", "bot-message");
+                fileInput.value = "";
+                return;
+            }
+            
             if (expectingTextInput) {
                 displayMessage("Formato inválido. Por favor, digite a informação solicitada.", "bot-message");
                 fileInput.value = "";
@@ -62,7 +67,6 @@ document.addEventListener("DOMContentLoaded", function () {
             
             setTimeout(() => {
                 displayMessage("Foto enviada.", "bot-message");
-                // Verifica se está esperando uma foto específica
                 if (lastOptionSelected === "3" && currentContext === "embarque") {
                     lastOptionSelected = "";
                     resetContextAfterDelay();
