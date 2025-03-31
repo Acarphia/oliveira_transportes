@@ -20,27 +20,31 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 
-    // Função para enviar imagem (CORRIGIDA)
-    function sendImage(file) {
-        const reader = new FileReader();
-        reader.onloadend = function () {
-            const messageDiv = document.createElement('div');
-            messageDiv.classList.add('message', 'user-message');
-            
-            const imgContainer = document.createElement('div');
-            imgContainer.classList.add('image-container');
-            
-            const img = document.createElement('img');
-            img.src = reader.result;
-            img.classList.add('image-message');
-            
-            imgContainer.appendChild(img);
-            messageDiv.appendChild(imgContainer);
-            chatBox.appendChild(messageDiv);
-            chatBox.scrollTop = chatBox.scrollHeight;
-        };
-        reader.readAsDataURL(file);
-    }
+  function sendImage(file) {
+    const reader = new FileReader();
+    reader.onloadend = function() {
+        // 1. Cria a div principal da mensagem do USUÁRIO
+        const messageDiv = document.createElement('div');
+        messageDiv.classList.add('message', 'user-message');
+        
+        // 2. Cria o container da imagem (com fundo verde)
+        const imgContainer = document.createElement('div');
+        imgContainer.classList.add('image-container');
+        
+        // 3. Cria a imagem
+        const img = document.createElement('img');
+        img.src = reader.result;
+        
+        // 4. Monta a hierarquia CORRETA:
+        imgContainer.appendChild(img);    // Imagem dentro do container
+        messageDiv.appendChild(imgContainer); // Container dentro da mensagem
+        chatBox.appendChild(messageDiv); // Mensagem dentro do chat
+        
+        // 5. Rolagem automática
+        chatBox.scrollTop = chatBox.scrollHeight;
+    };
+    reader.readAsDataURL(file);
+}
 
     // Botão enviar
     sendButton.addEventListener('click', function() {
