@@ -9,6 +9,21 @@ document.addEventListener("DOMContentLoaded", function () {
     let lastOptionSelected = "";
     let expectingTextInput = false;
 
+    // Função para exibir mensagens
+    function displayMessage(content, className) {
+        const messageDiv = document.createElement("div");
+        messageDiv.classList.add("message", className);
+        
+        if (typeof content === 'string') {
+            messageDiv.innerHTML = content.replace(/\n/g, "<br>");
+        } else if (content instanceof HTMLElement) {
+            messageDiv.appendChild(content);
+        }
+        
+        chatBox.appendChild(messageDiv);
+        chatBox.scrollTop = chatBox.scrollHeight;
+    }
+
     // Botão de anexo
     attachButton.addEventListener('click', function () {
         fileInput.click();
@@ -47,6 +62,14 @@ document.addEventListener("DOMContentLoaded", function () {
             
             setTimeout(() => {
                 displayMessage("Foto enviada.", "bot-message");
+                // Verifica se está esperando uma foto específica
+                if (lastOptionSelected === "3" && currentContext === "embarque") {
+                    lastOptionSelected = "";
+                    resetContextAfterDelay();
+                } else if (lastOptionSelected === "2" && currentContext === "desembarque") {
+                    lastOptionSelected = "";
+                    resetContextAfterDelay();
+                }
             }, 1000);
         };
         reader.readAsDataURL(file);
@@ -86,8 +109,7 @@ document.addEventListener("DOMContentLoaded", function () {
             sendMessage(message);
         }
     });
-});
-    
+
     function handleCPFInput(message) {
         cpf = message;
         if (usersData[cpf]) {
@@ -275,8 +297,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
     function handleContatoResponses(message) {
         const responses = {
-            "1": "Emergências 24h: 192\nSOS Estradas: 0800 055 5510",
-            "2": "Supervisor: Otávio - (34) 99894-2493",
+            "1": "Emergências 24h: 192\nSOS Estradas: 0800 055 5510 para o DER-SP\n0800 773 6699 para a CCR RodoAnel\n0800 77 01 101 para a EcoRodovias\n0800 000 0290 para a CCR ViaSul\n0800 055 9696 para o Sistema de Ajuda ao Usuário (SAU) das Renovias",
+            "2": "Supervisor Otávio: (34) 99894-2493",
             "3": "Ouvidoria: ouvidoria@oliveiratransportes.com"
         };
         
@@ -300,22 +322,5 @@ document.addEventListener("DOMContentLoaded", function () {
 5 - Canais`, "bot-message");
             }
         }, 10000);
-    }
-
-    function displayMessage(content, className) {
-        const messageDiv = document.createElement("div");
-        messageDiv.classList.add("message", className);
-        
-        if (typeof content === 'string') {
-            messageDiv.innerHTML = content.replace(/\n/g, "<br>");
-        } else if (content instanceof HTMLElement) {
-            messageDiv.appendChild(content);
-        }
-        
-        chatBox.appendChild(messageDiv);
-        chatBox.scrollTop = chatBox.scrollHeight;
-    }
-});
-        chatBox.scrollTop = chatBox.scrollHeight;
     }
 });
