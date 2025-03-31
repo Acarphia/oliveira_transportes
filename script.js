@@ -1,6 +1,4 @@
-// Use esse mesmo modelo!
 const usersData = {
-    //CPF:
     "15347693665": {
         nome: "Luiza",
         tipoCarga: "Alimentos.",
@@ -22,6 +20,47 @@ document.addEventListener("DOMContentLoaded", function () {
     let currentContext = "";
     let lastOptionSelected = "";
     let expectingTextInput = false;
+
+    // Timer para contagem de inatividade
+    let inactivityTimer = null;
+    let countdownTimer = null;
+    
+    // Inicia o contador de inatividade
+    function startInactivityTimer() {
+        if (inactivityTimer) clearTimeout(inactivityTimer);
+        inactivityTimer = setTimeout(function() {
+            startCountdown();
+        }, 180000); // 1 minuto de inatividade
+    }
+
+    // Inicia a contagem regressiva
+    function startCountdown() {
+        let countdown = 10;
+        countdownTimer = setInterval(function() {
+            displayMessage(`Atendimento será finalizado em ${countdown} segundos.`, "bot-message");
+            countdown--;
+            if (countdown < 0) {
+                clearInterval(countdownTimer);
+                endSession();
+            }
+        }, 1000);
+    }
+
+    // Finaliza a sessão
+    function endSession() {
+        displayMessage("Atendimento finalizado. Até logo!", "bot-message");
+        resetSession();
+    }
+
+    // Reseta a sessão
+    function resetSession() {
+        cpf = "";
+        currentContext = "";
+        lastOptionSelected = "";
+        expectingTextInput = false;
+        if (inactivityTimer) clearTimeout(inactivityTimer);
+        if (countdownTimer) clearInterval(countdownTimer);
+    }
 
     // Exibe a mensagem no chat
     function displayMessage(content, className) {
@@ -132,17 +171,23 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Lida com a entrada de CPF
     function handleCPFInput(message) {
-        cpf = message;
-        if (usersData[cpf]) {
-            displayMessage(`Como posso ajudar ${usersData[cpf].nome}?
+        cpf = message.trim();
+
+        // Valida o CPF
+        if (cpf.length === 11 && !isNaN(cpf)) {
+            if (usersData[cpf]) {
+                displayMessage(`Como posso ajudar ${usersData[cpf].nome}?
 1 - Embarque da carga
 2 - Rota da viagem
 3 - Desembarque da carga
 4 - Pós-viagem
 5 - Canais de contato`, "bot-message");
+            } else {
+                displayMessage("CPF não encontrado. Tente novamente.", "bot-message");
+                cpf = "";
+            }
         } else {
-            displayMessage("CPF não encontrado.", "bot-message");
-            cpf = "";
+            displayMessage("Formato inválido. Por favor, digite um CPF válido, somente números.", "bot-message");
         }
     }
 
@@ -280,21 +325,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Lida com as respostas no contexto de Desembarque
     function handleDesembarqueResponses(message, user) {
-        if (lastOptionSelected === "2" && message !== "2") {
-            displayMessage("Registro fotográfico recebido.", "bot-message");
+        if (lastOptionSelected === "3" && message !== "3") {
+            displayMessage("KM final registrado: " + message, "bot-message");
             lastOptionSelected = "";
             resetContextAfterDelay();
             return;
-        } else if (lastOptionSelected === "3" && message !== "3") {
-            if (!isNaN(message) && message.trim() !== "") {
-                displayMessage("KM final registrado: " + message, "bot-message");
-                lastOptionSelected = "";
-                resetContextAfterDelay();
-                return;
-            } else {
-                displayMessage("Formato inválido. Digite apenas números para o KM.", "bot-message");
-                return;
-            }
         }
 
         lastOptionSelected = message;
@@ -302,7 +337,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         const responses = {
             "1": `Local: ${user.desembarqueLocal}\nResponsável: ${user.desembarqueResponsavel}`,
-            "2": "Envie a foto no desembarque.",
+            "2": "Envie a foto da carga.",
             "3": "Digite o KM final:"
         };
 
@@ -319,31 +354,24 @@ document.addEventListener("DOMContentLoaded", function () {
     // Lida com as respostas no contexto de Contato
     function handleContatoResponses(message) {
         const responses = {
-            "1": "Emergências 24h: 192\nSOS Estradas: 0800 055 5510 para o DER-SP\n0800 773 6699 para a CCR RodoAnel\n0800 77 01 101 para a EcoRodovias\n0800 000 0290 para a CCR ViaSul\n0800 055 9696 para o Sistema de Ajuda ao Usuário (SAU) das Renovias",
-            "2": "Supervisor Otávio: (34) 99894-2493",
-            "3": "Ouvidoria: ouvidoria@oliveiratransportes.com"
+            "1": "Ligue para emergências 24h: 0800-1234-5678",
+            "2": "Entre em contato com o supervisor pelo e-mail supervisor@empresa.com",
+            "3": "Ouvidoria: ouvidoria@empresa.com"
         };
 
         if (responses[message]) {
             displayMessage(responses[message], "bot-message");
-            resetContextAfterDelay();
         } else {
             displayMessage("Opção inválida.", "bot-message");
         }
     }
 
-    // Restaura o contexto após um tempo
+    // Resetar contexto após breve espera
     function resetContextAfterDelay() {
         setTimeout(() => {
-            if (currentContext && !lastOptionSelected) {
-                currentContext = "";
-                displayMessage(`Escolha outra categoria:
-1 - Embarque
-2 - Rota
-3 - Desembarque
-4 - Pós-viagem
-5 - Canais`, "bot-message");
-            }
-        }, 10000);
+            currentContext = "";
+            lastOptionSelected = "";
+            expectingTextInput = false;
+        }, 3000);
     }
 });
