@@ -7,17 +7,37 @@ document.addEventListener("DOMContentLoaded", function () {
     let sendButton = document.getElementById("send-button");
     let currentContext = ""; // Armazena a última escolha principal
 
-    attachButton.addEventListener('click', function () {
-        fileInput.click();
-    });
+   attachButton.addEventListener('click', function () {
+    fileInput.click();
+});
 
-    sendButton.addEventListener('click', sendMessage);
+fileInput.addEventListener('change', function () {
+    if (fileInput.files.length > 0) {
+        sendImage(fileInput.files[0]);
+        fileInput.value = ""; // Resetar input após o envio
+    }
+});
 
-    userInput.addEventListener('keydown', function (e) {
-        if (e.key === 'Enter') {
-            sendMessage();
-        }
-    });
+function sendImage(file) {
+    const reader = new FileReader();
+    reader.onloadend = function () {
+        const img = document.createElement('img');
+        img.src = reader.result;
+        img.style.width = '200px';
+        img.classList.add("image-message");
+        chatBox.appendChild(img);
+        chatBox.scrollTop = chatBox.scrollHeight;
+    };
+    reader.readAsDataURL(file);
+}
+
+sendButton.addEventListener('click', sendMessage);
+
+userInput.addEventListener('keydown', function (e) {
+    if (e.key === 'Enter') {
+        sendMessage();
+    }
+});
 
     const usersData = {
         "15347693665": {
