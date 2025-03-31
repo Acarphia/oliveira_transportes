@@ -27,7 +27,9 @@ document.addEventListener("DOMContentLoaded", function () {
     function sendMessage(message) {
         if (message !== "") {
             displayMessage(message, "user-message");
-            userInput.value = "";
+            userInput.value = ""; // Limpa o campo de texto após o envio
+        }
+    }
 
     // Botão enviar
     sendButton.addEventListener('click', function() {
@@ -47,12 +49,12 @@ document.addEventListener("DOMContentLoaded", function () {
     // Timer para contagem de inatividade
     let inactivityTimer = null;
     let countdownTimer = null;
-    
+
     // Inicia o contador de inatividade
     function startInactivityTimer() {
         // Se houver um timer anterior, limpa
         if (inactivityTimer) clearTimeout(inactivityTimer);
-        
+
         // Inicia o timer de inatividade
         inactivityTimer = setTimeout(function() {
             resetSession();
@@ -145,21 +147,20 @@ document.addEventListener("DOMContentLoaded", function () {
         };
         reader.readAsDataURL(file);
     }
-    
-            // Processa a mensagem
-            if (!cpf) {
-                handleCPFInput(message);
-                return;
-            }
 
-            if (!currentContext) {
-                handleMainMenu(message.toLowerCase());
-                return;
-            }
-
-            handleContextResponses(message);
-        }
+    // Processa a mensagem
+    if (!cpf) {
+        handleCPFInput(message);
+        return;
     }
+
+    if (!currentContext) {
+        handleMainMenu(message.toLowerCase());
+        return;
+    }
+
+    handleContextResponses(message);
+});
 
     // Lida com a entrada de CPF
     function handleCPFInput(message) {
