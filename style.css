@@ -64,21 +64,26 @@ body {
     align-self: flex-end;
 }
 
-/* Container de imagens - específico para usuário */
+/* Container de mensagem com imagem - ESSENCIAL */
 .user-message .image-container {
-    max-width: 200px;
-    background-color: #dcf8c6;
+    background-color: #dcf8c6; /* Verde do WhatsApp */
     padding: 8px;
     border-radius: 18px 18px 0 18px;
-    margin-left: auto;
+    max-width: 200px;
+    margin-left: auto; /* Alinha à direita */
     margin-right: 0;
 }
 
-/* Imagens em si */
+/* Imagem dentro do container - ESSENCIAL */
 .user-message .image-container img {
     width: 100%;
     border-radius: 8px;
     display: block;
+}
+
+/* Remove estilos conflitantes */
+.image-message {
+    /* Se esta classe existir, deixe vazia ou remova */
 }
 
 /* Input area */
