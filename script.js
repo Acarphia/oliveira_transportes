@@ -88,7 +88,7 @@ document.addEventListener("DOMContentLoaded", function () {
         inactivityTimer = setTimeout(function() {
             resetSession();
             displayMessage("Escolha uma das opções abaixo para continuar:\n1 - Embarque\n2 - Rota\n3 - Desembarque\n4 - Pós-viagem\n5 - Canais de contato", "bot-message");
-        }, 15000);
+        }, 10000);
     }
 
     // Reseta a sessão
