@@ -1,4 +1,6 @@
+//Use esse modelo
 const usersData = {
+    //CPF:
     "15347693665": {
         nome: "Luiza",
         tipoCarga: "Alimentos.",
@@ -24,7 +26,7 @@ document.addEventListener("DOMContentLoaded", function () {
     // Timer para contagem de inatividade
     let inactivityTimer = null;
     let countdownTimer = null;
-
+    
     // Inicia o contador de inatividade
     function startInactivityTimer() {
         // Se houver um timer anterior, limpa
