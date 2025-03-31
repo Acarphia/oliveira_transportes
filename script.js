@@ -1,4 +1,4 @@
- document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener("DOMContentLoaded", function () {
     // Evitar inicialização múltipla
     if (window.chatInitialized) return;
     window.chatInitialized = true;
@@ -40,7 +40,7 @@
         handleContextResponses(message);
     }
 
-    // Função básica para enviar mensagem (corrigida)
+    // Função básica para enviar mensagem
     function sendMessage() {
         const message = userInput.value.trim();
         if (message === "") return;
@@ -79,25 +79,12 @@
         });
     }
 
-    // Timer para contagem de inatividade
-    let inactivityTimer = null;
-    
-    // Inicia o contador de inatividade
-    function startInactivityTimer() {
-        if (inactivityTimer) clearTimeout(inactivityTimer);
-        inactivityTimer = setTimeout(function() {
-            resetSession();
-            displayMessage("Escolha uma das opções abaixo para continuar:\n1 - Embarque\n2 - Rota\n3 - Desembarque\n4 - Pós-viagem\n5 - Canais de contato", "bot-message");
-        }, 10000);
-    }
-
     // Reseta a sessão
     function resetSession() {
         cpf = "";
         currentContext = "";
         lastOptionSelected = "";
         expectingTextInput = false;
-        if (inactivityTimer) clearTimeout(inactivityTimer);
     }
 
     // Exibe a mensagem no chat
@@ -107,7 +94,6 @@
         messageDiv.innerHTML = content.replace(/\n/g, "<br>");
         chatBox.appendChild(messageDiv);
         chatBox.scrollTop = chatBox.scrollHeight;
-        startInactivityTimer(); // Reinicia o timer a cada mensagem
     }
 
     function sendImage(file) {
@@ -132,10 +118,10 @@
                 displayMessage("Foto enviada.", "bot-message");
                 if (lastOptionSelected === "3" && currentContext === "embarque") {
                     lastOptionSelected = "";
-                    resetContextAfterDelay();
+                    displayMenuAfterAction();
                 } else if (lastOptionSelected === "2" && currentContext === "desembarque") {
                     lastOptionSelected = "";
-                    resetContextAfterDelay();
+                    displayMenuAfterAction();
                 }
             }, 1000);
         };
@@ -201,10 +187,10 @@
     // Exibe o menu de opções baseado no contexto
     function displayMenu(menuType) {
         const menus = {
-            embarque: "Escolha uma opção do Embarque:\n1 - Local e responsável\n2 - Tipo de carga\n3 - Registro fotográfico\n4 - KM inicial",
-            rota: "Escolha uma opção da Rota:\n1 - Melhor caminho\n2 - Paradas programadas\n3 - Viagem no GPS\n4 - Observações\n5 - Custos",
-            desembarque: "Escolha uma opção do Desembarque:\n1 - Local e responsável\n2 - Registro fotográfico\n3 - KM final",
-            contato: "Escolha um canal:\n1 - Emergências 24h\n2 - Supervisor\n3 - Ouvidoria"
+            embarque: "Escolha uma opção do Embarque:\n1 - Local e responsável\n2 - Tipo de carga\n3 - Registro fotográfico\n4 - KM inicial\n0 - Voltar ao menu principal",
+            rota: "Escolha uma opção da Rota:\n1 - Melhor caminho\n2 - Paradas programadas\n3 - Viagem no GPS\n4 - Observações\n5 - Custos\n0 - Voltar ao menu principal",
+            desembarque: "Escolha uma opção do Desembarque:\n1 - Local e responsável\n2 - Registro fotográfico\n3 - KM final\n0 - Voltar ao menu principal",
+            contato: "Escolha um canal:\n1 - Emergências 24h\n2 - Supervisor\n3 - Ouvidoria\n0 - Voltar ao menu principal"
         };
         displayMessage(menus[menuType], "bot-message");
     }
@@ -212,6 +198,12 @@
     // Lida com as respostas do usuário conforme o contexto
     function handleContextResponses(message) {
         const user = usersData[cpf];
+
+        // Verificar se o usuário quer voltar ao menu principal
+        if (message === "0") {
+            displayMainMenu();
+            return;
+        }
 
         if (currentContext === "embarque") {
             handleEmbarqueResponses(message, user);
@@ -224,18 +216,42 @@
         }
     }
 
+    // Exibe o menu principal
+    function displayMainMenu() {
+        currentContext = "";
+        lastOptionSelected = "";
+        expectingTextInput = false;
+        
+        const user = usersData[cpf];
+        displayMessage(`Como posso ajudar ${user.nome}?
+1 - Embarque da carga
+2 - Rota da viagem
+3 - Desembarque da carga
+4 - Pós-viagem
+5 - Canais de contato`, "bot-message");
+    }
+
+    // Exibe o menu atual após uma ação completada
+    function displayMenuAfterAction() {
+        if (currentContext) {
+            displayMenu(currentContext);
+        } else {
+            displayMainMenu();
+        }
+    }
+
     // Lida com as respostas no contexto de Embarque
     function handleEmbarqueResponses(message, user) {
         if (lastOptionSelected === "3" && message !== "3") {
             displayMessage("Registro fotográfico recebido.", "bot-message");
             lastOptionSelected = "";
-            resetContextAfterDelay();
+            displayMenuAfterAction();
             return;
         } else if (lastOptionSelected === "4" && message !== "4") {
             if (!isNaN(message) && message.trim() !== "") {
                 displayMessage("KM inicial registrado: " + message, "bot-message");
                 lastOptionSelected = "";
-                resetContextAfterDelay();
+                displayMenuAfterAction();
                 return;
             } else {
                 displayMessage("Formato inválido. Digite apenas números para o KM.", "bot-message");
@@ -257,9 +273,13 @@
             displayMessage(responses[message], "bot-message");
             if (message === "4") {
                 expectingTextInput = true;
+            } else if (message === "1" || message === "2") {
+                // Para opções que só mostram informação, voltar ao menu após exibir
+                setTimeout(() => displayMenuAfterAction(), 1000);
             }
         } else {
             displayMessage("Opção inválida.", "bot-message");
+            displayMenuAfterAction();
         }
     }
 
@@ -268,13 +288,13 @@
         if (lastOptionSelected === "4" && message !== "4") {
             displayMessage("Observações registradas: " + message, "bot-message");
             lastOptionSelected = "";
-            resetContextAfterDelay();
+            displayMenuAfterAction();
             return;
         } else if (lastOptionSelected === "5" && message !== "5") {
             if (!isNaN(message) && message.trim() !== "") {
                 displayMessage("Custos registrados: R$ " + parseFloat(message).toFixed(2).replace('.', ','), "bot-message");
                 lastOptionSelected = "";
-                resetContextAfterDelay();
+                displayMenuAfterAction();
                 return;
             } else {
                 displayMessage("Formato inválido. Digite apenas números para os custos.", "bot-message");
@@ -297,9 +317,13 @@
             displayMessage(responses[message], "bot-message");
             if (message === "4" || message === "5") {
                 expectingTextInput = true;
+            } else if (message === "1" || message === "2" || message === "3") {
+                // Para opções que só mostram informação, voltar ao menu após exibir
+                setTimeout(() => displayMenuAfterAction(), 1000);
             }
         } else {
             displayMessage("Opção inválida.", "bot-message");
+            displayMenuAfterAction();
         }
     }
 
@@ -309,7 +333,7 @@
             if (!isNaN(message) && message.trim() !== "") {
                 displayMessage("KM final registrado: " + message, "bot-message");
                 lastOptionSelected = "";
-                resetContextAfterDelay();
+                displayMenuAfterAction();
                 return;
             } else {
                 displayMessage("Formato inválido. Digite apenas números para o KM.", "bot-message");
@@ -330,9 +354,13 @@
             displayMessage(responses[message], "bot-message");
             if (message === "3") {
                 expectingTextInput = true;
+            } else if (message === "1") {
+                // Para opções que só mostram informação, voltar ao menu após exibir
+                setTimeout(() => displayMenuAfterAction(), 1000);
             }
         } else {
             displayMessage("Opção inválida.", "bot-message");
+            displayMenuAfterAction();
         }
     }
 
@@ -346,17 +374,11 @@
 
         if (responses[message]) {
             displayMessage(responses[message], "bot-message");
+            // Para contatos, sempre voltar ao menu após exibir
+            setTimeout(() => displayMenuAfterAction(), 2000);
         } else {
             displayMessage("Opção inválida.", "bot-message");
+            displayMenuAfterAction();
         }
-    }
-
-    // Reseta o contexto após uma opção
-    function resetContextAfterDelay() {
-        setTimeout(function() {
-            currentContext = "";
-            lastOptionSelected = "";
-            expectingTextInput = false;
-        }, 2000);
     }
 });
