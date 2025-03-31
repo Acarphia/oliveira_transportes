@@ -19,26 +19,18 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     function sendImage(file) {
-    const reader = new FileReader();
-    reader.onloadend = function () {
-        const img = document.createElement('img');
-        img.src = reader.result;
-        img.classList.add("image-message");
+        const reader = new FileReader();
+        reader.onloadend = function () {
+            const img = document.createElement('img');
+            img.src = reader.result;
+            img.style.width = '200px';
+            img.classList.add("image-message");
+            chatBox.appendChild(img);
+            chatBox.scrollTop = chatBox.scrollHeight;
+        };
+        reader.readAsDataURL(file);
+    }
 
-        // Criar a estrutura da mensagem
-        const messageDiv = document.createElement('div');
-        messageDiv.classList.add("message", "user-message");
-
-        // Adicionar a imagem à mensagem
-        messageDiv.appendChild(img);
-
-        // Adicionar a mensagem ao chat
-        chatBox.appendChild(messageDiv);
-        chatBox.scrollTop = chatBox.scrollHeight;
-    };
-    reader.readAsDataURL(file);
-}
-    
     // Correção para enviar mensagem ao clicar no botão
     sendButton.addEventListener('click', function() {
         console.log('Botão Enviar clicado');
