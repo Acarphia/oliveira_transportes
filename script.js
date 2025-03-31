@@ -3,7 +3,7 @@ document.addEventListener("DOMContentLoaded", function () {
     let chatBox = document.getElementById("chat-box");
     let userInput = document.getElementById("user-input");
     let fileInput = document.getElementById("file-input");
-    let attachButton = document.getElementById("attach-button");
+    let attachButton = document.getElementById("attach-btn");  // Alterado para "attach-btn"
     let sendButton = document.getElementById("send-button");
     let currentContext = ""; // Armazena a última escolha principal
 
@@ -19,25 +19,26 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     function sendImage(file) {
-    const reader = new FileReader();
-    reader.onloadend = function () {
-        const img = document.createElement('img');
-        img.src = reader.result;
-        img.classList.add("image-message");
+        const reader = new FileReader();
+        reader.onloadend = function () {
+            const img = document.createElement('img');
+            img.src = reader.result;
+            img.classList.add("image-message");
 
-        // Criar a estrutura da mensagem
-        const messageDiv = document.createElement('div');
-        messageDiv.classList.add("message", "user-message");
+            // Criar a estrutura da mensagem
+            const messageDiv = document.createElement('div');
+            messageDiv.classList.add("message", "user-message");
 
-        // Adicionar a imagem à mensagem
-        messageDiv.appendChild(img);
+            // Adicionar a imagem à mensagem
+            messageDiv.appendChild(img);
 
-        // Adicionar a mensagem ao chat
-        chatBox.appendChild(messageDiv);
-        chatBox.scrollTop = chatBox.scrollHeight;
-    };
-    reader.readAsDataURL(file);
-}
+            // Adicionar a mensagem ao chat
+            chatBox.appendChild(messageDiv);
+            chatBox.scrollTop = chatBox.scrollHeight;
+        };
+        reader.readAsDataURL(file);
+    }
+});
 
     // Correção para enviar mensagem ao clicar no botão
     sendButton.addEventListener('click', function() {
