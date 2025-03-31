@@ -1,3 +1,16 @@
+// Dados dos usuários
+const usersData = {
+    "15347693665": {
+        nome: "Luiza",
+        tipoCarga: "Alimentos.",
+        embarqueLocal: "Uberlândia.",
+        embarqueResponsavel: "Eduarda.",
+        desembarqueLocal: "Londrina.",
+        desembarqueResponsavel: "Augusto.",
+        paradasProgramadas: "Sem paradas."
+    },
+};
+
 document.addEventListener("DOMContentLoaded", function () {
     let cpf = "";
     let chatBox = document.getElementById("chat-box");
@@ -9,16 +22,17 @@ document.addEventListener("DOMContentLoaded", function () {
     let lastOptionSelected = "";
     let expectingTextInput = false;
 
+    // Exibe a mensagem no chat
     function displayMessage(content, className) {
         const messageDiv = document.createElement("div");
         messageDiv.classList.add("message", className);
-        
+
         if (typeof content === 'string') {
             messageDiv.innerHTML = content.replace(/\n/g, "<br>");
         } else if (content instanceof HTMLElement) {
             messageDiv.appendChild(content);
         }
-        
+
         chatBox.appendChild(messageDiv);
         chatBox.scrollTop = chatBox.scrollHeight;
     }
@@ -36,7 +50,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 fileInput.value = "";
                 return;
             }
-            
+
             if (expectingTextInput) {
                 displayMessage("Formato inválido. Por favor, digite a informação solicitada.", "bot-message");
                 fileInput.value = "";
@@ -52,19 +66,19 @@ document.addEventListener("DOMContentLoaded", function () {
         reader.onloadend = function() {
             const messageDiv = document.createElement('div');
             messageDiv.classList.add('message', 'user-message');
-            
+
             const imgContainer = document.createElement('div');
             imgContainer.classList.add('image-container');
-            
+
             const img = document.createElement('img');
             img.src = reader.result;
-            
+
             imgContainer.appendChild(img);
             messageDiv.appendChild(imgContainer);
             chatBox.appendChild(messageDiv);
-            
+
             chatBox.scrollTop = chatBox.scrollHeight;
-            
+
             setTimeout(() => {
                 displayMessage("Foto enviada.", "bot-message");
                 if (lastOptionSelected === "3" && currentContext === "embarque") {
@@ -79,6 +93,7 @@ document.addEventListener("DOMContentLoaded", function () {
         reader.readAsDataURL(file);
     }
 
+    // Enviar mensagem
     function sendMessage(message) {
         if (message !== "") {
             displayMessage(message, "user-message");
@@ -114,6 +129,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 
+    // Lida com a entrada de CPF
     function handleCPFInput(message) {
         cpf = message;
         if (usersData[cpf]) {
@@ -129,6 +145,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
+    // Menu principal
     function handleMainMenu(message) {
         switch(message) {
             case "1":
@@ -155,6 +172,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
+    // Exibe o menu de opções baseado no contexto
     function displayMenu(menuType) {
         const menus = {
             embarque: "Escolha uma opção do Embarque:\n1 - Local e responsável\n2 - Tipo de carga\n3 - Registro fotográfico\n4 - KM inicial",
@@ -165,9 +183,10 @@ document.addEventListener("DOMContentLoaded", function () {
         displayMessage(menus[menuType], "bot-message");
     }
 
+    // Lida com as respostas do usuário conforme o contexto
     function handleContextResponses(message) {
         const user = usersData[cpf];
-        
+
         if (currentContext === "embarque") {
             handleEmbarqueResponses(message, user);
         } else if (currentContext === "rota") {
@@ -179,8 +198,8 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
+    // Lida com as respostas no contexto de Embarque
     function handleEmbarqueResponses(message, user) {
-        // Verifica se é uma resposta a uma solicitação anterior
         if (lastOptionSelected === "3" && message !== "3") {
             displayMessage("Registro fotográfico recebido.", "bot-message");
             lastOptionSelected = "";
@@ -198,17 +217,16 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         }
 
-        // Se não for resposta, trata como nova opção
         lastOptionSelected = message;
         expectingTextInput = false;
-        
+
         const responses = {
             "1": `Local: ${user.embarqueLocal}\nResponsável: ${user.embarqueResponsavel}`,
             "2": `Tipo de carga: ${user.tipoCarga}`,
             "3": "Envie a foto da carga.",
             "4": "Digite o KM inicial:"
         };
-        
+
         if (responses[message]) {
             displayMessage(responses[message], "bot-message");
             if (message === "4") {
@@ -219,8 +237,8 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
+    // Lida com as respostas no contexto de Rota
     function handleRotaResponses(message, user) {
-        // Verifica se é uma resposta a uma solicitação anterior
         if (lastOptionSelected === "4" && message !== "4") {
             displayMessage("Observações registradas: " + message, "bot-message");
             lastOptionSelected = "";
@@ -238,10 +256,9 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         }
 
-        // Se não for resposta, trata como nova opção
         lastOptionSelected = message;
         expectingTextInput = false;
-        
+
         const responses = {
             "1": "Baixe o aplicativo Waze, disponível para Android e IOS, ou acesse o link: https://www.waze.com/pt-BR/live-map/",
             "2": `Paradas: ${user.paradasProgramadas}`,
@@ -249,7 +266,7 @@ document.addEventListener("DOMContentLoaded", function () {
             "4": "Digite suas observações:",
             "5": "Digite o valor dos custos:"
         };
-        
+
         if (responses[message]) {
             displayMessage(responses[message], "bot-message");
             if (message === "4" || message === "5") {
@@ -260,8 +277,8 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
+    // Lida com as respostas no contexto de Desembarque
     function handleDesembarqueResponses(message, user) {
-        // Verifica se é uma resposta a uma solicitação anterior
         if (lastOptionSelected === "2" && message !== "2") {
             displayMessage("Registro fotográfico recebido.", "bot-message");
             lastOptionSelected = "";
@@ -279,16 +296,15 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         }
 
-        // Se não for resposta, trata como nova opção
         lastOptionSelected = message;
         expectingTextInput = false;
-        
+
         const responses = {
             "1": `Local: ${user.desembarqueLocal}\nResponsável: ${user.desembarqueResponsavel}`,
             "2": "Envie a foto no desembarque.",
             "3": "Digite o KM final:"
         };
-        
+
         if (responses[message]) {
             displayMessage(responses[message], "bot-message");
             if (message === "3") {
@@ -299,13 +315,14 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
+    // Lida com as respostas no contexto de Contato
     function handleContatoResponses(message) {
         const responses = {
             "1": "Emergências 24h: 192\nSOS Estradas: 0800 055 5510 para o DER-SP\n0800 773 6699 para a CCR RodoAnel\n0800 77 01 101 para a EcoRodovias\n0800 000 0290 para a CCR ViaSul\n0800 055 9696 para o Sistema de Ajuda ao Usuário (SAU) das Renovias",
             "2": "Supervisor Otávio: (34) 99894-2493",
             "3": "Ouvidoria: ouvidoria@oliveiratransportes.com"
         };
-        
+
         if (responses[message]) {
             displayMessage(responses[message], "bot-message");
             resetContextAfterDelay();
@@ -314,6 +331,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
+    // Restaura o contexto após um tempo
     function resetContextAfterDelay() {
         setTimeout(() => {
             if (currentContext && !lastOptionSelected) {
