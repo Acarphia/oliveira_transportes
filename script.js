@@ -14,7 +14,7 @@ document.addEventListener("DOMContentLoaded", function () {
         fileInput.click();
     });
 
-    // Envio de imagem - agora verifica se é permitido
+    // Envio de imagem
     fileInput.addEventListener('change', function () {
         if (fileInput.files.length > 0) {
             if (expectingTextInput) {
@@ -52,16 +52,11 @@ document.addEventListener("DOMContentLoaded", function () {
         reader.readAsDataURL(file);
     }
 
-    // Botão enviar - CORREÇÃO PRINCIPAL AQUI
-    sendButton.addEventListener('click', function() {
-        const message = userInput.value.trim();
-        if (message !== "" || fileInput.files.length > 0) {
-            // Exibe a mensagem do usuário antes de processar
-            if (message !== "") {
-                displayMessage(message, "user-message");
-                userInput.value = "";
-            }
-            
+    function sendMessage(message) {
+        if (message !== "") {
+            displayMessage(message, "user-message");
+            userInput.value = "";
+
             // Processa a mensagem
             if (!cpf) {
                 handleCPFInput(message);
@@ -75,6 +70,12 @@ document.addEventListener("DOMContentLoaded", function () {
 
             handleContextResponses(message);
         }
+    }
+
+    // Botão enviar
+    sendButton.addEventListener('click', function() {
+        const message = userInput.value.trim();
+        sendMessage(message);
     });
 
     // Tecla Enter
@@ -82,24 +83,10 @@ document.addEventListener("DOMContentLoaded", function () {
         if (e.key === 'Enter' && !e.shiftKey) {
             e.preventDefault();
             const message = userInput.value.trim();
-            if (message !== "") {
-                displayMessage(message, "user-message");
-                userInput.value = "";
-                
-                if (!cpf) {
-                    handleCPFInput(message);
-                    return;
-                }
-
-                if (!currentContext) {
-                    handleMainMenu(message.toLowerCase());
-                    return;
-                }
-
-                handleContextResponses(message);
-            }
+            sendMessage(message);
         }
     });
+});
     
     function handleCPFInput(message) {
         cpf = message;
