@@ -5,47 +5,57 @@ document.addEventListener("DOMContentLoaded", function () {
     let fileInput = document.getElementById("file-input");
     let attachButton = document.getElementById("attach-button");
     let sendButton = document.getElementById("send-button");
-    let currentContext = ""; // Armazena a última escolha principal
+    let currentContext = "";
 
+    // Botão de anexo
     attachButton.addEventListener('click', function () {
         fileInput.click();
     });
 
+    // Envio de imagem
     fileInput.addEventListener('change', function () {
         if (fileInput.files.length > 0) {
             sendImage(fileInput.files[0]);
-            fileInput.value = ""; // Resetar input após o envio
+            fileInput.value = "";
         }
     });
 
+    // Função para enviar imagem (CORRIGIDA)
     function sendImage(file) {
         const reader = new FileReader();
         reader.onloadend = function () {
+            const messageDiv = document.createElement('div');
+            messageDiv.classList.add('message', 'user-message');
+            
+            const imgContainer = document.createElement('div');
+            imgContainer.classList.add('image-container');
+            
             const img = document.createElement('img');
             img.src = reader.result;
-            img.style.width = '200px';
-            img.classList.add("image-message");
-            chatBox.appendChild(img);
+            img.classList.add('image-message');
+            
+            imgContainer.appendChild(img);
+            messageDiv.appendChild(imgContainer);
+            chatBox.appendChild(messageDiv);
             chatBox.scrollTop = chatBox.scrollHeight;
         };
         reader.readAsDataURL(file);
     }
 
-    // Correção para enviar mensagem ao clicar no botão
+    // Botão enviar
     sendButton.addEventListener('click', function() {
-        console.log('Botão Enviar clicado');
         sendMessage();
     });
 
-    // Correção para enviar mensagem ao pressionar Enter
+    // Tecla Enter
     userInput.addEventListener('keydown', function (e) {
         if (e.key === 'Enter' && !e.shiftKey) {
-            console.log('Enter pressionado');
-            e.preventDefault(); // Impede que uma nova linha seja adicionada
+            e.preventDefault();
             sendMessage();
         }
     });
 
+    // Dados dos usuários
     const usersData = {
         "15347693665": {
             nome: "Luiza",
@@ -58,105 +68,164 @@ document.addEventListener("DOMContentLoaded", function () {
         },
     };
 
+    // Função principal para enviar mensagem
     function sendMessage() {
         const message = userInput.value.trim().toLowerCase();
         if (message === "" && !fileInput.files.length) return;
 
+        // Exibe a mensagem do usuário
         displayMessage(message, "user-message");
         userInput.value = "";
 
+        // Lógica do chatbot
         if (!cpf) {
-            cpf = message;
-            if (usersData[cpf]) {
-                displayMessage(`Como posso ajudar ${usersData[cpf].nome}?
-1 - Embarque da carga
-2 - Rota da viagem
-3 - Desembarque da carga
-4 - Pós-viagem
-5 - Canais de contato`, "bot-message");
-            } else {
-                displayMessage("Seu CPF não foi encontrado. Digite novamente.", "bot-message");
-                cpf = "";
-            }
+            handleCPFInput(message);
             return;
         }
 
         if (!currentContext) {
-            if (message === "1") {
-                currentContext = "embarque";
-                displayMessage("Escolha uma opção do Embarque:\n1 - Local e responsável\n2 - Tipo de carga\n3 - Registro fotográfico\n4 - KM inicial", "bot-message");
-            } else if (message === "2") {
-                currentContext = "rota";
-                displayMessage("Escolha uma opção da Rota:\n1 - Melhor caminho e condições\n2 - Paradas programadas\n3 - Viagem no GPS\n4 - Observações\n5 - Registro de custos", "bot-message");
-            } else if (message === "3") {
-                currentContext = "desembarque";
-                displayMessage("Escolha uma opção do Desembarque:\n1 - Local e responsável\n2 - Registro fotográfico\n3 - KM final", "bot-message");
-            } else if (message === "4") {
-                displayMessage("Para procedimentos pós-viagem, mande mensagem para Otávio: (34) 99894-2493", "bot-message");
-            } else if (message === "5") {
-                currentContext = "contato";
-                displayMessage("Escolha um canal de contato:\n1 - Emergências 24h\n2 - Supervisor de rota\n3 - Ouvidoria", "bot-message");
-            } else {
-                displayMessage("Opção inválida. Escolha entre 1 a 5.", "bot-message");
-            }
+            handleMainMenu(message);
             return;
         }
 
-        if (currentContext === "embarque") {
-            if (message === "1") {
-                displayMessage(`Local de embarque: ${usersData[cpf].embarqueLocal}\nResponsável: ${usersData[cpf].embarqueResponsavel}`, "bot-message");
-            } else if (message === "2") {
-                displayMessage(`Tipo de carga: ${usersData[cpf].tipoCarga}`, "bot-message");
-            } else if (message === "3") {
-                displayMessage("Envie a foto da carga.", "bot-message");
-            } else if (message === "4") {
-                displayMessage("Registre o KM inicial.", "bot-message");
-            }
-        } else if (currentContext === "rota") {
-            if (message === "1") {
-                displayMessage("Melhor caminho e condições: Consulte o GPS para uma rota segura.", "bot-message");
-            } else if (message === "2") {
-                displayMessage(`Paradas programadas: ${usersData[cpf].paradasProgramadas}`, "bot-message");
-            } else if (message === "3") {
-                displayMessage("Acompanhe a viagem pelo GPS.", "bot-message");
-            } else if (message === "4") {
-                displayMessage("Registre observações sobre a carga.", "bot-message");
-            } else if (message === "5") {
-                displayMessage("Registre os custos da viagem.", "bot-message");
-            }
-        } else if (currentContext === "desembarque") {
-            if (message === "1") {
-                displayMessage(`Local de desembarque: ${usersData[cpf].desembarqueLocal}\nResponsável: ${usersData[cpf].desembarqueResponsavel}`, "bot-message");
-            } else if (message === "2") {
-                displayMessage("Envie a foto da carga no desembarque.", "bot-message");
-            } else if (message === "3") {
-                displayMessage("Registre o KM final.", "bot-message");
-            }
-        } else if (currentContext === "contato") {
-            if (message === "1") {
-                displayMessage("Emergências 24h: 192\nSOS Estradas: 0800 055 5510", "bot-message");
-            } else if (message === "2") {
-                displayMessage("Supervisor de rota: Otávio - (34) 99894-2493", "bot-message");
-            } else if (message === "3") {
-                displayMessage("Ouvidoria: ouvidoria@oliveiratransportes.com", "bot-message");
-            }
-        }
+        handleContextResponses(message);
+    }
 
-        currentContext = "";
-        setTimeout(function() {
-            displayMessage(`Escolha outra categoria:
+    // Função para lidar com o CPF
+    function handleCPFInput(message) {
+        cpf = message;
+        if (usersData[cpf]) {
+            displayMessage(`Como posso ajudar ${usersData[cpf].nome}?
 1 - Embarque da carga
 2 - Rota da viagem
 3 - Desembarque da carga
 4 - Pós-viagem
 5 - Canais de contato`, "bot-message");
-        }, 10000); // 10000 milissegundos = 10 segundos
+        } else {
+            displayMessage("CPF não encontrado. Digite novamente.", "bot-message");
+            cpf = "";
+        }
     }
 
-    function displayMessage(message, className) {
+    // Função para o menu principal
+    function handleMainMenu(message) {
+        switch(message) {
+            case "1":
+                currentContext = "embarque";
+                displayMenu("embarque");
+                break;
+            case "2":
+                currentContext = "rota";
+                displayMenu("rota");
+                break;
+            case "3":
+                currentContext = "desembarque";
+                displayMenu("desembarque");
+                break;
+            case "4":
+                displayMessage("Para pós-viagem, contate Otávio: (34) 99894-2493", "bot-message");
+                break;
+            case "5":
+                currentContext = "contato";
+                displayMenu("contato");
+                break;
+            default:
+                displayMessage("Opção inválida. Escolha de 1 a 5.", "bot-message");
+        }
+    }
+
+    // Função para exibir menus
+    function displayMenu(menuType) {
+        const menus = {
+            embarque: "Escolha uma opção do Embarque:\n1 - Local e responsável\n2 - Tipo de carga\n3 - Registro fotográfico\n4 - KM inicial",
+            rota: "Escolha uma opção da Rota:\n1 - Melhor caminho\n2 - Paradas programadas\n3 - Viagem no GPS\n4 - Observações\n5 - Custos",
+            desembarque: "Escolha uma opção do Desembarque:\n1 - Local e responsável\n2 - Registro fotográfico\n3 - KM final",
+            contato: "Escolha um canal:\n1 - Emergências 24h\n2 - Supervisor\n3 - Ouvidoria"
+        };
+        displayMessage(menus[menuType], "bot-message");
+    }
+
+    // Função para respostas contextuais
+    function handleContextResponses(message) {
+        const user = usersData[cpf];
+        
+        if (currentContext === "embarque") {
+            handleEmbarqueResponses(message, user);
+        } else if (currentContext === "rota") {
+            handleRotaResponses(message, user);
+        } else if (currentContext === "desembarque") {
+            handleDesembarqueResponses(message, user);
+        } else if (currentContext === "contato") {
+            handleContatoResponses(message);
+        }
+        
+        resetContextAfterDelay();
+    }
+
+    // Funções de tratamento para cada contexto
+    function handleEmbarqueResponses(message, user) {
+        const responses = {
+            "1": `Local: ${user.embarqueLocal}\nResponsável: ${user.embarqueResponsavel}`,
+            "2": `Tipo de carga: ${user.tipoCarga}`,
+            "3": "Envie a foto da carga.",
+            "4": "Registre o KM inicial."
+        };
+        displayMessage(responses[message] || "Opção inválida", "bot-message");
+    }
+
+    function handleRotaResponses(message, user) {
+        const responses = {
+            "1": "Melhor caminho: Consulte o GPS.",
+            "2": `Paradas: ${user.paradasProgramadas}`,
+            "3": "Acompanhe pelo GPS.",
+            "4": "Registre observações.",
+            "5": "Registre os custos."
+        };
+        displayMessage(responses[message] || "Opção inválida", "bot-message");
+    }
+
+    function handleDesembarqueResponses(message, user) {
+        const responses = {
+            "1": `Local: ${user.desembarqueLocal}\nResponsável: ${user.desembarqueResponsavel}`,
+            "2": "Envie a foto no desembarque.",
+            "3": "Registre o KM final."
+        };
+        displayMessage(responses[message] || "Opção inválida", "bot-message");
+    }
+
+    function handleContatoResponses(message) {
+        const responses = {
+            "1": "Emergências 24h: 192\nSOS Estradas: 0800 055 5510",
+            "2": "Supervisor: Otávio - (34) 99894-2493",
+            "3": "Ouvidoria: ouvidoria@oliveiratransportes.com"
+        };
+        displayMessage(responses[message] || "Opção inválida", "bot-message");
+    }
+
+    // Resetar contexto após 10 segundos
+    function resetContextAfterDelay() {
+        setTimeout(() => {
+            currentContext = "";
+            displayMessage(`Escolha outra categoria:
+1 - Embarque
+2 - Rota
+3 - Desembarque
+4 - Pós-viagem
+5 - Canais`, "bot-message");
+        }, 10000);
+    }
+
+    // Função para exibir mensagens (CORRIGIDA)
+    function displayMessage(content, className) {
         const messageDiv = document.createElement("div");
         messageDiv.classList.add("message", className);
-        messageDiv.innerHTML = message.replace(/\n/g, "<br>");
+        
+        if (typeof content === 'string') {
+            messageDiv.innerHTML = content.replace(/\n/g, "<br>");
+        } else if (content instanceof HTMLElement) {
+            messageDiv.appendChild(content);
+        }
+        
         chatBox.appendChild(messageDiv);
         chatBox.scrollTop = chatBox.scrollHeight;
     }
