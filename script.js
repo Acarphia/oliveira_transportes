@@ -52,56 +52,55 @@ document.addEventListener("DOMContentLoaded", function () {
         reader.readAsDataURL(file);
     }
 
-    // Botão enviar
+    // Botão enviar - CORREÇÃO PRINCIPAL AQUI
     sendButton.addEventListener('click', function() {
-        sendMessage();
+        const message = userInput.value.trim();
+        if (message !== "" || fileInput.files.length > 0) {
+            // Exibe a mensagem do usuário antes de processar
+            if (message !== "") {
+                displayMessage(message, "user-message");
+                userInput.value = "";
+            }
+            
+            // Processa a mensagem
+            if (!cpf) {
+                handleCPFInput(message);
+                return;
+            }
+
+            if (!currentContext) {
+                handleMainMenu(message.toLowerCase());
+                return;
+            }
+
+            handleContextResponses(message);
+        }
     });
 
     // Tecla Enter
     userInput.addEventListener('keydown', function (e) {
         if (e.key === 'Enter' && !e.shiftKey) {
             e.preventDefault();
-            sendMessage();
+            const message = userInput.value.trim();
+            if (message !== "") {
+                displayMessage(message, "user-message");
+                userInput.value = "";
+                
+                if (!cpf) {
+                    handleCPFInput(message);
+                    return;
+                }
+
+                if (!currentContext) {
+                    handleMainMenu(message.toLowerCase());
+                    return;
+                }
+
+                handleContextResponses(message);
+            }
         }
     });
-
-    // Dados dos usuários
-    const usersData = {
-        "15347693665": {
-            nome: "Luiza",
-            tipoCarga: "Alimentos.",
-            embarqueLocal: "Uberlandia.",
-            embarqueResponsavel: "Eduarda.",
-            desembarqueLocal: "Londrina.",
-            desembarqueResponsavel: "Augusto.",
-            paradasProgramadas: "Sem paradas."
-        },
-    };
-
-    function sendMessage() {
-        const message = userInput.value.trim();
-        if (message === "" && !fileInput.files.length) return;
-
-        // Lógica do chatbot
-        if (!cpf) {
-            displayMessage(message, "user-message");
-            userInput.value = "";
-            handleCPFInput(message);
-            return;
-        }
-
-        if (!currentContext) {
-            displayMessage(message, "user-message");
-            userInput.value = "";
-            handleMainMenu(message.toLowerCase());
-            return;
-        }
-
-        displayMessage(message, "user-message");
-        userInput.value = "";
-        handleContextResponses(message);
-    }
-
+    
     function handleCPFInput(message) {
         cpf = message;
         if (usersData[cpf]) {
