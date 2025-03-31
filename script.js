@@ -6,6 +6,7 @@ document.addEventListener("DOMContentLoaded", function () {
     let attachButton = document.getElementById("attach-button");
     let sendButton = document.getElementById("send-button");
     let currentContext = "";
+    let lastOptionSelected = "";
 
     // Botão de anexo
     attachButton.addEventListener('click', function () {
@@ -20,31 +21,36 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 
-  function sendImage(file) {
-    const reader = new FileReader();
-    reader.onloadend = function() {
-        // 1. Cria a div principal da mensagem do USUÁRIO
-        const messageDiv = document.createElement('div');
-        messageDiv.classList.add('message', 'user-message');
-        
-        // 2. Cria o container da imagem (com fundo verde)
-        const imgContainer = document.createElement('div');
-        imgContainer.classList.add('image-container');
-        
-        // 3. Cria a imagem
-        const img = document.createElement('img');
-        img.src = reader.result;
-        
-        // 4. Monta a hierarquia CORRETA:
-        imgContainer.appendChild(img);    // Imagem dentro do container
-        messageDiv.appendChild(imgContainer); // Container dentro da mensagem
-        chatBox.appendChild(messageDiv); // Mensagem dentro do chat
-        
-        // 5. Rolagem automática
-        chatBox.scrollTop = chatBox.scrollHeight;
-    };
-    reader.readAsDataURL(file);
-}
+    function sendImage(file) {
+        const reader = new FileReader();
+        reader.onloadend = function() {
+            // 1. Cria a div principal da mensagem do USUÁRIO
+            const messageDiv = document.createElement('div');
+            messageDiv.classList.add('message', 'user-message');
+            
+            // 2. Cria o container da imagem (com fundo verde)
+            const imgContainer = document.createElement('div');
+            imgContainer.classList.add('image-container');
+            
+            // 3. Cria a imagem
+            const img = document.createElement('img');
+            img.src = reader.result;
+            
+            // 4. Monta a hierarquia CORRETA:
+            imgContainer.appendChild(img);    // Imagem dentro do container
+            messageDiv.appendChild(imgContainer); // Container dentro da mensagem
+            chatBox.appendChild(messageDiv); // Mensagem dentro do chat
+            
+            // 5. Rolagem automática
+            chatBox.scrollTop = chatBox.scrollHeight;
+            
+            // Resposta automática para foto enviada
+            setTimeout(() => {
+                displayMessage("Foto enviada.", "bot-message");
+            }, 1000);
+        };
+        reader.readAsDataURL(file);
+    }
 
     // Botão enviar
     sendButton.addEventListener('click', function() {
@@ -163,11 +169,33 @@ document.addEventListener("DOMContentLoaded", function () {
             handleContatoResponses(message);
         }
         
+        // Verifica se é uma resposta a um registro solicitado
+        if (lastOptionSelected === "3" && currentContext === "embarque" && message !== "3") {
+            displayMessage("Registro fotográfico recebido.", "bot-message");
+            lastOptionSelected = "";
+        } else if (lastOptionSelected === "4" && currentContext === "embarque" && message !== "4") {
+            displayMessage("KM inicial registrado.", "bot-message");
+            lastOptionSelected = "";
+        } else if (lastOptionSelected === "4" && currentContext === "rota" && message !== "4") {
+            displayMessage("Observações registradas.", "bot-message");
+            lastOptionSelected = "";
+        } else if (lastOptionSelected === "5" && currentContext === "rota" && message !== "5") {
+            displayMessage("Custos registrados.", "bot-message");
+            lastOptionSelected = "";
+        } else if (lastOptionSelected === "2" && currentContext === "desembarque" && message !== "2") {
+            displayMessage("Registro fotográfico recebido.", "bot-message");
+            lastOptionSelected = "";
+        } else if (lastOptionSelected === "3" && currentContext === "desembarque" && message !== "3") {
+            displayMessage("KM final registrado.", "bot-message");
+            lastOptionSelected = "";
+        }
+        
         resetContextAfterDelay();
     }
 
     // Funções de tratamento para cada contexto
     function handleEmbarqueResponses(message, user) {
+        lastOptionSelected = message;
         const responses = {
             "1": `Local: ${user.embarqueLocal}\nResponsável: ${user.embarqueResponsavel}`,
             "2": `Tipo de carga: ${user.tipoCarga}`,
@@ -178,6 +206,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     function handleRotaResponses(message, user) {
+        lastOptionSelected = message;
         const responses = {
             "1": "Melhor caminho: Consulte o GPS.",
             "2": `Paradas: ${user.paradasProgramadas}`,
@@ -189,6 +218,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     function handleDesembarqueResponses(message, user) {
+        lastOptionSelected = message;
         const responses = {
             "1": `Local: ${user.desembarqueLocal}\nResponsável: ${user.desembarqueResponsavel}`,
             "2": "Envie a foto no desembarque.",
@@ -209,17 +239,19 @@ document.addEventListener("DOMContentLoaded", function () {
     // Resetar contexto após 10 segundos
     function resetContextAfterDelay() {
         setTimeout(() => {
-            currentContext = "";
-            displayMessage(`Escolha outra categoria:
+            if (currentContext && !lastOptionSelected) {
+                currentContext = "";
+                displayMessage(`Escolha outra categoria:
 1 - Embarque
 2 - Rota
 3 - Desembarque
 4 - Pós-viagem
 5 - Canais`, "bot-message");
+            }
         }, 10000);
     }
 
-    // Função para exibir mensagens (CORRIGIDA)
+    // Função para exibir mensagens
     function displayMessage(content, className) {
         const messageDiv = document.createElement("div");
         messageDiv.classList.add("message", className);
