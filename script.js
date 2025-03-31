@@ -7,37 +7,41 @@ document.addEventListener("DOMContentLoaded", function () {
     let sendButton = document.getElementById("send-button");
     let currentContext = ""; // Armazena a última escolha principal
 
-   attachButton.addEventListener('click', function () {
-    fileInput.click();
-});
+    attachButton.addEventListener('click', function () {
+        fileInput.click();
+    });
 
-fileInput.addEventListener('change', function () {
-    if (fileInput.files.length > 0) {
-        sendImage(fileInput.files[0]);
-        fileInput.value = ""; // Resetar input após o envio
+    fileInput.addEventListener('change', function () {
+        if (fileInput.files.length > 0) {
+            sendImage(fileInput.files[0]);
+            fileInput.value = ""; // Resetar input após o envio
+        }
+    });
+
+    function sendImage(file) {
+        const reader = new FileReader();
+        reader.onloadend = function () {
+            const img = document.createElement('img');
+            img.src = reader.result;
+            img.style.width = '200px';
+            img.classList.add("image-message");
+            chatBox.appendChild(img);
+            chatBox.scrollTop = chatBox.scrollHeight;
+        };
+        reader.readAsDataURL(file);
     }
-});
 
-function sendImage(file) {
-    const reader = new FileReader();
-    reader.onloadend = function () {
-        const img = document.createElement('img');
-        img.src = reader.result;
-        img.style.width = '200px';
-        img.classList.add("image-message");
-        chatBox.appendChild(img);
-        chatBox.scrollTop = chatBox.scrollHeight;
-    };
-    reader.readAsDataURL(file);
-}
-
-sendButton.addEventListener('click', sendMessage);
-
-userInput.addEventListener('keydown', function (e) {
-    if (e.key === 'Enter') {
+    // Correção para enviar mensagem ao clicar no botão
+    sendButton.addEventListener('click', function() {
         sendMessage();
-    }
-});
+    });
+
+    // Correção para enviar mensagem ao pressionar Enter
+    userInput.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            sendMessage();
+        }
+    });
 
     const usersData = {
         "15347693665": {
@@ -134,18 +138,18 @@ userInput.addEventListener('keydown', function (e) {
                 displayMessage("Ouvidoria: ouvidoria@oliveiratransportes.com", "bot-message");
             }
         }
-        
-currentContext = "";
-// Usando o setTimeout para exibir a mensagem com o delay de 10 segundos
-setTimeout(function() {
-    displayMessage(`Escolha outra categoria:
+
+        currentContext = "";
+        setTimeout(function() {
+            displayMessage(`Escolha outra categoria:
 1 - Embarque da carga
 2 - Rota da viagem
 3 - Desembarque da carga
 4 - Pós-viagem
 5 - Canais de contato`, "bot-message");
-}, 10000); // 10000 milissegundos = 10 segundos
-    
+        }, 10000); // 10000 milissegundos = 10 segundos
+    }
+
     function displayMessage(message, className) {
         const messageDiv = document.createElement("div");
         messageDiv.classList.add("message", className);
@@ -154,4 +158,3 @@ setTimeout(function() {
         chatBox.scrollTop = chatBox.scrollHeight;
     }
 });
-
