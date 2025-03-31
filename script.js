@@ -23,6 +23,27 @@ document.addEventListener("DOMContentLoaded", function () {
     let lastOptionSelected = "";
     let expectingTextInput = false;
 
+    // Enviar mensagem
+    function sendMessage(message) {
+        if (message !== "") {
+            displayMessage(message, "user-message");
+            userInput.value = "";
+
+    // Botão enviar
+    sendButton.addEventListener('click', function() {
+        const message = userInput.value.trim();
+        sendMessage(message);
+    });
+
+    // Tecla Enter
+    userInput.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            const message = userInput.value.trim();
+            sendMessage(message);
+        }
+    });
+
     // Timer para contagem de inatividade
     let inactivityTimer = null;
     let countdownTimer = null;
@@ -124,13 +145,7 @@ document.addEventListener("DOMContentLoaded", function () {
         };
         reader.readAsDataURL(file);
     }
-
-    // Enviar mensagem
-    function sendMessage(message) {
-        if (message !== "") {
-            displayMessage(message, "user-message");
-            userInput.value = "";
-
+    
             // Processa a mensagem
             if (!cpf) {
                 handleCPFInput(message);
@@ -145,21 +160,6 @@ document.addEventListener("DOMContentLoaded", function () {
             handleContextResponses(message);
         }
     }
-
-    // Botão enviar
-    sendButton.addEventListener('click', function() {
-        const message = userInput.value.trim();
-        sendMessage(message);
-    });
-
-    // Tecla Enter
-    userInput.addEventListener('keydown', function (e) {
-        if (e.key === 'Enter' && !e.shiftKey) {
-            e.preventDefault();
-            const message = userInput.value.trim();
-            sendMessage(message);
-        }
-    });
 
     // Lida com a entrada de CPF
     function handleCPFInput(message) {
