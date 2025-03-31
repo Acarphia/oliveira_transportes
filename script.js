@@ -1,6 +1,4 @@
-//Use esse modelo
 const usersData = {
-    //CPF:
     "15347693665": {
         nome: "Luiza",
         tipoCarga: "Alimentos.",
@@ -23,6 +21,30 @@ document.addEventListener("DOMContentLoaded", function () {
     let lastOptionSelected = "";
     let expectingTextInput = false;
 
+    // Enviar mensagem
+    function sendMessage(message) {
+        if (message !== "") {
+            displayMessage(message, "user-message");
+            userInput.value = "";
+            startInactivityTimer(); // Reinicia o timer de inatividade
+        }
+    }
+
+    // Botão enviar
+    sendButton.addEventListener('click', function () {
+        const message = userInput.value.trim();
+        sendMessage(message);
+    });
+
+    // Tecla Enter
+    userInput.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            const message = userInput.value.trim();
+            sendMessage(message);
+        }
+    });
+
     // Timer para contagem de inatividade
     let inactivityTimer = null;
     let countdownTimer = null;
@@ -43,9 +65,8 @@ document.addEventListener("DOMContentLoaded", function () {
     setTimeout(function () {
         displayMessage("Olá! Sou o assistente virtual da Oliveira Transportes. Digite seu CPF, somente em números.", "bot-message");
     }, 2000); // Exibe após 2 segundos
-}
 
-// Reseta a sessão
+    // Reseta a sessão
     function resetSession() {
         cpf = "";
         currentContext = "";
@@ -53,7 +74,7 @@ document.addEventListener("DOMContentLoaded", function () {
         expectingTextInput = false;
         if (inactivityTimer) clearTimeout(inactivityTimer);
         if (countdownTimer) clearInterval(countdownTimer);
-}
+    }
 
     // Exibe a mensagem no chat
     function displayMessage(content, className) {
@@ -126,41 +147,19 @@ document.addEventListener("DOMContentLoaded", function () {
         reader.readAsDataURL(file);
     }
 
-    // Enviar mensagem
-    function sendMessage(message) {
-        if (message !== "") {
-            displayMessage(message, "user-message");
-            userInput.value = "";
-
-            // Processa a mensagem
-            if (!cpf) {
-                handleCPFInput(message);
-                return;
-            }
-
-            if (!currentContext) {
-                handleMainMenu(message.toLowerCase());
-                return;
-            }
-
-            handleContextResponses(message);
-        }
+    // Processa a mensagem
+    if (!cpf) {
+        handleCPFInput(message);
+        return;
     }
 
-    // Botão enviar
-    sendButton.addEventListener('click', function() {
-        const message = userInput.value.trim();
-        sendMessage(message);
-    });
+    if (!currentContext) {
+        handleMainMenu(message.toLowerCase());
+        return;
+    }
 
-    // Tecla Enter
-    userInput.addEventListener('keydown', function (e) {
-        if (e.key === 'Enter' && !e.shiftKey) {
-            e.preventDefault();
-            const message = userInput.value.trim();
-            sendMessage(message);
-        }
-    });
+    handleContextResponses(message);
+    }
 
     // Lida com a entrada de CPF
     function handleCPFInput(message) {
@@ -348,10 +347,7 @@ document.addEventListener("DOMContentLoaded", function () {
         setTimeout(function() {
             currentContext = "";
             lastOptionSelected = "";
-            displayMessage("Escolha uma das opções abaixo para continuar:\n1 - Embarque\n2 - Rota\n3 - Desembarque\n4 - Pós-viagem\n5 - Canais de contato", "bot-message");
-        }, 2000);
+            expectingTextInput = false;
+        }, 2000); // tempo de delay para reset
     }
-
-    // Inicia o timer de inatividade
-    startInactivityTimer();
 });
