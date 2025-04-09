@@ -1,4 +1,4 @@
-const CACHE_NAME = 'Oliveira-Transportes-v2'; // IMPORTANTE: altere a versão sempre que atualizar arquivos
+const CACHE_NAME = 'Oliveira-Transportes-v3'; // Altere a versão sempre que atualizar
 const urlsToCache = [
   '/',
   '/index.html',
@@ -36,23 +36,29 @@ self.addEventListener('activate', event => {
       )
     )
   );
-  self.clients.claim(); // pega controle imediato
+  self.clients.claim(); // pega controle imediatamente
+});
+
+// Força o SW a ativar imediatamente quando receber a mensagem
+self.addEventListener('message', event => {
+  if (event.data === 'SKIP_WAITING') {
+    self.skipWaiting();
+  }
 });
 
 // Intercepta requisições
 self.addEventListener('fetch', event => {
-  if (event.request.method !== 'GET') return; // só lida com GET
+  if (event.request.method !== 'GET') return;
+
   event.respondWith(
     fetch(event.request)
       .then(networkResponse => {
-        // Atualiza cache com a nova versão da resposta
         return caches.open(CACHE_NAME).then(cache => {
           cache.put(event.request, networkResponse.clone());
           return networkResponse;
         });
       })
       .catch(() => {
-        // Se offline, tenta servir do cache
         return caches.match(event.request);
       })
   );
