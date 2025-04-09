@@ -43,10 +43,10 @@ document.addEventListener("DOMContentLoaded", function () {
         subject.value = `📌 Atualizações de "${contexto}" - CPF ${data.cpf}`;
         form.appendChild(subject);
 
-        const redirect = document.createElement("input");
-        redirect.type = "hidden";
-        redirect.name = "_redirect";
-        redirect.value = window.location.href;
+        const noRedirect = document.createElement("input");
+        noRedirect.type = "hidden";
+        noRedirect.name = "_redirect";
+        noRedirect.value = window.location.href;
         form.appendChild(noRedirect);
 
         const noPopup = document.createElement("input");
@@ -89,10 +89,10 @@ document.addEventListener("DOMContentLoaded", function () {
         subject.value = `📸 Foto de ${contexto} enviada - CPF ${cpf}`;
         form.appendChild(subject);
 
-        const redirect = document.createElement("input");
-        redirect.type = "hidden";
-        redirect.name = "_redirect";
-        redirect.value = window.location.href;
+        const noRedirect = document.createElement("input");
+        noRedirect.type = "hidden";
+        noRedirect.name = "_redirect";
+        noRedirect.value = window.location.href;
         form.appendChild(noRedirect);
 
         const noCaptcha = document.createElement("input");
@@ -249,9 +249,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
     function displayMenu(menuType) {
         const menus = {
-            embarque: "Escolha uma opção do Embarque:\n1 - Local e responsável\n2 - Tipo de carga\n3 - Registro fotográfico\n4 - KM inicial\n0 - Voltar ao menu principal",
+            embarque: "Escolha uma opção do Embarque:\n1 - Local e responsável\n2 - Tipo de carga\n3 - Foto da carga\n4 - KM inicial\n0 - Voltar ao menu principal",
             rota: "Escolha uma opção da Rota:\n1 - Melhor caminho\n2 - Paradas programadas\n3 - Viagem no GPS\n4 - Observações\n5 - Custos\n0 - Voltar ao menu principal",
-            desembarque: "Escolha uma opção do Desembarque:\n1 - Local e responsável\n2 - Registro fotográfico\n3 - KM final\n0 - Voltar ao menu principal",
+            desembarque: "Escolha uma opção do Desembarque:\n1 - Local e responsável\n2 - Foto da carga\n3 - KM final\n0 - Voltar ao menu principal",
             contato: "Escolha um canal:\n1 - Emergências 24h\n2 - Supervisor\n3 - Ouvidoria\n0 - Voltar ao menu principal"
         };
         displayMessage(menus[menuType], "bot-message");
@@ -304,16 +304,16 @@ document.addEventListener("DOMContentLoaded", function () {
             const responses = {
                 "1": `Local: ${user.embarqueLocal}\nResponsável: ${user.embarqueResponsavel}`,
                 "2": `Tipo de carga: ${user.tipoCarga}`,
-                "3": "Envie a foto da carga.",
+                "3": "Envie a foto da carga no embarque:",
                 "4": "Digite o KM inicial:"
             };
             displayMessage(responses[message] || "Opção inválida.", "bot-message");
 
         } else if (currentContext === "rota") {
             const responses = {
-                "1": "Acesse o Waze: https://www.waze.com/pt-BR/live-map/",
+                "1": "Instale o Waze, disponível para Android e IOS, ou acesse: https://www.waze.com/pt-BR/live-map/",
                 "2": "Paradas: " + user.paradasProgramadas,
-                "3": "Acesse o Waze: https://www.waze.com/pt-BR/live-map/",
+                "3": "Instale o Waze, disponível para Android e IOS, ou acesse: https://www.waze.com/pt-BR/live-map/",
                 "4": "Digite suas observações:",
                 "5": "Digite os custos da viagem:"
             };
@@ -322,7 +322,7 @@ document.addEventListener("DOMContentLoaded", function () {
         } else if (currentContext === "desembarque") {
             const responses = {
                 "1": `Local: ${user.desembarqueLocal}\nResponsável: ${user.desembarqueResponsavel}`,
-                "2": "Envie a foto da carga.",
+                "2": "Envie a foto da carga no desembarque:",
                 "3": "Digite o KM final:"
             };
             displayMessage(responses[message] || "Opção inválida.", "bot-message");
