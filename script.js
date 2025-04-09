@@ -382,3 +382,39 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 });
+
+// ============ INÍCIO DO BLOCO PWA ============
+
+// Verifica se o navegador suporta service workers
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('service-worker.js')
+      .then(reg => console.log('Service Worker registrado com sucesso:', reg.scope))
+      .catch(err => console.log('Erro ao registrar o Service Worker:', err));
+  });
+}
+
+// Lógica para botão de instalação do PWA
+let deferredPrompt;
+const installBtn = document.getElementById('installBtn');
+
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredPrompt = e;
+  installBtn.style.display = 'block';
+
+  installBtn.addEventListener('click', () => {
+    installBtn.style.display = 'none';
+    deferredPrompt.prompt();
+    deferredPrompt.userChoice.then(choiceResult => {
+      if (choiceResult.outcome === 'accepted') {
+        console.log('Usuário aceitou instalar o app');
+      } else {
+        console.log('Usuário recusou instalar o app');
+      }
+      deferredPrompt = null;
+    });
+  });
+});
+
+// ============ FIM DO BLOCO PWA ============
