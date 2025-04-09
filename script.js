@@ -46,7 +46,7 @@ document.addEventListener("DOMContentLoaded", function () {
     subject.value = `📌 Atualizações de "${contexto}" - CPF ${data.cpf}`;
     form.appendChild(subject);
 
-    // Redireciona de volta para o site sem sair
+    // Nao sai do site
     const redirect = document.createElement('input');
     redirect.type = 'hidden';
     redirect.name = '_redirect';
