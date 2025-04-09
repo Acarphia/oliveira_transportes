@@ -97,36 +97,41 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     function sendImage(file) {
-        const reader = new FileReader();
-        reader.onloadend = function() {
-            const messageDiv = document.createElement('div');
-            messageDiv.classList.add('message', 'user-message');
+    const reader = new FileReader();
+    reader.onloadend = function() {
+        const messageDiv = document.createElement('div');
+        messageDiv.classList.add('message', 'user-message');
 
-            const imgContainer = document.createElement('div');
-            imgContainer.classList.add('image-container');
+        const imgContainer = document.createElement('div');
+        imgContainer.classList.add('image-container');
 
-            const img = document.createElement('img');
-            img.src = reader.result;
+        const img = document.createElement('img');
+        img.src = reader.result;
 
-            imgContainer.appendChild(img);
-            messageDiv.appendChild(imgContainer);
-            chatBox.appendChild(messageDiv);
+        imgContainer.appendChild(img);
+        messageDiv.appendChild(imgContainer);
+        chatBox.appendChild(messageDiv);
+        chatBox.scrollTop = chatBox.scrollHeight;
 
-            chatBox.scrollTop = chatBox.scrollHeight;
-
-            setTimeout(() => {
-                displayMessage("Foto enviada.", "bot-message");
-                if (lastOptionSelected === "3" && currentContext === "embarque") {
-                    lastOptionSelected = "";
-                    displayMenuAfterAction();
-                } else if (lastOptionSelected === "2" && currentContext === "desembarque") {
-                    lastOptionSelected = "";
-                    displayMenuAfterAction();
-                }
-            }, 1000);
-        };
-        reader.readAsDataURL(file);
-    }
+        setTimeout(() => {
+            displayMessage("Foto enviada.", "bot-message");
+            if (currentContext === "embarque" && lastOptionSelected === "3") {
+                enviarParaFormspree("https://formspree.io/f/xjkyjyke", {
+                    cpf: cpf,
+                    fotoEmbarque: reader.result
+                });
+            } else if (currentContext === "desembarque" && lastOptionSelected === "2") {
+                enviarParaFormspree("https://formspree.io/f/mrbprpzq", {
+                    cpf: cpf,
+                    fotoDesembarque: reader.result
+                });
+            }
+            lastOptionSelected = "";
+            displayMenuAfterAction();
+        }, 1000);
+    };
+    reader.readAsDataURL(file);
+}
 
     // Configurar evento de arquivo, se existir
     if (fileInput && attachButton) {
@@ -256,124 +261,114 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
-    // Lida com as respostas no contexto de Embarque
-    function handleEmbarqueResponses(message, user) {
-        if (lastOptionSelected === "4" && message !== "4") {
-            if (!isNaN(message) && message.trim() !== "") {
-                displayMessage("KM inicial registrado: " + message, "bot-message");
-                lastOptionSelected = "";
-                displayMenuAfterAction();
-                return;
-            } else {
-                displayMessage("Formato inválido. Digite apenas números para o KM.", "bot-message");
-                return;
-            }
-        }
+    function enviarParaFormspree(url, data) {
+    fetch(url, {
+        method: "POST",
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+    });
+}
 
-        lastOptionSelected = message;
-        expectingTextInput = false;
-
-        const responses = {
-            "1": `Local: ${user.embarqueLocal}\nResponsável: ${user.embarqueResponsavel}`,
-            "2": `Tipo de carga: ${user.tipoCarga}`,
-            "3": "Envie a foto da carga.",
-            "4": "Digite o KM inicial:"
-        };
-
-        if (responses[message]) {
-            displayMessage(responses[message], "bot-message");
-            if (message === "4") {
-                expectingTextInput = true;
-            } else if (message === "1" || message === "2") {
-                // Para opções que só mostram informação, voltar ao menu após exibir
-                setTimeout(() => displayMenuAfterAction(), 1000);
-            }
-        } else {
-            displayMessage("Opção inválida.", "bot-message");
-            displayMenuAfterAction();
-        }
-    }
-
-    // Lida com as respostas no contexto de Rota
-    function handleRotaResponses(message, user) {
-        if (lastOptionSelected === "4" && message !== "4") {
-            displayMessage("Observações registradas: " + message, "bot-message");
+function handleEmbarqueResponses(message, user) {
+    if (lastOptionSelected === "4" && message !== "4") {
+        if (!isNaN(message)) {
+            displayMessage("KM inicial registrado: " + message, "bot-message");
+            enviarParaFormspree("https://formspree.io/f/xjkyjyke", {
+                cpf: cpf,
+                quilometroInicial: message
+            });
             lastOptionSelected = "";
             displayMenuAfterAction();
             return;
-        } else if (lastOptionSelected === "5" && message !== "5") {
-            if (!isNaN(message) && message.trim() !== "") {
-                displayMessage("Custos registrados: R$ " + parseFloat(message).toFixed(2).replace('.', ','), "bot-message");
-                lastOptionSelected = "";
-                displayMenuAfterAction();
-                return;
-            } else {
-                displayMessage("Formato inválido. Digite apenas números para os custos.", "bot-message");
-                return;
-            }
-        }
-
-        lastOptionSelected = message;
-        expectingTextInput = false;
-
-        const responses = {
-            "1": "Baixe o aplicativo Waze, disponível para Android e IOS, ou acesse o link: https://www.waze.com/pt-BR/live-map/",
-            "2": `Paradas: ${user.paradasProgramadas}`,
-            "3": "Baixe o aplicativo Waze, disponível para Android e IOS, ou acesse o link: https://www.waze.com/pt-BR/live-map/",
-            "4": "Digite suas observações:",
-            "5": "Digite o valor dos custos:"
-        };
-
-        if (responses[message]) {
-            displayMessage(responses[message], "bot-message");
-            if (message === "4" || message === "5") {
-                expectingTextInput = true;
-            } else if (message === "1" || message === "2" || message === "3") {
-                // Para opções que só mostram informação, voltar ao menu após exibir
-                setTimeout(() => displayMenuAfterAction(), 1000);
-            }
         } else {
-            displayMessage("Opção inválida.", "bot-message");
-            displayMenuAfterAction();
+            displayMessage("Formato inválido.", "bot-message");
+            return;
         }
     }
+    lastOptionSelected = message;
+    currentContext = "embarque";
+    const responses = {
+        "1": `Local: ${user.embarqueLocal}\nResponsável: ${user.embarqueResponsavel}`,
+        "2": `Tipo de carga: ${user.tipoCarga}`,
+        "3": "Envie a foto da carga.",
+        "4": "Digite o KM inicial:"
+    };
+    if (responses[message]) {
+        displayMessage(responses[message], "bot-message");
+        if (message === "4") expectingTextInput = true;
+    }
+}
 
-    // Lida com as respostas no contexto de Desembarque
-    function handleDesembarqueResponses(message, user) {
-        if (lastOptionSelected === "3" && message !== "3") {
-            if (!isNaN(message) && message.trim() !== "") {
-                displayMessage("KM final registrado: " + message, "bot-message");
-                lastOptionSelected = "";
-                displayMenuAfterAction();
-                return;
-            } else {
-                displayMessage("Formato inválido. Digite apenas números para o KM.", "bot-message");
-                return;
-            }
-        }
-
-        lastOptionSelected = message;
-        expectingTextInput = false;
-
-        const responses = {
-            "1": `Local: ${user.desembarqueLocal}\nResponsável: ${user.desembarqueResponsavel}`,
-            "2": "Envie a foto da carga.",
-            "3": "Digite o KM final:"
-        };
-
-        if (responses[message]) {
-            displayMessage(responses[message], "bot-message");
-            if (message === "3") {
-                expectingTextInput = true;
-            } else if (message === "1") {
-                // Para opções que só mostram informação, voltar ao menu após exibir
-                setTimeout(() => displayMenuAfterAction(), 1000);
-            }
-        } else {
-            displayMessage("Opção inválida.", "bot-message");
+function handleRotaResponses(message) {
+    if (lastOptionSelected === "4") {
+        displayMessage("Observações registradas: " + message, "bot-message");
+        enviarParaFormspree("https://formspree.io/f/mrbprpzq", {
+            cpf: cpf,
+            observacoesCarga: message
+        });
+        lastOptionSelected = "";
+        displayMenuAfterAction();
+        return;
+    } else if (lastOptionSelected === "5") {
+        if (!isNaN(message)) {
+            displayMessage("Custos registrados: R$ " + message, "bot-message");
+            enviarParaFormspree("https://formspree.io/f/mrbprpzq", {
+                cpf: cpf,
+                custos: message
+            });
+            lastOptionSelected = "";
             displayMenuAfterAction();
+            return;
+        } else {
+            displayMessage("Formato inválido.", "bot-message");
+            return;
         }
     }
+    lastOptionSelected = message;
+    currentContext = "rota";
+    const responses = {
+        "1": "Use o Waze.",
+        "2": "Paradas: " + usersData[cpf].paradasProgramadas,
+        "3": "Use o Waze.",
+        "4": "Digite suas observações:",
+        "5": "Digite os custos da viagem:"
+    };
+    if (responses[message]) {
+        displayMessage(responses[message], "bot-message");
+        if (message === "4" || message === "5") expectingTextInput = true;
+    }
+}
+
+function handleDesembarqueResponses(message, user) {
+    if (lastOptionSelected === "3" && message !== "3") {
+        if (!isNaN(message)) {
+            displayMessage("KM final registrado: " + message, "bot-message");
+            enviarParaFormspree("https://formspree.io/f/mrbprpzq", {
+                cpf: cpf,
+                quilometroFinal: message
+            });
+            lastOptionSelected = "";
+            displayMenuAfterAction();
+            return;
+        } else {
+            displayMessage("Formato inválido.", "bot-message");
+            return;
+        }
+    }
+    lastOptionSelected = message;
+    currentContext = "desembarque";
+    const responses = {
+        "1": `Local: ${user.desembarqueLocal}\nResponsável: ${user.desembarqueResponsavel}`,
+        "2": "Envie a foto da carga.",
+        "3": "Digite o KM final:"
+    };
+    if (responses[message]) {
+        displayMessage(responses[message], "bot-message");
+        if (message === "3") expectingTextInput = true;
+    }
+}
 
     // Lida com as respostas no contexto de Contato
     function handleContatoResponses(message) {
