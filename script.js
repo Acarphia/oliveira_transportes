@@ -24,31 +24,47 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     };
 
-    function enviarParaFormsubmit(data, isEmbarque) {
-        const form = document.createElement('form');
-        form.action = 'https://formsubmit.co/luizapavarina2004@gmail.com';
-        form.method = 'POST';
-        form.style.display = 'none';
+    function enviarParaFormsubmit(data, contexto) {
+    const form = document.createElement('form');
+    form.action = 'https://formsubmit.co/luizapavarina2004@gmail.com';
+    form.method = 'POST';
+    form.style.display = 'none';
 
-        for (const key in data) {
-            const input = document.createElement('input');
-            input.type = 'hidden';
-            input.name = key;
-            input.value = data[key];
-            form.appendChild(input);
-        }
-
-        const redirect = document.createElement('input');
-        redirect.type = 'hidden';
-        redirect.name = '_redirect';
-        redirect.value = window.location.href;
-        form.appendChild(redirect);
-
-        document.body.appendChild(form);
-        form.submit();
-
-        displayMessage("✅ Informações enviadas!", "bot-message");
+    // Adiciona os dados ao formulário
+    for (const key in data) {
+        const input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = key;
+        input.value = data[key];
+        form.appendChild(input);
     }
+
+    // Assunto personalizado com CPF e contexto
+    const subject = document.createElement('input');
+    subject.type = 'hidden';
+    subject.name = '_subject';
+    subject.value = `📌 Atualizações de "${contexto}" - CPF ${data.cpf}`;
+    form.appendChild(subject);
+
+    // Redireciona de volta para o site sem sair
+    const redirect = document.createElement('input');
+    redirect.type = 'hidden';
+    redirect.name = '_redirect';
+    redirect.value = window.location.href;
+    form.appendChild(redirect);
+
+    // Impede abertura da página "Thanks"
+    const noPopup = document.createElement('input');
+    noPopup.type = 'hidden';
+    noPopup.name = '_popup';
+    noPopup.value = 'false';
+    form.appendChild(noPopup);
+
+    document.body.appendChild(form);
+    form.submit();
+
+    displayMessage("✅ Informações enviadas!", "bot-message");
+}
 
     function processUserMessage(message) {
         if (!cpf) {
