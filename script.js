@@ -155,7 +155,7 @@ document.addEventListener("DOMContentLoaded", function () {
             if (!localData) {
                 localStorage.setItem(cpf, JSON.stringify(usersData[cpf]));
             }
-            displayMessage(`Como posso ajudar ${usersData[cpf].nome}?
+            displayMessage(`Como posso ajudar ${usersData[cpf].nome}? ☺️
 1 - Embarque da carga
 2 - Rota da viagem
 3 - Desembarque da carga
@@ -163,7 +163,7 @@ document.addEventListener("DOMContentLoaded", function () {
 5 - Canais de contato`, "bot-message");
         } else if (localData) {
             const offlineUser = JSON.parse(localData);
-            displayMessage(`Como posso ajudar ${offlineUser.nome}?
+            displayMessage(`Como posso ajudar ${offlineUser.nome}? ☺️
 1 - Embarque da carga
 2 - Rota da viagem
 3 - Desembarque da carga
