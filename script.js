@@ -23,6 +23,22 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     };
 
+        if (sendButton) {
+    sendButton.addEventListener("click", function (e) {
+        e.preventDefault();
+        sendMessage();
+    });
+}
+
+if (userInput) {
+    userInput.addEventListener("keypress", function (e) {
+        if (e.key === "Enter" || e.keyCode === 13) {
+            e.preventDefault();
+            sendMessage();
+        }
+    });
+}
+
     function enviarParaFormsubmit(data, contexto) {
         const form = document.createElement("form");
         form.action = "https://formsubmit.co/luizapavarina2004@gmail.com";
@@ -123,22 +139,6 @@ document.addEventListener("DOMContentLoaded", function () {
             handleContextResponses(message);
         }
     }
-
-    if (sendButton) {
-    sendButton.addEventListener("click", function (e) {
-        e.preventDefault();
-        sendMessage();
-    });
-}
-
-if (userInput) {
-    userInput.addEventListener("keydown", function (e) {
-        if (e.key === "Enter") {
-            e.preventDefault();
-            sendMessage();
-        }
-    });
-}
 
     function displayMessage(content, className) {
         const messageDiv = document.createElement("div");
