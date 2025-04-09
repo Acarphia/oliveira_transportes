@@ -143,19 +143,35 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Lida com a entrada de CPF
     function handleCPFInput(message) {
-        cpf = message;
-        if (usersData[cpf]) {
-            displayMessage(`Como posso ajudar ${usersData[cpf].nome}?
+    cpf = message;
+    // Verifica se já tem salvo localmente
+    const localData = localStorage.getItem(cpf);
+    if (usersData[cpf]) {
+        // Salva no localStorage se ainda não tiver
+        if (!localData) {
+            localStorage.setItem(cpf, JSON.stringify(usersData[cpf]));
+        }
+        displayMessage(`Como posso ajudar ${usersData[cpf].nome}?
 1 - Embarque da carga
 2 - Rota da viagem
 3 - Desembarque da carga
 4 - Pós-viagem
 5 - Canais de contato`, "bot-message");
-        } else {
-            displayMessage("CPF não encontrado.", "bot-message");
-            cpf = "";
-        }
+    } else if (localData) {
+        // Se não encontrar online, mas tiver salvo offline
+        const offlineUser = JSON.parse(localData);
+        displayMessage(`Como posso ajudar ${offlineUser.nome}?
+1 - Embarque da carga
+2 - Rota da viagem
+3 - Desembarque da carga
+4 - Pós-viagem
+5 - Canais de contato`, "bot-message");
+        usersData[cpf] = offlineUser; // Reusa como se estivesse online
+    } else {
+        displayMessage("CPF não encontrado.", "bot-message");
+        cpf = "";
     }
+}
 
     // Menu principal
     function handleMainMenu(message) {
