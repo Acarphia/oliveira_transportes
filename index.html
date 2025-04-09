@@ -5,6 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ChatBot Oliveira Transportes</title>
     <link rel="stylesheet" href="style.css">
+
+    <!-- Manifesto -->
+    <link rel="manifest" href="manifest.json">
+
+    <!-- Ícones para iOS -->
+    <link rel="apple-touch-icon" href="icons/icon-192.png">
+    <meta name="theme-color" content="#2196f3">
 </head>
 <body>
     <div class="chat-container">
@@ -12,20 +19,17 @@
             <div class="message bot-message">Olá! Sou o assistente virtual da Oliveira Transportes. Digite seu CPF, somente em números.</div>
         </div>
         <div class="input-container">
-            <!-- Campo de texto para digitar a mensagem -->
             <input type="text" id="user-input" placeholder="Digite aqui..." />
-            
-            <!-- Botão de anexo (estilo WhatsApp) -->
             <button id="attach-button" class="attach-btn">+</button>
-            
-            <!-- Campo de upload oculto (funciona com fotos) -->
             <input type="file" id="file-input" accept="image/*" style="display: none;" />
-            
-            <!-- Botão para enviar -->
             <button id="send-button">Enviar</button>
         </div>
     </div>
 
-    <script src="script.js"></script>
+    <!-- Botão de instalação opcional -->
+    <button id="installBtn" style="display: none;">Instalar App</button>
+
+    <!-- Script do Service Worker -->
+    <script src="script.js" defer></script>
 </body>
 </html>
