@@ -89,12 +89,6 @@ document.addEventListener("DOMContentLoaded", function () {
         subject.value = `📸 Foto de ${contexto} enviada - CPF ${cpf}`;
         form.appendChild(subject);
 
-        const mensagemInput = document.createElement("input");
-        mensagemInput.type = "hidden";
-        mensagemInput.name = "mensagem";
-        mensagemInput.value = `Foto referente ao processo de ${contexto}. CPF: ${cpf}`;
-        form.appendChild(mensagemInput);
-
         const redirect = document.createElement("input");
         redirect.type = "hidden";
         redirect.name = "_redirect";
