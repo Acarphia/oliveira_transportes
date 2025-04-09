@@ -408,9 +408,9 @@ window.addEventListener('beforeinstallprompt', (e) => {
     deferredPrompt.prompt();
     deferredPrompt.userChoice.then(choiceResult => {
       if (choiceResult.outcome === 'accepted') {
-        console.log('Usuário aceitou instalar o app');
+        console.log('Usuário aceitou instalar o app.');
       } else {
-        console.log('Usuário recusou instalar o app');
+        console.log('Usuário recusou instalar o app.');
       }
       deferredPrompt = null;
     });
