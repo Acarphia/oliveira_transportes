@@ -51,7 +51,7 @@ document.addEventListener("DOMContentLoaded", function () {
     redirect.type = 'hidden';
     redirect.name = '_redirect';
     redirect.value = window.location.href;
-    form.appendChild(redirect);
+    form.appendChild(noRedirect);
 
     // Impede abertura da página "Thanks"
     const noPopup = document.createElement('input');
