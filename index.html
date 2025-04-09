@@ -42,13 +42,20 @@
       window.addEventListener('load', () => {
         navigator.serviceWorker.register('service-worker.js').then(registration => {
           console.log('Service Worker registrado com sucesso:', registration.scope);
+
+          if (registration.waiting) {
+            registration.waiting.postMessage('SKIP_WAITING');
+            console.log("Atualizando para nova versão...");
+            window.location.reload();
+          }
+
           registration.onupdatefound = () => {
             const newWorker = registration.installing;
             newWorker.onstatechange = () => {
               if (newWorker.state === 'installed') {
                 if (navigator.serviceWorker.controller) {
-                  console.log("Atualizando seus dados, aguarde...");
-                  window.location.reload();
+                  console.log("Nova versão disponível. Atualizando...");
+                  newWorker.postMessage('SKIP_WAITING');
                 }
               }
             };
