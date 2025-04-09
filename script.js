@@ -239,7 +239,7 @@ document.addEventListener("DOMContentLoaded", function () {
         currentContext = "";
         lastOptionSelected = "";
         const user = usersData[cpf];
-        displayMessage(`Como posso ajudar ${user.nome}?\n1 - Embarque da carga\n2 - Rota da viagem\n3 - Desembarque da carga\n4 - Pós-viagem\n5 - Canais de contato`, "bot-message");
+        displayMessage(`Como posso ajudar ${user.nome}? ☺️\n1 - Embarque da carga\n2 - Rota da viagem\n3 - Desembarque da carga\n4 - Pós-viagem\n5 - Canais de contato`, "bot-message");
     }
 
     function displayMenuAfterAction() {
