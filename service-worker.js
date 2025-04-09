@@ -1,27 +1,29 @@
-const CACHE_NAME = 'Oliveira-Transportes'; // Troque o número em cada nova versão
+const CACHE_NAME = 'Oliveira-Transportes-v2'; // IMPORTANTE: altere a versão sempre que atualizar arquivos
 const urlsToCache = [
   '/',
   '/index.html',
   '/style.css',
   '/script.js',
   '/icons/icon-192.png',
-  '/icons/icon-512.png'
+  '/icons/icon-512.png',
+  '/manifest.json'
 ];
 
 // Instalação: adiciona arquivos ao cache
 self.addEventListener('install', event => {
-  self.skipWaiting(); // força instalação imediata
+  console.log('[Service Worker] Instalando...');
   event.waitUntil(
-    caches.open(CACHE_NAME)
-      .then(cache => {
-        console.log('[Service Worker] Cache aberto');
-        return cache.addAll(urlsToCache);
-      })
+    caches.open(CACHE_NAME).then(cache => {
+      console.log('[Service Worker] Cache aberto');
+      return cache.addAll(urlsToCache);
+    })
   );
+  self.skipWaiting(); // ativa imediatamente
 });
 
 // Ativação: limpa caches antigos
 self.addEventListener('activate', event => {
+  console.log('[Service Worker] Ativando...');
   event.waitUntil(
     caches.keys().then(keys =>
       Promise.all(
@@ -34,15 +36,16 @@ self.addEventListener('activate', event => {
       )
     )
   );
-  self.clients.claim(); // ativa imediatamente sem precisar recarregar
+  self.clients.claim(); // pega controle imediato
 });
 
 // Intercepta requisições
 self.addEventListener('fetch', event => {
+  if (event.request.method !== 'GET') return; // só lida com GET
   event.respondWith(
     fetch(event.request)
       .then(networkResponse => {
-        // Atualiza o cache com a resposta mais nova
+        // Atualiza cache com a nova versão da resposta
         return caches.open(CACHE_NAME).then(cache => {
           cache.put(event.request, networkResponse.clone());
           return networkResponse;
