@@ -258,12 +258,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Lida com as respostas no contexto de Embarque
     function handleEmbarqueResponses(message, user) {
-        if (lastOptionSelected === "3" && message !== "3") {
-            displayMessage("Registro fotográfico recebido.", "bot-message");
-            lastOptionSelected = "";
-            displayMenuAfterAction();
-            return;
-        } else if (lastOptionSelected === "4" && message !== "4") {
+        if (lastOptionSelected === "4" && message !== "4") {
             if (!isNaN(message) && message.trim() !== "") {
                 displayMessage("KM inicial registrado: " + message, "bot-message");
                 lastOptionSelected = "";
