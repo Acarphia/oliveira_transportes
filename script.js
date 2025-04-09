@@ -173,32 +173,36 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     function handleCPFInput(message) {
-        cpf = message;
-        const localData = localStorage.getItem(cpf);
-        if (usersData[cpf]) {
-            if (!localData) {
-                localStorage.setItem(cpf, JSON.stringify(usersData[cpf]));
-            }
-            displayMessage(`Como posso ajudar ${usersData[cpf].nome}? 😊
+    cpf = message;
+    const localData = localStorage.getItem(cpf);
+
+    if (usersData[cpf]) {
+        // Atualiza o localStorage com os dados mais recentes do servidor
+        localStorage.setItem(cpf, JSON.stringify(usersData[cpf]));
+
+        displayMessage(`Como posso ajudar ${usersData[cpf].nome}? 😊
 1 - Embarque da carga
 2 - Rota da viagem
 3 - Desembarque da carga
 4 - Pós-viagem
 5 - Canais de contato`, "bot-message");
-        } else if (localData) {
-            const offlineUser = JSON.parse(localData);
-            displayMessage(`Como posso ajudar ${offlineUser.nome}? 😊
+
+    } else if (localData) {
+        const offlineUser = JSON.parse(localData);
+
+        displayMessage(`Como posso ajudar ${offlineUser.nome}? 😊
 1 - Embarque da carga
 2 - Rota da viagem
 3 - Desembarque da carga
 4 - Pós-viagem
 5 - Canais de contato`, "bot-message");
-            usersData[cpf] = offlineUser;
-        } else {
-            displayMessage("CPF não encontrado.", "bot-message");
-            cpf = "";
-        }
+
+        usersData[cpf] = offlineUser; // Reutiliza os dados offline
+    } else {
+        displayMessage("CPF não encontrado.", "bot-message");
+        cpf = "";
     }
+}
 
     function handleMainMenu(message) {
         switch (message) {
