@@ -43,18 +43,18 @@
         navigator.serviceWorker.register('service-worker.js').then(registration => {
           console.log('Service Worker registrado com sucesso:', registration.scope);
 
+          // Se já tem um novo SW esperando, ativa ele imediatamente
           if (registration.waiting) {
             registration.waiting.postMessage('SKIP_WAITING');
-            console.log("Atualizando para nova versão...");
-            window.location.reload();
           }
 
+          // Detecta nova atualização
           registration.onupdatefound = () => {
             const newWorker = registration.installing;
             newWorker.onstatechange = () => {
               if (newWorker.state === 'installed') {
                 if (navigator.serviceWorker.controller) {
-                  console.log("Nova versão disponível. Atualizando...");
+                  console.log("Nova versão disponível. Ativando...");
                   newWorker.postMessage('SKIP_WAITING');
                 }
               }
@@ -63,6 +63,12 @@
         }).catch(error => {
           console.log('Falha ao registrar o Service Worker:', error);
         });
+      });
+
+      // Quando a nova versão estiver ativa, recarrega a página
+      navigator.serviceWorker.addEventListener('controllerchange', () => {
+        console.log('Novo Service Worker ativo. Recarregando...');
+        window.location.reload();
       });
     }
   </script>
