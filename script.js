@@ -24,30 +24,24 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     };
 
-    function enviarParaFormsubmit(data, isEmbarque) {
-        const form = document.createElement('form');
-        form.action = 'https://formsubmit.co/luizapavarina2004@gmail.com';
-        form.method = 'POST';
-        form.style.display = 'none';
-
-        for (const key in data) {
-            const input = document.createElement('input');
-            input.type = 'hidden';
-            input.name = key;
-            input.value = data[key];
-            form.appendChild(input);
-        }
-
-        const redirect = document.createElement('input');
-        redirect.type = 'hidden';
-        redirect.name = '_redirect';
-        redirect.value = window.location.href;
-        form.appendChild(redirect);
-
-        document.body.appendChild(form);
-        form.submit();
-
-        displayMessage("✅ Informações enviadas!", "bot-message");
+    function enviarParaFormspree(url, data) {
+        fetch(url, {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        })
+        .then(response => {
+            if (response.ok) {
+                displayMessage("✅ Informações enviadas com sucesso!", "bot-message");
+            } else {
+                displayMessage("❌ Erro no envio das informações.", "bot-message");
+            }
+        })
+        .catch(error => {
+            displayMessage("⚠️ Erro de rede no envio das informações.", "bot-message");
+        });
     }
 
     function processUserMessage(message) {
@@ -74,15 +68,15 @@ document.addEventListener("DOMContentLoaded", function () {
 
     if (sendButton) {
         sendButton.removeEventListener('click', sendMessage);
-        sendButton.addEventListener('click', function (e) {
+        sendButton.addEventListener('click', function(e) {
             e.preventDefault();
             sendMessage();
         });
     }
 
     if (userInput) {
-        userInput.removeEventListener('keypress', function () { });
-        userInput.addEventListener('keypress', function (e) {
+        userInput.removeEventListener('keypress', function(){});
+        userInput.addEventListener('keypress', function(e) {
             if (e.key === 'Enter') {
                 e.preventDefault();
                 sendMessage();
@@ -100,14 +94,14 @@ document.addEventListener("DOMContentLoaded", function () {
     function displayMessage(content, className) {
         const messageDiv = document.createElement("div");
         messageDiv.classList.add("message", className);
-        messageDiv.innerHTML = content.replace(/\n/g, "<br>");
+        messageDiv.innerHTML = content.replace(/\\n/g, "<br>");
         chatBox.appendChild(messageDiv);
         chatBox.scrollTop = chatBox.scrollHeight;
     }
 
     function sendImage(file) {
         const reader = new FileReader();
-        reader.onloadend = function () {
+        reader.onloadend = function() {
             const messageDiv = document.createElement('div');
             messageDiv.classList.add('message', 'user-message');
 
@@ -124,19 +118,17 @@ document.addEventListener("DOMContentLoaded", function () {
 
             setTimeout(() => {
                 displayMessage("✅ Foto enviada.", "bot-message");
-
                 if (currentContext === "embarque" && lastOptionSelected === "3") {
-                    enviarParaFormsubmit({
+                    enviarParaFormspree("https://formspree.io/f/xjkyjyke", {
                         cpf: cpf,
                         fotoEmbarque: reader.result
-                    }, true);
+                    });
                 } else if (currentContext === "desembarque" && lastOptionSelected === "2") {
-                    enviarParaFormsubmit({
+                    enviarParaFormspree("https://formspree.io/f/mrbprpzq", {
                         cpf: cpf,
                         fotoDesembarque: reader.result
-                    }, false);
+                    });
                 }
-
                 lastOptionSelected = "";
                 displayMenuAfterAction();
             }, 1000);
@@ -145,11 +137,11 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     if (fileInput && attachButton) {
-        attachButton.addEventListener('click', function () {
+        attachButton.addEventListener('click', function() {
             fileInput.click();
         });
 
-        fileInput.addEventListener('change', function () {
+        fileInput.addEventListener('change', function() {
             if (fileInput.files.length > 0) {
                 sendImage(fileInput.files[0]);
             }
@@ -163,7 +155,7 @@ document.addEventListener("DOMContentLoaded", function () {
             if (!localData) {
                 localStorage.setItem(cpf, JSON.stringify(usersData[cpf]));
             }
-            displayMessage(`Como posso ajudar ${usersData[cpf].nome}? 😊
+            displayMessage(`Como posso ajudar ${usersData[cpf].nome}?
 1 - Embarque da carga
 2 - Rota da viagem
 3 - Desembarque da carga
@@ -171,7 +163,7 @@ document.addEventListener("DOMContentLoaded", function () {
 5 - Canais de contato`, "bot-message");
         } else if (localData) {
             const offlineUser = JSON.parse(localData);
-            displayMessage(`Como posso ajudar ${offlineUser.nome}? 😊
+            displayMessage(`Como posso ajudar ${offlineUser.nome}?
 1 - Embarque da carga
 2 - Rota da viagem
 3 - Desembarque da carga
@@ -185,7 +177,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     function handleMainMenu(message) {
-        switch (message) {
+        switch(message) {
             case "1":
                 currentContext = "embarque";
                 displayMenu("embarque");
@@ -212,10 +204,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
     function displayMenu(menuType) {
         const menus = {
-            embarque: "Escolha uma opção do Embarque:\n1 - Local e responsável\n2 - Tipo de carga\n3 - Registro fotográfico\n4 - KM inicial\n0 - Voltar ao menu principal",
-            rota: "Escolha uma opção da Rota:\n1 - Melhor caminho\n2 - Paradas programadas\n3 - Viagem no GPS\n4 - Observações\n5 - Custos\n0 - Voltar ao menu principal",
-            desembarque: "Escolha uma opção do Desembarque:\n1 - Local e responsável\n2 - Registro fotográfico\n3 - KM final\n0 - Voltar ao menu principal",
-            contato: "Escolha um canal:\n1 - Emergências 24h\n2 - Supervisor\n3 - Ouvidoria\n0 - Voltar ao menu principal"
+            embarque: "Escolha uma opção do Embarque:\\n1 - Local e responsável\\n2 - Tipo de carga\\n3 - Registro fotográfico\\n4 - KM inicial\\n0 - Voltar ao menu principal",
+            rota: "Escolha uma opção da Rota:\\n1 - Melhor caminho\\n2 - Paradas programadas\\n3 - Viagem no GPS\\n4 - Observações\\n5 - Custos\\n0 - Voltar ao menu principal",
+            desembarque: "Escolha uma opção do Desembarque:\\n1 - Local e responsável\\n2 - Registro fotográfico\\n3 - KM final\\n0 - Voltar ao menu principal",
+            contato: "Escolha um canal:\\n1 - Emergências 24h\\n2 - Supervisor\\n3 - Ouvidoria\\n0 - Voltar ao menu principal"
         };
         displayMessage(menus[menuType], "bot-message");
     }
@@ -231,10 +223,10 @@ document.addEventListener("DOMContentLoaded", function () {
             if (lastOptionSelected === "4" && message !== "4") {
                 if (!isNaN(message)) {
                     displayMessage("✅ KM inicial registrado: " + message, "bot-message");
-                    enviarParaFormsubmit({
+                    enviarParaFormspree("https://formspree.io/f/xjkyjyke", {
                         cpf: cpf,
                         quilometroInicial: message
-                    }, true);
+                    });
                     lastOptionSelected = "";
                     displayMenuAfterAction();
                     return;
@@ -247,7 +239,7 @@ document.addEventListener("DOMContentLoaded", function () {
             lastOptionSelected = message;
             currentContext = "embarque";
             const responses = {
-                "1": `Local: ${user.embarqueLocal}\nResponsável: ${user.embarqueResponsavel}`,
+                "1": `Local: ${user.embarqueLocal}\\nResponsável: ${user.embarqueResponsavel}`,
                 "2": `Tipo de carga: ${user.tipoCarga}`,
                 "3": "Envie a foto da carga.",
                 "4": "Digite o KM inicial:"
@@ -259,20 +251,20 @@ document.addEventListener("DOMContentLoaded", function () {
         } else if (currentContext === "rota") {
             if (lastOptionSelected === "4") {
                 displayMessage("✅ Observações registradas: " + message, "bot-message");
-                enviarParaFormsubmit({
+                enviarParaFormspree("https://formspree.io/f/mrbprpzq", {
                     cpf: cpf,
                     observacoesCarga: message
-                }, false);
+                });
                 lastOptionSelected = "";
                 displayMenuAfterAction();
                 return;
             } else if (lastOptionSelected === "5") {
                 if (!isNaN(message)) {
                     displayMessage("✅ Custos registrados: R$ " + message, "bot-message");
-                    enviarParaFormsubmit({
+                    enviarParaFormspree("https://formspree.io/f/mrbprpzq", {
                         cpf: cpf,
                         custos: message
-                    }, false);
+                    });
                     lastOptionSelected = "";
                     displayMenuAfterAction();
                     return;
@@ -299,10 +291,10 @@ document.addEventListener("DOMContentLoaded", function () {
             if (lastOptionSelected === "3" && message !== "3") {
                 if (!isNaN(message)) {
                     displayMessage("✅ KM final registrado: " + message, "bot-message");
-                    enviarParaFormsubmit({
+                    enviarParaFormspree("https://formspree.io/f/mrbprpzq", {
                         cpf: cpf,
                         quilometroFinal: message
-                    }, false);
+                    });
                     lastOptionSelected = "";
                     displayMenuAfterAction();
                     return;
@@ -315,7 +307,7 @@ document.addEventListener("DOMContentLoaded", function () {
             lastOptionSelected = message;
             currentContext = "desembarque";
             const responses = {
-                "1": `Local: ${user.desembarqueLocal}\nResponsável: ${user.desembarqueResponsavel}`,
+                "1": `Local: ${user.desembarqueLocal}\\nResponsável: ${user.desembarqueResponsavel}`,
                 "2": "Envie a foto da carga.",
                 "3": "Digite o KM final:"
             };
@@ -325,7 +317,7 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         } else if (currentContext === "contato") {
             const responses = {
-                "1": "Ligue para a Emergência 24h:\n192\nSOS Estradas:\nhttps://postocidadedemarilia.com.br/telefone-de-emergencia-das-rodovias-guia/",
+                "1": "Ligue para a Emergência 24h:\\n192\\nSOS Estradas:\\nhttps://postocidadedemarilia.com.br/telefone-de-emergencia-das-rodovias-guia/",
                 "2": "Ligue para o supervisor Otávio: (34) 9 9894 2493.",
                 "3": "Ouvidoria: ouvidoria@oliveiratransportes.com.br"
             };
