@@ -1,6 +1,6 @@
 {
-  "name": "Meu PWA Incrível",
-  "short_name": "Oliveira Transportes Chat Bot",
+  "name": "Oliveira Transportes Chat Bot",
+  "short_name": "Oliveira Transportes",
   "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#ffffff",
