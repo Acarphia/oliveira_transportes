@@ -261,93 +261,88 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     function handleContextResponses(message) {
-        const user = usersData[cpf];
+    const user = usersData[cpf];
+    const isNumber = !isNaN(Number(message));
 
-        if (message === "0") {
-            displayMainMenu();
-            return;
-        }
-
-        lastOptionSelected = message;
-
-        const isNumber = !isNaN(Number(message));
-
-        if (currentContext === "embarque") {
-            const responses = {
-                "1": `Local: ${user.embarqueLocal}\nResponsável: ${user.embarqueResponsavel}`,
-                "2": `Tipo de carga: ${user.tipoCarga}`,
-                "3": "Envie a foto da carga.",
-                "4": "Digite o KM inicial:"
-            };
-
-            if (message === "4") {
-                displayMessage(responses["4"], "bot-message");
-            } else if (lastOptionSelected === "4" && isNumber) {
-                displayMessage("✅ KM inicial registrado: " + message, "bot-message");
-                enviarParaFormsubmit({ cpf, quilometroInicial: message }, "embarque");
-                lastOptionSelected = "";
-                displayMenuAfterAction();
-            } else if (responses[message]) {
-                displayMessage(responses[message], "bot-message");
-            }
-
-        } else if (currentContext === "rota") {
-            const responses = {
-                "1": "Baixe o aplicativo Waze, disponivel para Android ou IOS ou acesse: https://www.waze.com/pt-BR/live-map/",
-                "2": "Paradas: " + user.paradasProgramadas,
-                "3": "Baixe o aplicativo Waze, disponivel para Android ou IOS ou acesse: https://www.waze.com/pt-BR/live-map/",
-                "4": "Digite suas observações:",
-                "5": "Digite os custos da viagem:"
-            };
-
-            if (message === "4" || message === "5") {
-                displayMessage(responses[message], "bot-message");
-            } else if (lastOptionSelected === "4") {
-                displayMessage("✅ Observações registradas: " + message, "bot-message");
-                enviarParaFormsubmit({ cpf, observacoesCarga: message }, "rota");
-                lastOptionSelected = "";
-                displayMenuAfterAction();
-            } else if (lastOptionSelected === "5" && isNumber) {
-                displayMessage("✅ Custos registrados: R$ " + message, "bot-message");
-                enviarParaFormsubmit({ cpf, custos: message }, "rota");
-                lastOptionSelected = "";
-                displayMenuAfterAction();
-            } else if (responses[message]) {
-                displayMessage(responses[message], "bot-message");
-            }
-
-        } else if (currentContext === "desembarque") {
-            const responses = {
-                "1": `Local: ${user.desembarqueLocal}\nResponsável: ${user.desembarqueResponsavel}`,
-                "2": "Envie a foto da carga.",
-                "3": "Digite o KM final:"
-            };
-
-            if (message === "3") {
-                displayMessage(responses["3"], "bot-message");
-            } else if (lastOptionSelected === "3" && isNumber) {
-                displayMessage("✅ KM final registrado: " + message, "bot-message");
-                enviarParaFormsubmit({ cpf, quilometroFinal: message }, "desembarque");
-                lastOptionSelected = "";
-                displayMenuAfterAction();
-            } else if (responses[message]) {
-                displayMessage(responses[message], "bot-message");
-            }
-
-        } else if (currentContext === "contato") {
-            const responses = {
-                "1": "Ligue para a Emergência 24h:\n192\nSOS Estradas:\nhttps://postocidadedemarilia.com.br/telefone-de-emergencia-das-rodovias-guia/",
-                "2": "Ligue para o supervisor Otávio: (34) 9 9894 2493.",
-                "3": "Ouvidoria: ouvidoria@oliveiratransportes.com.br"
-            };
-
-            if (responses[message]) {
-                displayMessage(responses[message], "bot-message");
-                setTimeout(displayMenuAfterAction, 2000);
-            } else {
-                displayMessage("Opção inválida.", "bot-message");
-                displayMenuAfterAction();
-            }
-        }
+    // Voltar ao menu principal
+    if (message === "0") {
+        displayMainMenu();
+        return;
     }
-});
+
+    // Registro KM inicial
+    if (currentContext === "embarque" && lastOptionSelected === "4" && isNumber) {
+        displayMessage("✅ KM inicial registrado: " + message, "bot-message");
+        enviarParaFormsubmit({ cpf, quilometroInicial: message }, "embarque");
+        lastOptionSelected = "";
+        displayMenuAfterAction();
+        return;
+    }
+
+    // Registro KM final
+    if (currentContext === "desembarque" && lastOptionSelected === "3" && isNumber) {
+        displayMessage("✅ KM final registrado: " + message, "bot-message");
+        enviarParaFormsubmit({ cpf, quilometroFinal: message }, "desembarque");
+        lastOptionSelected = "";
+        displayMenuAfterAction();
+        return;
+    }
+
+    // Registro de observações
+    if (currentContext === "rota" && lastOptionSelected === "4") {
+        displayMessage("✅ Observações registradas: " + message, "bot-message");
+        enviarParaFormsubmit({ cpf, observacoesCarga: message }, "rota");
+        lastOptionSelected = "";
+        displayMenuAfterAction();
+        return;
+    }
+
+    // Registro de custos
+    if (currentContext === "rota" && lastOptionSelected === "5" && isNumber) {
+        displayMessage("✅ Custos registrados: R$ " + message, "bot-message");
+        enviarParaFormsubmit({ cpf, custos: message }, "rota");
+        lastOptionSelected = "";
+        displayMenuAfterAction();
+        return;
+    }
+
+    lastOptionSelected = message;
+
+    // Fluxos de menus
+    if (currentContext === "embarque") {
+        const responses = {
+            "1": `Local: ${user.embarqueLocal}\nResponsável: ${user.embarqueResponsavel}`,
+            "2": `Tipo de carga: ${user.tipoCarga}`,
+            "3": "Envie a foto da carga.",
+            "4": "Digite o KM inicial:"
+        };
+        displayMessage(responses[message] || "Opção inválida.", "bot-message");
+
+    } else if (currentContext === "rota") {
+        const responses = {
+            "1": "Acesse o Waze: https://www.waze.com/pt-BR/live-map/",
+            "2": "Paradas: " + user.paradasProgramadas,
+            "3": "Acesse o Waze: https://www.waze.com/pt-BR/live-map/",
+            "4": "Digite suas observações:",
+            "5": "Digite os custos da viagem:"
+        };
+        displayMessage(responses[message] || "Opção inválida.", "bot-message");
+
+    } else if (currentContext === "desembarque") {
+        const responses = {
+            "1": `Local: ${user.desembarqueLocal}\nResponsável: ${user.desembarqueResponsavel}`,
+            "2": "Envie a foto da carga.",
+            "3": "Digite o KM final:"
+        };
+        displayMessage(responses[message] || "Opção inválida.", "bot-message");
+
+    } else if (currentContext === "contato") {
+        const responses = {
+            "1": "Emergência 24h:\n192\nSOS Estradas:\nhttps://postocidadedemarilia.com.br/telefone-de-emergencia-das-rodovias-guia/",
+            "2": "Supervisor Otávio: (34) 9 9894-2493",
+            "3": "Ouvidoria: ouvidoria@oliveiratransportes.com.br"
+        };
+        displayMessage(responses[message] || "Opção inválida.", "bot-message");
+        setTimeout(displayMenuAfterAction, 2000);
+    }
+}
