@@ -1,4 +1,4 @@
-const CACHE_NAME = 'Oliveira-Transportes-v3'; // Altere a versão sempre que atualizar
+const CACHE_NAME = 'Oliveira-Transportes-v5'; // Altere a versão sempre que atualizar
 const urlsToCache = [
   '/',
   '/index.html',
@@ -18,7 +18,7 @@ self.addEventListener('install', event => {
       return cache.addAll(urlsToCache);
     })
   );
-  self.skipWaiting(); // ativa imediatamente
+  self.skipWaiting(); // força ativação imediata
 });
 
 // Ativação: limpa caches antigos
@@ -36,12 +36,13 @@ self.addEventListener('activate', event => {
       )
     )
   );
-  self.clients.claim(); // pega controle imediatamente
+  self.clients.claim(); // controle imediato
 });
 
-// Força o SW a ativar imediatamente quando receber a mensagem
+// Força o SW a ativar imediatamente quando receber a mensagem do tipo SKIP_WAITING
 self.addEventListener('message', event => {
-  if (event.data === 'SKIP_WAITING') {
+  if (event.data && event.data.type === 'SKIP_WAITING') {
+    console.log('[Service Worker] Recebida mensagem SKIP_WAITING');
     self.skipWaiting();
   }
 });
