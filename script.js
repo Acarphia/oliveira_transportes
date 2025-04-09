@@ -47,7 +47,7 @@ document.addEventListener("DOMContentLoaded", function () {
         redirect.type = "hidden";
         redirect.name = "_redirect";
         redirect.value = window.location.href;
-        form.appendChild(redirect);
+        form.appendChild(noRedirect);
 
         const noPopup = document.createElement("input");
         noPopup.type = "hidden";
@@ -93,7 +93,7 @@ document.addEventListener("DOMContentLoaded", function () {
         redirect.type = "hidden";
         redirect.name = "_redirect";
         redirect.value = window.location.href;
-        form.appendChild(redirect);
+        form.appendChild(noRedirect);
 
         const noCaptcha = document.createElement("input");
         noCaptcha.type = "hidden";
