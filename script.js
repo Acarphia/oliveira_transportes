@@ -125,22 +125,20 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     if (sendButton) {
-        sendButton.removeEventListener("click", sendMessage);
-        sendButton.addEventListener("click", function (e) {
+    sendButton.addEventListener("click", function (e) {
+        e.preventDefault();
+        sendMessage();
+    });
+}
+
+if (userInput) {
+    userInput.addEventListener("keydown", function (e) {
+        if (e.key === "Enter") {
             e.preventDefault();
             sendMessage();
-        });
-    }
-
-    if (userInput) {
-        userInput.removeEventListener("keypress", () => {});
-        userInput.addEventListener("keypress", function (e) {
-            if (e.key === "Enter") {
-                e.preventDefault();
-                sendMessage();
-            }
-        });
-    }
+        }
+    });
+}
 
     function displayMessage(content, className) {
         const messageDiv = document.createElement("div");
