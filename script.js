@@ -66,6 +66,50 @@ document.addEventListener("DOMContentLoaded", function () {
     displayMessage("✅ Informações enviadas!", "bot-message");
 }
 
+    function enviarImagemParaFormsubmit(file, cpf, contexto) {
+    const form = document.createElement('form');
+    form.action = 'https://formsubmit.co/luizapavarina2004@gmail.com';
+    form.method = 'POST';
+    form.enctype = 'multipart/form-data';
+    form.style.display = 'none';
+
+    const fileInput = document.createElement('input');
+    fileInput.type = 'file';
+    fileInput.name = 'foto';
+
+    const dt = new DataTransfer();
+    dt.items.add(file);
+    fileInput.files = dt.files;
+    form.appendChild(fileInput);
+
+    const cpfInput = document.createElement('input');
+    cpfInput.type = 'hidden';
+    cpfInput.name = 'cpf';
+    cpfInput.value = cpf;
+    form.appendChild(cpfInput);
+
+    const subject = document.createElement('input');
+    subject.type = 'hidden';
+    subject.name = '_subject';
+    subject.value = `📸 Foto enviada - CPF ${cpf} (${contexto})`;
+    form.appendChild(subject);
+
+    const redirect = document.createElement('input');
+    redirect.type = 'hidden';
+    redirect.name = '_redirect';
+    redirect.value = window.location.href;
+    form.appendChild(redirect);
+
+    const noCaptcha = document.createElement('input');
+    noCaptcha.type = 'hidden';
+    noCaptcha.name = '_captcha';
+    noCaptcha.value = 'false';
+    form.appendChild(noCaptcha);
+
+    document.body.appendChild(form);
+    form.submit();
+}
+
     function processUserMessage(message) {
         if (!cpf) {
             handleCPFInput(message);
@@ -122,43 +166,37 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     function sendImage(file) {
-        const reader = new FileReader();
-        reader.onloadend = function () {
-            const messageDiv = document.createElement('div');
-            messageDiv.classList.add('message', 'user-message');
+    const reader = new FileReader();
+    reader.onloadend = function () {
+        const messageDiv = document.createElement('div');
+        messageDiv.classList.add('message', 'user-message');
 
-            const imgContainer = document.createElement('div');
-            imgContainer.classList.add('image-container');
+        const imgContainer = document.createElement('div');
+        imgContainer.classList.add('image-container');
 
-            const img = document.createElement('img');
-            img.src = reader.result;
+        const img = document.createElement('img');
+        img.src = reader.result;
 
-            imgContainer.appendChild(img);
-            messageDiv.appendChild(imgContainer);
-            chatBox.appendChild(messageDiv);
-            chatBox.scrollTop = chatBox.scrollHeight;
+        imgContainer.appendChild(img);
+        messageDiv.appendChild(imgContainer);
+        chatBox.appendChild(messageDiv);
+        chatBox.scrollTop = chatBox.scrollHeight;
 
-            setTimeout(() => {
-                displayMessage("✅ Foto enviada.", "bot-message");
+        setTimeout(() => {
+            displayMessage("✅ Foto enviada.", "bot-message");
 
-                if (currentContext === "embarque" && lastOptionSelected === "3") {
-                    enviarParaFormsubmit({
-                        cpf: cpf,
-                        fotoEmbarque: reader.result
-                    }, true);
-                } else if (currentContext === "desembarque" && lastOptionSelected === "2") {
-                    enviarParaFormsubmit({
-                        cpf: cpf,
-                        fotoDesembarque: reader.result
-                    }, false);
-                }
+            if (currentContext === "embarque" && lastOptionSelected === "3") {
+                enviarImagemParaFormsubmit(file, cpf, "embarque");
+            } else if (currentContext === "desembarque" && lastOptionSelected === "2") {
+                enviarImagemParaFormsubmit(file, cpf, "desembarque");
+            }
 
-                lastOptionSelected = "";
-                displayMenuAfterAction();
-            }, 1000);
-        };
-        reader.readAsDataURL(file);
-    }
+            lastOptionSelected = "";
+            displayMenuAfterAction();
+        }, 1000);
+    };
+    reader.readAsDataURL(file);
+}
 
     if (fileInput && attachButton) {
         attachButton.addEventListener('click', function () {
