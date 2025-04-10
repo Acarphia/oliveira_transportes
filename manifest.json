@@ -1,4 +1,7 @@
 {
+  "start_url": "/?source=pwa",
+  "display": "standalone",
+  "orientation": "portrait"
   "name": "Oliveira Transportes Chat Bot",
   "short_name": "Oliveira Transportes",
   "start_url": "./index.html",
