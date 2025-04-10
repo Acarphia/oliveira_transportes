@@ -22,6 +22,37 @@ document.addEventListener("DOMContentLoaded", function () {
             paradasProgramadas: "Sem paradas."
         }
     };
+    
+    if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/service-worker.js')
+    .then(registration => {
+      window.addEventListener('online', () => {
+        registration.update();
+      });
+      
+      setInterval(() => {
+        if (navigator.onLine) {
+          registration.update();
+        }
+      }, 3600000);
+      
+      navigator.serviceWorker.addEventListener('message', event => {
+        if (event.data.type === 'SW_UPDATED') {
+          window.location.reload();
+        }
+      });
+      
+      registration.update();
+    });
+}
+
+window.addEventListener('online', () => {
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.ready.then(registration => {
+      registration.update();
+    });
+  }
+});
 
     function verificarStatus() {
         const statusDot = document.getElementById('status-dot');
