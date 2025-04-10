@@ -172,7 +172,7 @@ body {
     font-size: 14px;
     color: #333;
     text-align: center;
-    border-bottom: none; /* Garantido: sem borda */
+    border-bottom: none;
 }
 
 .status-dot {
