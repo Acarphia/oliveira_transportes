@@ -23,8 +23,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     };
 
-document.addEventListener('DOMContentLoaded', function() {
-    // Função para verificar a conexão e atualizar o status
+document.addEventListener('DOMContentLoaded', function () {
     function verificarStatus() {
         const statusDot = document.getElementById('status-dot');
         const statusText = document.getElementById('status-text');
@@ -39,10 +38,11 @@ document.addEventListener('DOMContentLoaded', function() {
             statusText.textContent = 'Você está offline';
         }
     }
-    
+
     setTimeout(verificarStatus, 1000);
     window.addEventListener('online', verificarStatus);
     window.addEventListener('offline', verificarStatus);
+});
 
 function enviarParaFormsubmit(data, contexto) {
         const formData = new FormData();
