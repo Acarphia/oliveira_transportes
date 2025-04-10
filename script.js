@@ -55,15 +55,15 @@ document.addEventListener("DOMContentLoaded", function () {
             method: "POST",
             body: formData
         })
-        .then(response => response.json())
-        .then(data => {
-            console.log("Success:", data);
-            displayMessage("✅ Informações enviadas!", "bot-message");
-        })
-        .catch(error => {
-            console.error("Error:", error);
-            displayMessage("❌ Erro ao enviar informações. Tente novamente.", "bot-message");
-        });
+            .then(response => response.json())
+            .then(data => {
+                console.log("Success:", data);
+                displayMessage("✅ Informações enviadas!", "bot-message");
+            })
+            .catch(error => {
+                console.error("Error:", error);
+                displayMessage("❌ Erro ao enviar informações. Tente novamente.", "bot-message");
+            });
     }
 
     function enviarImagemParaFormsubmit(file, cpf, contexto) {
@@ -77,22 +77,23 @@ document.addEventListener("DOMContentLoaded", function () {
             method: "POST",
             body: formData
         })
-        .then(response => response.json())
-        .then(data => {
-            console.log("Success:", data);
-            displayMessage("✅ Foto enviada com sucesso!", "bot-message");
-            lastOptionSelected = "";
-            displayMenuAfterAction();
-        })
-        .catch(error => {
-            console.error("Error:", error);
-            displayMessage("❌ Erro ao enviar foto. Tente novamente.", "bot-message");
-        });
+            .then(response => response.json())
+            .then(data => {
+                console.log("Success:", data);
+                displayMessage("✅ Foto enviada com sucesso!", "bot-message");
+                lastOptionSelected = "";
+                displayMenuAfterAction();
+            })
+            .catch(error => {
+                console.error("Error:", error);
+                displayMessage("❌ Erro ao enviar foto. Tente novamente.", "bot-message");
+            });
     }
 
     function sendMessage() {
         const message = userInput.value.trim();
         if (message === "") return;
+
         displayMessage(message, "user-message");
         userInput.value = "";
         processUserMessage(message);
