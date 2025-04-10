@@ -1,4 +1,5 @@
-const CACHE_NAME = 'Oliveira-Transportes-' + new Date().getTime(); // Cache único
+const CACHE_VERSION = 'v4';
+const CACHE_NAME = 'Oliveira-Transportes-' + CACHE_VERSION;
 const urlsToCache = [
   '/',
   '/index.html',
