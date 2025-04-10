@@ -65,28 +65,30 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     function enviarImagemParaFormsubmit(file, cpf, contexto) {
-        const formData = new FormData();
-        formData.append("file", file);
-        formData.append("cpf", cpf);
-        formData.append("_subject", `📸 Foto de ${contexto} enviada - CPF ${cpf}`);
-        formData.append("_captcha", "false");
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("cpf", cpf);
+    formData.append("_subject", `📸 Foto de ${contexto} enviada - CPF ${cpf}`);
+    formData.append("_captcha", "false");
 
-        fetch("https://formsubmit.co/luizapavarina2004@gmail.com", {
-            method: "POST",
-            body: formData
-        })
-        .then(response => response.json())
-        .then(data => {
+    fetch("https://formsubmit.co/luizapavarina2004@gmail.com", {
+        method: "POST",
+        body: formData
+    })
+    .then(response => {
+        if (response.ok) {
             displayMessage("✅ Foto enviada!", "bot-message");
             lastOptionSelected = "";
             displayMenuAfterAction();
-        })
-        .catch(error => {
-            console.error(error);
-            displayMessage("❌ Erro ao enviar foto. Tente novamente.", "bot-message");
-        });
-    }
-
+        } else {
+            throw new Error("Erro ao enviar foto");
+        }
+    })
+    .catch(error => {
+        console.error(error);
+        displayMessage("❌ Erro ao enviar foto. Tente novamente.", "bot-message");
+    });
+}
     function sendMessage() {
         const message = userInput.value.trim();
         if (message === "") return;
