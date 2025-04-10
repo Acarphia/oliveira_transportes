@@ -2,6 +2,15 @@
 Este é o sistema de chatbot da Oliveira Transporte.
 Os funcionários podem consultar e enviar informações relacionadas ao transporte de cargas, como embarque, rota, desembarque e pós-viagem.
 
+♻️ ATUALIZAÇÃO OBRIGATÓRIA DO SISTEMA
+Sempre que qualquer arquivo do sistema for alterado — como index.html, style.css, script.js, imagens, ícones ou manifestos.
+É OBRIGATÓRIO atualizar a versão do cache no arquivo service-worker.js.
+Isso garante que os usuários recebam a versão mais recente do sistema.
+No início do service-worker.js, altere manualmente a versão do cache:
+const CACHE_VERSION = 'v5.0';
+Altere, por exemplo, para:
+const CACHE_VERSION = 'v5.1';
+
 🧠 BANCO DE DADOS (dados dos motoristas):
 Os dados dos motoristas estão cadastrados diretamente no arquivo script.js, na variável usersData.
 📍 const usersData = {
