@@ -2,7 +2,7 @@
 Este é o sistema de chatbot da Oliveira Transporte.
 Os funcionários podem consultar e enviar informações relacionadas ao transporte de cargas, como embarque, rota, desembarque e pós-viagem.
 
-♻️ ATUALIZAÇÃO OBRIGATÓRIA DO SISTEMA
+❗️ ATUALIZAÇÃO OBRIGATÓRIA DO SISTEMA
 Sempre que qualquer arquivo do sistema for alterado — como index.html, style.css, script.js, imagens, ícones ou manifestos.
 É OBRIGATÓRIO atualizar a versão do cache no arquivo service-worker.js.
 Isso garante que os usuários recebam a versão mais recente do sistema.
