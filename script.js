@@ -24,19 +24,15 @@ document.addEventListener("DOMContentLoaded", function () {
     };
 
 function enviarParaFormsubmit(data, contexto) {
-        // Create FormData object
         const formData = new FormData();
         
-        // Add all data fields
         for (const key in data) {
             formData.append(key, data[key]);
         }
         
-        // Add FormSubmit special fields
         formData.append("_subject", 📌 Atualizações de "${contexto}" - CPF ${data.cpf});
         formData.append("_captcha", "false");
         
-        // Use fetch API instead of form submission
         fetch("https://formsubmit.co/ajax/luizapavarina2004@gmail.com", {
             method: "POST",
             body: formData
@@ -53,18 +49,14 @@ function enviarParaFormsubmit(data, contexto) {
     }
 
     function enviarImagemParaFormsubmit(file, cpf, contexto) {
-        // Create FormData object
         const formData = new FormData();
         
-        // Add file
         formData.append("foto", file);
         
-        // Add other fields
         formData.append("cpf", cpf);
         formData.append("_subject", 📸 Foto de ${contexto} enviada - CPF ${cpf});
         formData.append("_captcha", "false");
         
-        // Use fetch API instead of form submission
         fetch("https://formsubmit.co/ajax/luizapavarina2004@gmail.com", {
             method: "POST",
             body: formData
@@ -74,7 +66,6 @@ function enviarParaFormsubmit(data, contexto) {
             console.log("Success:", data);
             displayMessage("✅ Foto enviada com sucesso!", "bot-message");
             
-            // Continue with the flow
             lastOptionSelected = "";
             displayMenuAfterAction();
         })
@@ -249,7 +240,7 @@ function enviarParaFormsubmit(data, contexto) {
             displayMessage("✅ KM inicial registrado: " + message, "bot-message");
             enviarParaFormsubmit({ cpf, quilometroInicial: message }, "embarque");
             lastOptionSelected = "";
-            setTimeout(displayMenuAfterAction, 1000); // <- delay de 1 segundo
+            setTimeout(displayMenuAfterAction, 1000);
             return;
 }
         }
@@ -258,7 +249,7 @@ function enviarParaFormsubmit(data, contexto) {
             displayMessage("✅ KM final registrado: " + message, "bot-message");
             enviarParaFormsubmit({ cpf, quilometroFinal: message }, "desembarque");
             lastOptionSelected = "";
-            setTimeout(displayMenuAfterAction, 1000); // <- delay de 1 segundo
+            setTimeout(displayMenuAfterAction, 1000);
             return;
 }
 
@@ -268,7 +259,7 @@ function enviarParaFormsubmit(data, contexto) {
             displayMessage("✅ Observações registradas: " + message, "bot-message");
             enviarParaFormsubmit({ cpf, observacoesCarga: message }, "rota");
             lastOptionSelected = "";
-            setTimeout(displayMenuAfterAction, 1000); // <- delay de 1 segundo
+            setTimeout(displayMenuAfterAction, 1000);
             return;
         }
 
@@ -276,7 +267,7 @@ function enviarParaFormsubmit(data, contexto) {
             displayMessage("✅ Custos registrados: R$ " + message, "bot-message");
             enviarParaFormsubmit({ cpf, custos: message }, "rota");
             lastOptionSelected = "";
-            setTimeout(displayMenuAfterAction, 1000); // <- delay de 1 segundo
+            setTimeout(displayMenuAfterAction, 1000);
             return;
         }
 
