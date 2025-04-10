@@ -1,73 +1,62 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ChatBot Oliveira Transportes</title>
-
-  <link rel="stylesheet" href="style.css" />
-  <link rel="manifest" href="manifest.json" />
-  <meta name="theme-color" content="#2196f3" />
-  <link rel="apple-touch-icon" href="icons/icon-192.png" />
+ <meta charset="UTF-8" />
+ <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+ <title>ChatBot Oliveira Transportes</title>
+ <link rel="stylesheet" href="style.css" />
+ <link rel="manifest" href="manifest.json" />
+ <meta name="theme-color" content="#2196f3" />
+ <link rel="apple-touch-icon" href="icons/icon-192.png" />
 </head>
 <body>
-  <div class="chat-container">
-
-    <!-- Indicador de status corrigido -->
-    <div class="status-indicator" id="status-indicator" style="text-align: center; margin-bottom: 10px;">
-      <span id="status-dot" style="display: inline-block; width: 10px; height: 10px; border-radius: 50%; background-color: gray; margin-right: 5px;"></span>
-      <span id="status-text">Verificando status...</span>
-    </div>
-
-    <div class="chat-box" id="chat-box">
-      <div class="message bot-message">
-        Olá! Sou o assistente virtual da Oliveira Transportes. Digite seu CPF, somente em números.
-      </div>
-    </div>
-
-    <div class="input-container" id="chat-form">
-      <input type="text" id="user-input" placeholder="Digite aqui..." autocomplete="off" />
-      <button type="button" id="attach-button" class="attach-btn" title="Anexar foto">+</button>
-      <input type="file" id="file-input" accept="image/*" style="display: none;" />
-      <button type="button" id="send-button">Enviar</button>
-    </div>
-  </div>
-
-  <button id="installBtn" style="display: none;">Instalar App</button>
-
-  <script src="script.js" defer></script>
-
-  <script>
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('service-worker.js').then(registration => {
-          console.log('Service Worker registrado com sucesso:', registration.scope);
-
-          if (registration.waiting) {
-            registration.waiting.postMessage('SKIP_WAITING');
-          }
-
-          registration.onupdatefound = () => {
-            const newWorker = registration.installing;
-            newWorker.onstatechange = () => {
-              if (newWorker.state === 'installed') {
-                if (navigator.serviceWorker.controller) {
-                  console.log("Nova versão disponível. Ativando...");
-                  newWorker.postMessage('SKIP_WAITING');
-                }
-              }
-            };
-          };
-        }).catch(error => {
-          console.log('Falha ao registrar o Service Worker:', error);
-        });
-      });
-
-      navigator.serviceWorker.addEventListener('controllerchange', () => {
-        console.log('Novo Service Worker ativo. Recarregando...');
-        window.location.reload();
-      });
-    }
-  </script>
+ <div class="chat-container">
+   <div class="status-indicator" id="status-indicator">
+     <span id="status-dot" class="status-dot"></span>
+     <span id="status-text">Verificando status...</span>
+   </div>
+   <div class="chat-box" id="chat-box">
+     <div class="message bot-message">
+       Olá! Sou o assistente virtual da Oliveira Transportes. Digite seu CPF, somente em números.
+     </div>
+   </div>
+   <div class="input-container" id="chat-form">
+     <input type="text" id="user-input" placeholder="Digite aqui..." autocomplete="off" />
+     <button type="button" id="attach-button" class="attach-btn" title="Anexar foto">+</button>
+     <input type="file" id="file-input" accept="image/*" style="display: none;" />
+     <button type="button" id="send-button">Enviar</button>
+   </div>
+ </div>
+ <button id="installBtn" style="display: none;">Instalar App</button>
+ <script src="script.js" defer></script>
+ <script>
+   if ('serviceWorker' in navigator) {
+     window.addEventListener('load', () => {
+       navigator.serviceWorker.register('service-worker.js').then(registration => {
+         console.log('Service Worker registrado com sucesso:', registration.scope);
+         if (registration.waiting) {
+           registration.waiting.postMessage('SKIP_WAITING');
+         }
+         registration.onupdatefound = () => {
+           const newWorker = registration.installing;
+           newWorker.onstatechange = () => {
+             if (newWorker.state === 'installed') {
+               if (navigator.serviceWorker.controller) {
+                 console.log("Nova versão disponível. Atualizand...");
+                 newWorker.postMessage('SKIP_WAITING');
+               }
+             }
+           };
+         };
+       }).catch(error => {
+         console.log('Falha ao registrar o Service Worker:', error);
+       });
+     });
+     navigator.serviceWorker.addEventListener('controllerchange', () => {
+       console.log('Novo Service Worker ativo. Atualizand...');
+       window.location.reload();
+     });
+   }
+ </script>
 </body>
 </html>
