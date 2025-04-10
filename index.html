@@ -5,14 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>ChatBot Oliveira Transportes</title>
 
-  <!-- Estilos -->
   <link rel="stylesheet" href="style.css" />
 
-  <!-- Manifesto PWA -->
   <link rel="manifest" href="manifest.json" />
   <meta name="theme-color" content="#2196f3" />
 
-  <!-- Ícones para iOS -->
   <link rel="apple-touch-icon" href="icons/icon-192.png" />
 </head>
 <body>
@@ -30,25 +27,20 @@
     </div>
   </div>
 
-  <!-- Botão de instalação opcional -->
   <button id="installBtn" style="display: none;">Instalar App</button>
 
-  <!-- Scripts -->
   <script src="script.js" defer></script>
 
-  <!-- Service Worker -->
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
         navigator.serviceWorker.register('service-worker.js').then(registration => {
           console.log('Service Worker registrado com sucesso:', registration.scope);
-
-          // Se já tem um novo SW esperando, ativa ele imediatamente
+          
           if (registration.waiting) {
             registration.waiting.postMessage('SKIP_WAITING');
           }
 
-          // Detecta nova atualização
           registration.onupdatefound = () => {
             const newWorker = registration.installing;
             newWorker.onstatechange = () => {
@@ -65,7 +57,6 @@
         });
       });
 
-      // Quando a nova versão estiver ativa, recarrega a página
       navigator.serviceWorker.addEventListener('controllerchange', () => {
         console.log('Novo Service Worker ativo. Recarregando...');
         window.location.reload();
