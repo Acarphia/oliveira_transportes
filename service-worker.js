@@ -1,4 +1,4 @@
-const CACHE_NAME = 'Oliveira-Transportes-v3.3';
+const CACHE_NAME = 'Oliveira-Transportes-v3.4'; // ATUALIZE A VERSAO
 const UPDATE_INTERVAL = 3600000;
 
 const urlsToCache = [
@@ -10,6 +10,15 @@ const urlsToCache = [
   '/icons/icon-512.png',
   '/manifest.json'
 ];
+
+self.addEventListener('message', (event) => {
+  if (event.data.type === 'FORCE_UPDATE') {
+    self.skipWaiting();
+    clients.matchAll().then(clients => {
+      clients.forEach(client => client.postMessage({type: 'FORCE_RELOAD'}));
+    });
+  }
+});
 
 self.addEventListener('install', event => {
   event.waitUntil(
