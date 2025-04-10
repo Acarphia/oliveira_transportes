@@ -162,7 +162,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 } else if (currentContext === "desembarque" && lastOptionSelected === "2") {
                     enviarImagemParaFormsubmit(file, cpf, "desembarque");
                 }
-            }, 1000);
+            }, 1500);
         };
         reader.readAsDataURL(file);
     }
@@ -257,7 +257,7 @@ document.addEventListener("DOMContentLoaded", function () {
             displayMessage("✅ KM inicial registrado: " + message, "bot-message");
             enviarParaFormsubmit({ cpf, quilometroInicial: message }, "embarque");
             lastOptionSelected = "";
-            setTimeout(displayMenuAfterAction, 1000);
+            setTimeout(displayMenuAfterAction, 1500);
             return;
         }
 
@@ -265,7 +265,7 @@ document.addEventListener("DOMContentLoaded", function () {
             displayMessage("✅ KM final registrado: " + message, "bot-message");
             enviarParaFormsubmit({ cpf, quilometroFinal: message }, "desembarque");
             lastOptionSelected = "";
-            setTimeout(displayMenuAfterAction, 1000);
+            setTimeout(displayMenuAfterAction, 1500);
             return;
         }
 
@@ -273,7 +273,7 @@ document.addEventListener("DOMContentLoaded", function () {
             displayMessage("✅ Observações registradas: " + message, "bot-message");
             enviarParaFormsubmit({ cpf, observacoesCarga: message }, "rota");
             lastOptionSelected = "";
-            setTimeout(displayMenuAfterAction, 1000);
+            setTimeout(displayMenuAfterAction, 1500);
             return;
         }
 
@@ -281,7 +281,7 @@ document.addEventListener("DOMContentLoaded", function () {
             displayMessage("✅ Custos registrados: R$ " + message, "bot-message");
             enviarParaFormsubmit({ cpf, custos: message }, "rota");
             lastOptionSelected = "";
-            setTimeout(displayMenuAfterAction, 1000);
+            setTimeout(displayMenuAfterAction, 1500);
             return;
         }
 
