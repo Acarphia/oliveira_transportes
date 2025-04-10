@@ -1,5 +1,4 @@
-const CACHE_NAME = 'Oliveira-Transportes-v3.5'; // ATUALIZE A VERSAO
-const UPDATE_INTERVAL = 3600000;
+const CACHE_NAME = 'Oliveira-Transportes-v3.6'; // Atualize a versão sempre que atualizar
 
 const urlsToCache = [
   '/',
@@ -11,78 +10,64 @@ const urlsToCache = [
   '/manifest.json'
 ];
 
+// Controle de mensagens
 self.addEventListener('message', (event) => {
-  if (event.data.type === 'FORCE_UPDATE') {
+  if (event.data === 'SKIP_WAITING' || event.data.type === 'FORCE_UPDATE') {
     self.skipWaiting();
-    clients.matchAll().then(clients => {
-      clients.forEach(client => client.postMessage({type: 'FORCE_RELOAD'}));
+    clients.claim().then(() => {
+      clients.matchAll().then(clients => {
+        clients.forEach(client => client.postMessage({type: 'FORCE_RELOAD'}));
+      });
     });
   }
 });
 
+// Instalação
 self.addEventListener('install', event => {
-  event.waitUntil(
-    caches.open(CACHE_NAME).then(cache => {
-      return cache.addAll(urlsToCache);
-    })
-  );
   self.skipWaiting();
+  event.waitUntil(
+    caches.open(CACHE_NAME)
+      .then(cache => cache.addAll(urlsToCache))
+  );
 });
 
+// Ativação
 self.addEventListener('activate', event => {
   event.waitUntil(
-    caches.keys().then(keys =>
-      Promise.all(
-        keys.map(key => {
-          if (key !== CACHE_NAME) {
-            return caches.delete(key);
+    caches.keys().then(cacheNames => {
+      return Promise.all(
+        cacheNames.map(cache => {
+          if (cache !== CACHE_NAME) {
+            return caches.delete(cache);
           }
         })
-      )
-    ).then(() => {
-      self.clients.matchAll().then(clients => {
-        clients.forEach(client => client.postMessage({ type: 'SW_UPDATED' }));
-      });
-    })
+      );
+    }).then(() => self.clients.claim())
   );
-  self.clients.claim();
 });
 
-self.addEventListener('message', event => {
-  if (event.data === 'SKIP_WAITING') {
-    self.skipWaiting();
-  }
-});
-
+// Estratégia de cache
 self.addEventListener('fetch', event => {
   if (event.request.method !== 'GET') return;
-
+  
   event.respondWith(
-    caches.match(event.request).then(cachedResponse => {
-      const fetchAndCache = () => {
-        return fetch(event.request)
-          .then(networkResponse => {
-            if (networkResponse && networkResponse.status === 200) {
-              const responseToCache = networkResponse.clone();
-              caches.open(CACHE_NAME).then(cache => {
-                cache.put(event.request, responseToCache);
-              });
-            }
-            return networkResponse;
-          })
-          .catch(() => {
-            return cachedResponse;
-          });
-      };
-
-      if (navigator.onLine) {
-        return fetchAndCache();
-      }
-      return cachedResponse || fetchAndCache();
+    caches.match(event.request).then(cached => {
+      const fetched = fetch(event.request)
+        .then(response => {
+          // Atualiza cache
+          const responseClone = response.clone();
+          caches.open(CACHE_NAME)
+            .then(cache => cache.put(event.request, responseClone));
+          return response;
+        })
+        .catch(() => cached);
+      
+      return cached || fetched;
     })
   );
 });
 
+// Atualização forçada quando online
 self.addEventListener('sync', event => {
   if (event.tag === 'update-cache') {
     event.waitUntil(
@@ -90,11 +75,7 @@ self.addEventListener('sync', event => {
         return Promise.all(
           urlsToCache.map(url => {
             return fetch(url)
-              .then(response => {
-                if (response.status === 200) {
-                  return cache.put(url, response);
-                }
-              })
+              .then(response => cache.put(url, response))
               .catch(() => {});
           })
         );
@@ -102,25 +83,3 @@ self.addEventListener('sync', event => {
     );
   }
 });
-
-self.addEventListener('periodicsync', event => {
-  if (event.tag === 'periodic-cache-update') {
-    event.waitUntil(updateCache());
-  }
-});
-
-function updateCache() {
-  return caches.open(CACHE_NAME).then(cache => {
-    return Promise.all(
-      urlsToCache.map(url => {
-        return fetch(url)
-          .then(response => {
-            if (response.status === 200) {
-              return cache.put(url, response);
-            }
-          })
-          .catch(() => {});
-      })
-    );
-  });
-}
