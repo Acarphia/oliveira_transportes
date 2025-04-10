@@ -1,4 +1,5 @@
-const CACHE_NAME = 'Oliveira-Transportes-v3.1'; // <---- Atualize SEMPRE que mudar arquivos
+const CACHE_NAME = 'Oliveira-Transportes-v3.1';
+const UPDATE_INTERVAL = 3600000;
 
 const urlsToCache = [
   '/',
@@ -11,10 +12,8 @@ const urlsToCache = [
 ];
 
 self.addEventListener('install', event => {
-  console.log('[Service Worker] Instalando...');
   event.waitUntil(
     caches.open(CACHE_NAME).then(cache => {
-      console.log('[Service Worker] Cache aberto');
       return cache.addAll(urlsToCache);
     })
   );
@@ -22,25 +21,26 @@ self.addEventListener('install', event => {
 });
 
 self.addEventListener('activate', event => {
-  console.log('[Service Worker] Ativando...');
   event.waitUntil(
     caches.keys().then(keys =>
       Promise.all(
         keys.map(key => {
           if (key !== CACHE_NAME) {
-            console.log('[Service Worker] Removendo cache antigo:', key);
             return caches.delete(key);
           }
         })
       )
-    )
+    ).then(() => {
+      self.clients.matchAll().then(clients => {
+        clients.forEach(client => client.postMessage({ type: 'SW_UPDATED' }));
+      });
+    })
   );
   self.clients.claim();
 });
 
 self.addEventListener('message', event => {
   if (event.data === 'SKIP_WAITING') {
-    console.log('[Service Worker] Recebida mensagem SKIP_WAITING');
     self.skipWaiting();
   }
 });
@@ -50,20 +50,68 @@ self.addEventListener('fetch', event => {
 
   event.respondWith(
     caches.match(event.request).then(cachedResponse => {
-      const fetchPromise = fetch(event.request)
-        .then(networkResponse => {
-          if (networkResponse && networkResponse.status === 200) {
-            caches.open(CACHE_NAME).then(cache =>
-              cache.put(event.request, networkResponse.clone())
-            );
-          }
-          return networkResponse;
-        })
-        .catch(() => {
-          return cachedResponse;
-        });
+      const fetchAndCache = () => {
+        return fetch(event.request)
+          .then(networkResponse => {
+            if (networkResponse && networkResponse.status === 200) {
+              const responseToCache = networkResponse.clone();
+              caches.open(CACHE_NAME).then(cache => {
+                cache.put(event.request, responseToCache);
+              });
+            }
+            return networkResponse;
+          })
+          .catch(() => {
+            return cachedResponse;
+          });
+      };
 
-      return cachedResponse || fetchPromise;
+      if (navigator.onLine) {
+        return fetchAndCache();
+      }
+      return cachedResponse || fetchAndCache();
     })
   );
 });
+
+self.addEventListener('sync', event => {
+  if (event.tag === 'update-cache') {
+    event.waitUntil(
+      caches.open(CACHE_NAME).then(cache => {
+        return Promise.all(
+          urlsToCache.map(url => {
+            return fetch(url)
+              .then(response => {
+                if (response.status === 200) {
+                  return cache.put(url, response);
+                }
+              })
+              .catch(() => {});
+          })
+        );
+      })
+    );
+  }
+});
+
+self.addEventListener('periodicsync', event => {
+  if (event.tag === 'periodic-cache-update') {
+    event.waitUntil(updateCache());
+  }
+});
+
+function updateCache() {
+  return caches.open(CACHE_NAME).then(cache => {
+    return Promise.all(
+      urlsToCache.map(url => {
+        return fetch(url)
+          .then(response => {
+            if (response.status === 200) {
+              return cache.put(url, response);
+            }
+          })
+          .catch(() => {});
+      })
+    );
+  });
+}
