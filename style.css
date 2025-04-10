@@ -36,7 +36,6 @@ body {
     background-color: #e5ddd5;
 }
 
-/* Estilo base para todas as mensagens */
 .message {
     max-width: 75%;
     padding: 12px;
@@ -46,7 +45,6 @@ body {
     position: relative;
 }
 
-/* Mensagens do BOT - esquerda, branco */
 .bot-message {
     background-color: white;
     margin-right: auto;
@@ -55,7 +53,6 @@ body {
     align-self: flex-start;
 }
 
-/* Mensagens do USUÁRIO - direita, verde */
 .user-message {
     background-color: #dcf8c6;
     margin-left: auto;
@@ -64,29 +61,24 @@ body {
     align-self: flex-end;
 }
 
-/* Container de mensagem com imagem - ESSENCIAL */
 .user-message .image-container {
-    background-color: #dcf8c6; /* Verde do WhatsApp */
+    background-color: #dcf8c6;
     padding: 8px;
     border-radius: 18px 18px 0 18px;
     max-width: 200px;
-    margin-left: auto; /* Alinha à direita */
+    margin-left: auto;
     margin-right: 0;
 }
 
-/* Imagem dentro do container - ESSENCIAL */
 .user-message .image-container img {
     width: 100%;
     border-radius: 8px;
     display: block;
 }
 
-/* Remove estilos conflitantes */
 .image-message {
-    /* Se esta classe existir, deixe vazia ou remova */
 }
 
-/* Input area */
 .input-container {
     display: flex;
     padding: 10px;
@@ -148,7 +140,6 @@ body {
     display: none;
 }
 
-/* Estilização da scrollbar */
 .chat-box::-webkit-scrollbar {
     width: 6px;
 }
@@ -162,7 +153,6 @@ body {
     border-radius: 3px;
 }
 
-/* Garante que quebras de linha sejam respeitadas */
 .message br {
     content: "";
     display: block;
