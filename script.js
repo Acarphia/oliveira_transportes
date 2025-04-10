@@ -129,40 +129,39 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     function sendImage(file) {
-        const envioValido =
-            (currentContext === "embarque" && lastOptionSelected === "3") ||
-            (currentContext === "desembarque" && lastOptionSelected === "2");
+    const envioValido =
+        (currentContext === "embarque" && lastOptionSelected === "3") ||
+        (currentContext === "desembarque" && lastOptionSelected === "2");
 
-        if (!envioValido) {
-            displayMessage("⚠️ Formato inválido.", "bot-message");
-            return;
-        }
-
-        const reader = new FileReader();
-        reader.onloadend = function () {
-            const messageDiv = document.createElement("div");
-            messageDiv.classList.add("message", "user-message");
-
-            const imgContainer = document.createElement("div");
-            imgContainer.classList.add("image-container");
-
-            const img = document.createElement("img");
-            img.src = reader.result;
-
-            imgContainer.appendChild(img);
-            messageDiv.appendChild(imgContainer);
-            chatBox.appendChild(messageDiv);
-            chatBox.scrollTop = chatBox.scrollHeight;
-
-                if (currentContext === "embarque" && lastOptionSelected === "3") {
-                    enviarImagemParaFormsubmit(file, cpf, "embarque");
-                } else if (currentContext === "desembarque" && lastOptionSelected === "2") {
-                    enviarImagemParaFormsubmit(file, cpf, "desembarque");
-                }
-            }, 1500);
-        };
-        reader.readAsDataURL(file);
+    if (!envioValido) {
+        displayMessage("⚠️ Formato inválido.", "bot-message");
+        return;
     }
+
+    const reader = new FileReader();
+    reader.onloadend = function () {
+        const messageDiv = document.createElement("div");
+        messageDiv.classList.add("message", "user-message");
+
+        const imgContainer = document.createElement("div");
+        imgContainer.classList.add("image-container");
+
+        const img = document.createElement("img");
+        img.src = reader.result;
+
+        imgContainer.appendChild(img);
+        messageDiv.appendChild(imgContainer);
+        chatBox.appendChild(messageDiv);
+        chatBox.scrollTop = chatBox.scrollHeight;
+
+        if (currentContext === "embarque" && lastOptionSelected === "3") {
+            enviarImagemParaFormsubmit(file, cpf, "embarque");
+        } else if (currentContext === "desembarque" && lastOptionSelected === "2") {
+            enviarImagemParaFormsubmit(file, cpf, "desembarque");
+        }
+    };
+    reader.readAsDataURL(file);
+}
 
     if (fileInput && attachButton) {
         attachButton.addEventListener("click", () => fileInput.click());
