@@ -1,4 +1,4 @@
-const CACHE_NAME = 'Oliveira-Transportes-v3.0'; // <---- Atualize SEMPRE que mudar arquivos
+const CACHE_NAME = 'Oliveira-Transportes-v3.1'; // <---- Atualize SEMPRE que mudar arquivos
 
 const urlsToCache = [
   '/',
