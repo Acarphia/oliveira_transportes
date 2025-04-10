@@ -249,23 +249,26 @@ function enviarParaFormsubmit(data, contexto) {
             displayMessage("✅ KM inicial registrado: " + message, "bot-message");
             enviarParaFormsubmit({ cpf, quilometroInicial: message }, "embarque");
             lastOptionSelected = "";
-            displayMenuAfterAction();
+            setTimeout(displayMenuAfterAction, 1000); // <- delay de 1 segundo
             return;
+}
         }
 
         if (currentContext === "desembarque" && lastOptionSelected === "3" && isNumber) {
             displayMessage("✅ KM final registrado: " + message, "bot-message");
             enviarParaFormsubmit({ cpf, quilometroFinal: message }, "desembarque");
             lastOptionSelected = "";
-            displayMenuAfterAction();
+            setTimeout(displayMenuAfterAction, 1000); // <- delay de 1 segundo
             return;
+}
+
         }
 
         if (currentContext === "rota" && lastOptionSelected === "4") {
             displayMessage("✅ Observações registradas: " + message, "bot-message");
             enviarParaFormsubmit({ cpf, observacoesCarga: message }, "rota");
             lastOptionSelected = "";
-            displayMenuAfterAction();
+            setTimeout(displayMenuAfterAction, 1000); // <- delay de 1 segundo
             return;
         }
 
@@ -273,7 +276,7 @@ function enviarParaFormsubmit(data, contexto) {
             displayMessage("✅ Custos registrados: R$ " + message, "bot-message");
             enviarParaFormsubmit({ cpf, custos: message }, "rota");
             lastOptionSelected = "";
-            displayMenuAfterAction();
+            setTimeout(displayMenuAfterAction, 1000); // <- delay de 1 segundo
             return;
         }
 
