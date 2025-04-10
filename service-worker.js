@@ -1,4 +1,4 @@
-const CACHE_NAME = 'Oliveira-Transportes-v18'; // <---------- Altere a versão sempre que atualizar algo no codigo
+const CACHE_NAME = 'Oliveira-Transportes-v20'; // <---------- Altere a versão sempre que atualizar algo no codigo
 const urlsToCache = [
   '/',
   '/index.html',
