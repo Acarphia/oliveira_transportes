@@ -76,7 +76,7 @@ document.addEventListener("DOMContentLoaded", function () {
         })
             .then(response => response.json())
             .then(data => {
-                displayMessage("✅ Foto enviada com sucesso!", "bot-message");
+                displayMessage("✅ Foto enviada!", "bot-message");
                 lastOptionSelected = "";
                 displayMenuAfterAction();
             })
@@ -153,9 +153,6 @@ document.addEventListener("DOMContentLoaded", function () {
             messageDiv.appendChild(imgContainer);
             chatBox.appendChild(messageDiv);
             chatBox.scrollTop = chatBox.scrollHeight;
-
-            setTimeout(() => {
-                displayMessage("✅ Foto enviada.", "bot-message");
 
                 if (currentContext === "embarque" && lastOptionSelected === "3") {
                     enviarImagemParaFormsubmit(file, cpf, "embarque");
