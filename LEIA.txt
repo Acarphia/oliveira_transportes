@@ -1,5 +1,6 @@
 📄 LEIA-ME
-Este é o sistema de chatbot para os caminhoneiros da Oliveira Transporte, onde eles podem consultar e enviar informações relacionadas ao transporte de cargas, como embarque, rota, desembarque e pós-viagem.
+Este é o sistema de chatbot da Oliveira Transporte.
+Os funcionários podem consultar e enviar informações relacionadas ao transporte de cargas, como embarque, rota, desembarque e pós-viagem.
 
 🧠 BANCO DE DADOS (dados dos motoristas):
 Os dados dos motoristas estão cadastrados diretamente no arquivo script.js, na variável usersData.
