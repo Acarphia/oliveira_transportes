@@ -43,28 +43,33 @@ document.addEventListener("DOMContentLoaded", function () {
     window.addEventListener('offline', verificarStatus);
 
     function enviarParaFormsubmit(data, contexto) {
-        const formData = new FormData();
-        for (const key in data) {
-            formData.append(key, data[key]);
-        }
-        formData.append("_subject", `📌 Atualizações de ${contexto} - CPF ${data.cpf}`);
-        formData.append("_captcha", "false");
-
-        fetch("https://formsubmit.co/luizapavarina2004@gmail.com", {
-            method: "POST",
-            body: formData
-        })
-        .then(response => response.json())
-        .then(data => {
-            displayMessage("✅ Informações enviadas!", "bot-message");
-        })
-        .catch(error => {
-            console.error(error);
-            displayMessage("❌ Erro ao enviar informações. Tente novamente mais tarde.", "bot-message");
-        });
+    const formData = new FormData();
+    for (const key in data) {
+        formData.append(key, data[key]);
     }
+    formData.append("_subject", `📌 Atualizações de ${contexto} - CPF ${data.cpf}`);
+    formData.append("_captcha", "false");
 
-    function enviarImagemParaFormsubmit(file, cpf, contexto) {
+    fetch("https://formsubmit.co/luizapavarina2004@gmail.com", {
+        method: "POST",
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        displayMessage("✅ Informações enviadas!", "bot-message");
+        lastOptionSelected = "";
+        displayMenuAfterAction();
+    })
+    .catch(error => {
+        console.error(error);
+        displayMessage("❌ Erro ao enviar informações. Tente novamente mais tarde.", "bot-message");
+        setTimeout(() => {
+            displayMenuAfterAction();
+        }, 1500);
+    });
+}
+
+function enviarImagemParaFormsubmit(file, cpf, contexto) {
     const formData = new FormData();
     formData.append("file", file);
     formData.append("cpf", cpf);
@@ -87,8 +92,12 @@ document.addEventListener("DOMContentLoaded", function () {
     .catch(error => {
         console.error(error);
         displayMessage("❌ Erro ao enviar foto. Tente novamente mais tarde.", "bot-message");
+        setTimeout(() => {
+            displayMenuAfterAction();
+        }, 1500);
     });
 }
+
     function sendMessage() {
         const message = userInput.value.trim();
         if (message === "") return;
