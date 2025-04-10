@@ -60,7 +60,7 @@ document.addEventListener("DOMContentLoaded", function () {
         })
         .catch(error => {
             console.error(error);
-            displayMessage("❌ Erro ao enviar informações. Tente novamente.", "bot-message");
+            displayMessage("❌ Erro ao enviar informações. Tente novamente mais tarde.", "bot-message");
         });
     }
 
@@ -86,7 +86,7 @@ document.addEventListener("DOMContentLoaded", function () {
     })
     .catch(error => {
         console.error(error);
-        displayMessage("❌ Erro ao enviar foto. Tente novamente.", "bot-message");
+        displayMessage("❌ Erro ao enviar foto. Tente novamente mais tarde.", "bot-message");
     });
 }
     function sendMessage() {
