@@ -34,8 +34,8 @@ body {
     flex-direction: column;
     gap: 10px;
     background-color: #e5ddd5;
-    margin: 0;
-    border: none;
+    margin-top: 0;
+    border-top: none;
 }
 
 .message {
@@ -173,6 +173,7 @@ body {
     color: #333;
     text-align: center;
     border-bottom: none;
+    margin-bottom: 0;
 }
 
 .status-dot {
@@ -189,4 +190,9 @@ body {
 
 .status-dot.offline {
     background-color: #f44336;
+}
+
+.chat-container > * {
+    margin: 0;
+    border: none;
 }
