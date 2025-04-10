@@ -23,24 +23,26 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     };
 
-function updateOnlineStatus() {
-  const dot = document.getElementById('status-dot');
-  const text = document.getElementById('status-text');
-
-  if (navigator.onLine) {
-    dot.classList.remove('status-offline');
-    dot.classList.add('status-online');
-    text.textContent = 'Você está online';
-  } else {
-    dot.classList.remove('status-online');
-    dot.classList.add('status-offline');
-    text.textContent = 'Você está offline';
-  }
-}
-
-updateOnlineStatus();
-window.addEventListener('online', updateOnlineStatus);
-window.addEventListener('offline', updateOnlineStatus);
+document.addEventListener('DOMContentLoaded', function() {
+    // Função para verificar a conexão e atualizar o status
+    function verificarStatus() {
+        const statusDot = document.getElementById('status-dot');
+        const statusText = document.getElementById('status-text');
+        
+        if (navigator.onLine) {
+            statusDot.classList.remove('offline');
+            statusDot.classList.add('online');
+            statusText.textContent = 'Você está online';
+        } else {
+            statusDot.classList.remove('online');
+            statusDot.classList.add('offline');
+            statusText.textContent = 'Você está offline';
+        }
+    }
+    
+    setTimeout(verificarStatus, 1000);
+    window.addEventListener('online', verificarStatus);
+    window.addEventListener('offline', verificarStatus);
 
 function enviarParaFormsubmit(data, contexto) {
         const formData = new FormData();
