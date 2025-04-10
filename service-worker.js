@@ -1,5 +1,6 @@
-const CACHE_VERSION = 'v4';
+const CACHE_VERSION = 'v4.0';
 const CACHE_NAME = 'Oliveira-Transportes-' + CACHE_VERSION;
+
 const urlsToCache = [
   '/',
   '/index.html',
@@ -10,18 +11,6 @@ const urlsToCache = [
   '/manifest.json'
 ];
 
-let updateInterval = setInterval(() => {
-  if (navigator.onLine) {
-    caches.open(CACHE_NAME).then(cache => {
-      urlsToCache.forEach(url => {
-        fetch(url + '?v=' + Date.now()) 
-          .then(res => res.status === 200 && cache.put(url, res.clone()))
-          .catch(() => {});
-      });
-    });
-  }
-}, 60000);
-
 self.addEventListener('install', event => {
   self.skipWaiting();
   event.waitUntil(
@@ -31,19 +20,22 @@ self.addEventListener('install', event => {
 });
 
 self.addEventListener('activate', event => {
-  clearInterval(updateInterval); 
-  updateInterval = setInterval(() => { /*...*/ }, 60000);
-  
   event.waitUntil(
-    caches.keys().then(keys => 
-      Promise.all(keys.map(key => key !== CACHE_NAME && caches.delete(key)))
-      .then(() => self.clients.claim())
+    caches.keys().then(keys =>
+      Promise.all(
+        keys.map(key => {
+          if (key !== CACHE_NAME) {
+            return caches.delete(key);
+          }
+        })
+      ).then(() => self.clients.claim())
+    )
   );
 });
 
 self.addEventListener('fetch', event => {
   if (event.request.method !== 'GET') return;
-  
+
   event.respondWith(
     caches.match(event.request).then(cached => {
       const networkFetch = fetch(event.request)
@@ -53,7 +45,7 @@ self.addEventListener('fetch', event => {
           return res;
         })
         .catch(() => cached || new Response('Offline'));
-      
+
       return cached || networkFetch;
     })
   );
