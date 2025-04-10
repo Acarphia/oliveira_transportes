@@ -44,7 +44,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
     function enviarParaFormsubmit(data, contexto) {
         const formData = new FormData();
-
         for (const key in data) {
             formData.append(key, data[key]);
         }
@@ -92,15 +91,6 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     function sendMessage() {
-         const envioValido = 
-        (currentContext === "embarque" && lastOptionSelected === "3") ||
-        (currentContext === "desembarque" && lastOptionSelected === "2");
-
-        if (!envioValido) {
-            displayMessage("⚠️ Formato inválido.", "bot-message");
-            return;
-    }
-}
         const message = userInput.value.trim();
         if (message === "") return;
         displayMessage(message, "user-message");
@@ -143,6 +133,15 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     function sendImage(file) {
+        const envioValido =
+            (currentContext === "embarque" && lastOptionSelected === "3") ||
+            (currentContext === "desembarque" && lastOptionSelected === "2");
+
+        if (!envioValido) {
+            displayMessage("⚠️ Formato inválido.", "bot-message");
+            return;
+        }
+
         const reader = new FileReader();
         reader.onloadend = function () {
             const messageDiv = document.createElement("div");
