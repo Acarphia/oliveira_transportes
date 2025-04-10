@@ -23,14 +23,20 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     };
 
-    function enviarParaFormsubmit(data, contexto) {
+function enviarParaFormsubmit(data, contexto) {
+        // Create FormData object
         const formData = new FormData();
+        
+        // Add all data fields
         for (const key in data) {
             formData.append(key, data[key]);
         }
-        formData.append("_subject", `📌 Atualizações de "${contexto}" - CPF ${data.cpf}`);
+        
+        // Add FormSubmit special fields
+        formData.append("_subject", 📌 Atualizações de "${contexto}" - CPF ${data.cpf});
         formData.append("_captcha", "false");
-
+        
+        // Use fetch API instead of form submission
         fetch("https://formsubmit.co/ajax/luizapavarina2004@gmail.com", {
             method: "POST",
             body: formData
@@ -39,7 +45,6 @@ document.addEventListener("DOMContentLoaded", function () {
         .then(data => {
             console.log("Success:", data);
             displayMessage("✅ Informações enviadas!", "bot-message");
-            setTimeout(displayMenuAfterAction, 1000);
         })
         .catch(error => {
             console.error("Error:", error);
@@ -48,12 +53,18 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     function enviarImagemParaFormsubmit(file, cpf, contexto) {
+        // Create FormData object
         const formData = new FormData();
+        
+        // Add file
         formData.append("foto", file);
+        
+        // Add other fields
         formData.append("cpf", cpf);
-        formData.append("_subject", `📸 Foto de ${contexto} enviada - CPF ${cpf}`);
+        formData.append("_subject", 📸 Foto de ${contexto} enviada - CPF ${cpf});
         formData.append("_captcha", "false");
-
+        
+        // Use fetch API instead of form submission
         fetch("https://formsubmit.co/ajax/luizapavarina2004@gmail.com", {
             method: "POST",
             body: formData
@@ -62,8 +73,10 @@ document.addEventListener("DOMContentLoaded", function () {
         .then(data => {
             console.log("Success:", data);
             displayMessage("✅ Foto enviada com sucesso!", "bot-message");
+            
+            // Continue with the flow
             lastOptionSelected = "";
-            setTimeout(displayMenuAfterAction, );
+            displayMenuAfterAction();
         })
         .catch(error => {
             console.error("Error:", error);
@@ -140,6 +153,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 }
 
                 lastOptionSelected = "";
+                displayMenuAfterAction();
             }, 1000);
         };
         reader.readAsDataURL(file);
@@ -160,11 +174,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
         if (usersData[cpf]) {
             localStorage.setItem(cpf, JSON.stringify(usersData[cpf]));
-            setTimeout(displayMainMenu, 1000);
+            displayMainMenu();
         } else if (localData) {
             const offlineUser = JSON.parse(localData);
             usersData[cpf] = offlineUser;
-            setTimeout(displayMainMenu, 1000);
+            displayMainMenu();
         } else {
             displayMessage("CPF não encontrado.", "bot-message");
             cpf = "";
@@ -175,22 +189,22 @@ document.addEventListener("DOMContentLoaded", function () {
         switch (message) {
             case "1":
                 currentContext = "embarque";
-                setTimeout(() => displayMenu("embarque"), 1000);
+                ("embarque");
                 break;
             case "2":
                 currentContext = "rota";
-                setTimeout(() => displayMenu("rota"), 1000);
+                ("rota");
                 break;
             case "3":
                 currentContext = "desembarque";
-                setTimeout(() => displayMenu("desembarque"), 1000);
+                displayMenu("desembarque");
                 break;
             case "4":
-                setTimeout(() => displayMessage("Para pós-viagem, contate Otávio: (34) 99894-2493", "bot-message"), 1000);
+                displayMessage("Para pós-viagem, contate Otávio: (34) 99894-2493", "bot-message");
                 break;
             case "5":
                 currentContext = "contato";
-                setTimeout(() => displayMenu("contato"), 1000);
+                displayMenu("contato");
                 break;
             default:
                 displayMessage("Opção inválida. Escolha de 1 a 5.", "bot-message");
@@ -201,16 +215,14 @@ document.addEventListener("DOMContentLoaded", function () {
         currentContext = "";
         lastOptionSelected = "";
         const user = usersData[cpf];
-        setTimeout(() => {
-            displayMessage(`Como posso ajudar ${user.nome}? ☺️\n1 - Embarque da carga\n2 - Rota da viagem\n3 - Desembarque da carga\n4 - Pós-viagem\n5 - Canais de contato`, "bot-message");
-        }, 1000);
+        displayMessage(Como posso ajudar ${user.nome}? ☺️\n1 - Embarque da carga\n2 - Rota da viagem\n3 - Desembarque da carga\n4 - Pós-viagem\n5 - Canais de contato, "bot-message");
     }
 
     function displayMenuAfterAction() {
         if (currentContext) {
-            setTimeout(() => displayMenu(currentContext), 1000);
+            displayMenu(currentContext);
         } else {
-            setTimeout(displayMainMenu, 1000);
+            displayMainMenu();
         }
     }
 
@@ -221,10 +233,7 @@ document.addEventListener("DOMContentLoaded", function () {
             desembarque: "Escolha uma opção do Desembarque:\n1 - Local e responsável\n2 - Foto da carga\n3 - KM final\n0 - Voltar ao menu principal",
             contato: "Escolha um canal:\n1 - Emergências 24h\n2 - Supervisor\n3 - Ouvidoria\n0 - Voltar ao menu principal"
         };
-
-        setTimeout(() => {
-            displayMessage(menus[menuType], "bot-message");
-        }, 1000);
+        displayMessage(menus[menuType], "bot-message");
     }
 
     function handleContextResponses(message) {
@@ -240,6 +249,7 @@ document.addEventListener("DOMContentLoaded", function () {
             displayMessage("✅ KM inicial registrado: " + message, "bot-message");
             enviarParaFormsubmit({ cpf, quilometroInicial: message }, "embarque");
             lastOptionSelected = "";
+            displayMenuAfterAction();
             return;
         }
 
@@ -247,6 +257,7 @@ document.addEventListener("DOMContentLoaded", function () {
             displayMessage("✅ KM final registrado: " + message, "bot-message");
             enviarParaFormsubmit({ cpf, quilometroFinal: message }, "desembarque");
             lastOptionSelected = "";
+            displayMenuAfterAction();
             return;
         }
 
@@ -254,6 +265,7 @@ document.addEventListener("DOMContentLoaded", function () {
             displayMessage("✅ Observações registradas: " + message, "bot-message");
             enviarParaFormsubmit({ cpf, observacoesCarga: message }, "rota");
             lastOptionSelected = "";
+            displayMenuAfterAction();
             return;
         }
 
@@ -261,6 +273,7 @@ document.addEventListener("DOMContentLoaded", function () {
             displayMessage("✅ Custos registrados: R$ " + message, "bot-message");
             enviarParaFormsubmit({ cpf, custos: message }, "rota");
             lastOptionSelected = "";
+            displayMenuAfterAction();
             return;
         }
 
@@ -268,8 +281,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
         if (currentContext === "embarque") {
             const responses = {
-                "1": `Local: ${user.embarqueLocal}\nResponsável: ${user.embarqueResponsavel}`,
-                "2": `Tipo de carga: ${user.tipoCarga}`,
+                "1": Local: ${user.embarqueLocal}\nResponsável: ${user.embarqueResponsavel},
+                "2": Tipo de carga: ${user.tipoCarga},
                 "3": "Envie a foto da carga no embarque:",
                 "4": "Digite o KM inicial:"
             };
@@ -287,7 +300,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         } else if (currentContext === "desembarque") {
             const responses = {
-                "1": `Local: ${user.desembarqueLocal}\nResponsável: ${user.desembarqueResponsavel}`,
+                "1": Local: ${user.desembarqueLocal}\nResponsável: ${user.desembarqueResponsavel},
                 "2": "Envie a foto da carga no desembarque:",
                 "3": "Digite o KM final:"
             };
