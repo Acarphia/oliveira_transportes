@@ -23,20 +23,14 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     };
 
-function enviarParaFormsubmit(data, contexto) {
-        // Create FormData object
+    function enviarParaFormsubmit(data, contexto) {
         const formData = new FormData();
-        
-        // Add all data fields
         for (const key in data) {
             formData.append(key, data[key]);
         }
-        
-        // Add FormSubmit special fields
         formData.append("_subject", `📌 Atualizações de "${contexto}" - CPF ${data.cpf}`);
         formData.append("_captcha", "false");
-        
-        // Use fetch API instead of form submission
+
         fetch("https://formsubmit.co/ajax/luizapavarina2004@gmail.com", {
             method: "POST",
             body: formData
@@ -45,6 +39,7 @@ function enviarParaFormsubmit(data, contexto) {
         .then(data => {
             console.log("Success:", data);
             displayMessage("✅ Informações enviadas!", "bot-message");
+            setTimeout(displayMenuAfterAction, 3000);
         })
         .catch(error => {
             console.error("Error:", error);
@@ -53,18 +48,12 @@ function enviarParaFormsubmit(data, contexto) {
     }
 
     function enviarImagemParaFormsubmit(file, cpf, contexto) {
-        // Create FormData object
         const formData = new FormData();
-        
-        // Add file
         formData.append("foto", file);
-        
-        // Add other fields
         formData.append("cpf", cpf);
         formData.append("_subject", `📸 Foto de ${contexto} enviada - CPF ${cpf}`);
         formData.append("_captcha", "false");
-        
-        // Use fetch API instead of form submission
+
         fetch("https://formsubmit.co/ajax/luizapavarina2004@gmail.com", {
             method: "POST",
             body: formData
@@ -73,10 +62,8 @@ function enviarParaFormsubmit(data, contexto) {
         .then(data => {
             console.log("Success:", data);
             displayMessage("✅ Foto enviada com sucesso!", "bot-message");
-            
-            // Continue with the flow
             lastOptionSelected = "";
-            displayMenuAfterAction();
+            setTimeout(displayMenuAfterAction, 3000);
         })
         .catch(error => {
             console.error("Error:", error);
@@ -153,8 +140,7 @@ function enviarParaFormsubmit(data, contexto) {
                 }
 
                 lastOptionSelected = "";
-                displayMenuAfterAction();
-            }, 1000);
+            }, 3000);
         };
         reader.readAsDataURL(file);
     }
@@ -174,11 +160,11 @@ function enviarParaFormsubmit(data, contexto) {
 
         if (usersData[cpf]) {
             localStorage.setItem(cpf, JSON.stringify(usersData[cpf]));
-            displayMainMenu();
+            setTimeout(displayMainMenu, 3000);
         } else if (localData) {
             const offlineUser = JSON.parse(localData);
             usersData[cpf] = offlineUser;
-            displayMainMenu();
+            setTimeout(displayMainMenu, 3000);
         } else {
             displayMessage("CPF não encontrado.", "bot-message");
             cpf = "";
@@ -189,22 +175,22 @@ function enviarParaFormsubmit(data, contexto) {
         switch (message) {
             case "1":
                 currentContext = "embarque";
-                displayMenu("embarque");
+                setTimeout(() => displayMenu("embarque"), 3000);
                 break;
             case "2":
                 currentContext = "rota";
-                displayMenu("rota");
+                setTimeout(() => displayMenu("rota"), 3000);
                 break;
             case "3":
                 currentContext = "desembarque";
-                displayMenu("desembarque");
+                setTimeout(() => displayMenu("desembarque"), 3000);
                 break;
             case "4":
-                displayMessage("Para pós-viagem, contate Otávio: (34) 99894-2493", "bot-message");
+                setTimeout(() => displayMessage("Para pós-viagem, contate Otávio: (34) 99894-2493", "bot-message"), 3000);
                 break;
             case "5":
                 currentContext = "contato";
-                displayMenu("contato");
+                setTimeout(() => displayMenu("contato"), 3000);
                 break;
             default:
                 displayMessage("Opção inválida. Escolha de 1 a 5.", "bot-message");
@@ -215,14 +201,16 @@ function enviarParaFormsubmit(data, contexto) {
         currentContext = "";
         lastOptionSelected = "";
         const user = usersData[cpf];
-        displayMessage(`Como posso ajudar ${user.nome}? ☺️\n1 - Embarque da carga\n2 - Rota da viagem\n3 - Desembarque da carga\n4 - Pós-viagem\n5 - Canais de contato`, "bot-message");
+        setTimeout(() => {
+            displayMessage(`Como posso ajudar ${user.nome}? ☺️\n1 - Embarque da carga\n2 - Rota da viagem\n3 - Desembarque da carga\n4 - Pós-viagem\n5 - Canais de contato`, "bot-message");
+        }, 3000);
     }
 
     function displayMenuAfterAction() {
         if (currentContext) {
-            displayMenu(currentContext);
+            setTimeout(() => displayMenu(currentContext), 3000);
         } else {
-            displayMainMenu();
+            setTimeout(displayMainMenu, 3000);
         }
     }
 
@@ -233,7 +221,10 @@ function enviarParaFormsubmit(data, contexto) {
             desembarque: "Escolha uma opção do Desembarque:\n1 - Local e responsável\n2 - Foto da carga\n3 - KM final\n0 - Voltar ao menu principal",
             contato: "Escolha um canal:\n1 - Emergências 24h\n2 - Supervisor\n3 - Ouvidoria\n0 - Voltar ao menu principal"
         };
-        displayMessage(menus[menuType], "bot-message");
+
+        setTimeout(() => {
+            displayMessage(menus[menuType], "bot-message");
+        }, 3000);
     }
 
     function handleContextResponses(message) {
@@ -249,7 +240,6 @@ function enviarParaFormsubmit(data, contexto) {
             displayMessage("✅ KM inicial registrado: " + message, "bot-message");
             enviarParaFormsubmit({ cpf, quilometroInicial: message }, "embarque");
             lastOptionSelected = "";
-            displayMenuAfterAction();
             return;
         }
 
@@ -257,7 +247,6 @@ function enviarParaFormsubmit(data, contexto) {
             displayMessage("✅ KM final registrado: " + message, "bot-message");
             enviarParaFormsubmit({ cpf, quilometroFinal: message }, "desembarque");
             lastOptionSelected = "";
-            displayMenuAfterAction();
             return;
         }
 
@@ -265,7 +254,6 @@ function enviarParaFormsubmit(data, contexto) {
             displayMessage("✅ Observações registradas: " + message, "bot-message");
             enviarParaFormsubmit({ cpf, observacoesCarga: message }, "rota");
             lastOptionSelected = "";
-            displayMenuAfterAction();
             return;
         }
 
@@ -273,7 +261,6 @@ function enviarParaFormsubmit(data, contexto) {
             displayMessage("✅ Custos registrados: R$ " + message, "bot-message");
             enviarParaFormsubmit({ cpf, custos: message }, "rota");
             lastOptionSelected = "";
-            displayMenuAfterAction();
             return;
         }
 
@@ -313,7 +300,7 @@ function enviarParaFormsubmit(data, contexto) {
                 "3": "Ouvidoria: ouvidoria@oliveiratransportes.com.br"
             };
             displayMessage(responses[message] || "Opção inválida.", "bot-message");
-            setTimeout(displayMenuAfterAction, 2000);
+            setTimeout(displayMenuAfterAction, 3000);
         }
     }
 });
