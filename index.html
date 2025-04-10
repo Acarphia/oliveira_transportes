@@ -32,29 +32,38 @@
   </div>
   <button id="installBtn" style="display: none;">Instalar App</button>
   
-  <script>
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', function() {
-        navigator.serviceWorker.register('service-worker.js').then(function(reg) {
-          reg.onupdatefound = function() {
-            const worker = reg.installing;
-            worker.onstatechange = function() {
-              if (worker.state === 'installed' && navigator.serviceWorker.controller) {
-                worker.postMessage('SKIP_WAITING');
-              }
-            };
-          };
+ <script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', function() {
+      navigator.serviceWorker.register('service-worker.js').then(function(reg) {
+        reg.update();
+        
+        document.addEventListener('visibilitychange', function() {
+          if (!document.hidden) reg.update();
         });
 
-        let refreshing;
-        navigator.serviceWorker.addEventListener('controllerchange', function() {
-          if (refreshing) return;
-          refreshing = true;
-          window.location.reload();
-        });
+        setInterval(function() {
+          reg.update();
+        }, 43200000);
+
+        reg.onupdatefound = function() {
+          const worker = reg.installing;
+          worker.onstatechange = function() {
+            if (worker.state === 'installed' && navigator.serviceWorker.controller) {
+              worker.postMessage({type: 'FORCE_UPDATE'});
+            }
+          };
+        };
       });
-    }
-  </script>
+
+      navigator.serviceWorker.addEventListener('message', function(event) {
+        if (event.data.type === 'FORCE_RELOAD') {
+          window.location.reload();
+        }
+      });
+    });
+  }
+</script>
   <script src="script.js"></script>
 </body>
 </html>
