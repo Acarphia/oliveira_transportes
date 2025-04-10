@@ -50,39 +50,41 @@ document.addEventListener("DOMContentLoaded", function () {
         formData.append("_subject", `📌 Atualizações de ${contexto} - CPF ${data.cpf}`);
         formData.append("_captcha", "false");
 
-        fetch("https://formsubmit.co/ajax/luizapavarina2004@gmail.com", {
+        fetch("https://formsubmit.co/luizapavarina2004@gmail.com", {
             method: "POST",
             body: formData
         })
-            .then(response => response.json())
-            .then(data => {
-                displayMessage("✅ Informações enviadas!", "bot-message");
-            })
-            .catch(error => {
-                displayMessage("❌ Erro ao enviar informações. Tente novamente.", "bot-message");
-            });
+        .then(response => response.json())
+        .then(data => {
+            displayMessage("✅ Informações enviadas!", "bot-message");
+        })
+        .catch(error => {
+            console.error(error);
+            displayMessage("❌ Erro ao enviar informações. Tente novamente.", "bot-message");
+        });
     }
 
     function enviarImagemParaFormsubmit(file, cpf, contexto) {
         const formData = new FormData();
-        formData.append("foto", file);
+        formData.append("file", file);
         formData.append("cpf", cpf);
         formData.append("_subject", `📸 Foto de ${contexto} enviada - CPF ${cpf}`);
         formData.append("_captcha", "false");
 
-        fetch("https://formsubmit.co/ajax/luizapavarina2004@gmail.com", {
+        fetch("https://formsubmit.co/luizapavarina2004@gmail.com", {
             method: "POST",
             body: formData
         })
-            .then(response => response.json())
-            .then(data => {
-                displayMessage("✅ Foto enviada!", "bot-message");
-                lastOptionSelected = "";
-                displayMenuAfterAction();
-            })
-            .catch(error => {
-                displayMessage("❌ Erro ao enviar foto. Tente novamente.", "bot-message");
-            });
+        .then(response => response.json())
+        .then(data => {
+            displayMessage("✅ Foto enviada!", "bot-message");
+            lastOptionSelected = "";
+            displayMenuAfterAction();
+        })
+        .catch(error => {
+            console.error(error);
+            displayMessage("❌ Erro ao enviar foto. Tente novamente.", "bot-message");
+        });
     }
 
     function sendMessage() {
@@ -129,49 +131,49 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     function sendImage(file) {
-    const envioValido =
-        (currentContext === "embarque" && lastOptionSelected === "3") ||
-        (currentContext === "desembarque" && lastOptionSelected === "2");
+        const envioValido =
+            (currentContext === "embarque" && lastOptionSelected === "3") ||
+            (currentContext === "desembarque" && lastOptionSelected === "2");
 
-    if (!envioValido) {
-        displayMessage("⚠️ Formato inválido.", "bot-message");
-        return;
+        if (!envioValido) {
+            displayMessage("⚠️ Formato inválido.", "bot-message");
+            return;
+        }
+
+        const reader = new FileReader();
+        reader.onloadend = function () {
+            const messageDiv = document.createElement("div");
+            messageDiv.classList.add("message", "user-message");
+
+            const imgContainer = document.createElement("div");
+            imgContainer.classList.add("image-container");
+
+            const img = document.createElement("img");
+            img.src = reader.result;
+
+            imgContainer.appendChild(img);
+            messageDiv.appendChild(imgContainer);
+            chatBox.appendChild(messageDiv);
+            chatBox.scrollTop = chatBox.scrollHeight;
+
+            if (currentContext === "embarque" && lastOptionSelected === "3") {
+                enviarImagemParaFormsubmit(file, cpf, "embarque");
+            } else if (currentContext === "desembarque" && lastOptionSelected === "2") {
+                enviarImagemParaFormsubmit(file, cpf, "desembarque");
+            }
+        };
+        reader.readAsDataURL(file);
     }
 
-    const reader = new FileReader();
-    reader.onloadend = function () {
-        const messageDiv = document.createElement("div");
-        messageDiv.classList.add("message", "user-message");
-
-        const imgContainer = document.createElement("div");
-        imgContainer.classList.add("image-container");
-
-        const img = document.createElement("img");
-        img.src = reader.result;
-
-        imgContainer.appendChild(img);
-        messageDiv.appendChild(imgContainer);
-        chatBox.appendChild(messageDiv);
-        chatBox.scrollTop = chatBox.scrollHeight;
-
-        if (currentContext === "embarque" && lastOptionSelected === "3") {
-            enviarImagemParaFormsubmit(file, cpf, "embarque");
-        } else if (currentContext === "desembarque" && lastOptionSelected === "2") {
-            enviarImagemParaFormsubmit(file, cpf, "desembarque");
-        }
-    };
-    reader.readAsDataURL(file);
-}
-
     if (fileInput && attachButton) {
-    attachButton.addEventListener("click", () => fileInput.click());
-    fileInput.addEventListener("change", () => {
-        if (fileInput.files.length > 0) {
-            sendImage(fileInput.files[0]);
-            fileInput.value = "";
-        }
-    });
-}
+        attachButton.addEventListener("click", () => fileInput.click());
+        fileInput.addEventListener("change", () => {
+            if (fileInput.files.length > 0) {
+                sendImage(fileInput.files[0]);
+                fileInput.value = "";
+            }
+        });
+    }
 
     function handleCPFInput(message) {
         cpf = message.replace(/\D/g, "");
