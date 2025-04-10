@@ -1,4 +1,5 @@
-const CACHE_NAME = 'Oliveira-Transportes-v2.8'; // <---------- Altere a versão sempre que atualizar algo no codigo
+const CACHE_NAME = 'Oliveira-Transportes-v2.9'; // <---- Atualize SEMPRE que mudar arquivos
+
 const urlsToCache = [
   '/',
   '/index.html',
@@ -34,11 +35,11 @@ self.addEventListener('activate', event => {
       )
     )
   );
-  self.clients.claim(); 
+  self.clients.claim();
 });
 
 self.addEventListener('message', event => {
-  if (event.data && event.data.type === 'SKIP_WAITING') {
+  if (event.data === 'SKIP_WAITING') {
     console.log('[Service Worker] Recebida mensagem SKIP_WAITING');
     self.skipWaiting();
   }
@@ -48,15 +49,21 @@ self.addEventListener('fetch', event => {
   if (event.request.method !== 'GET') return;
 
   event.respondWith(
-    fetch(event.request)
-      .then(networkResponse => {
-        return caches.open(CACHE_NAME).then(cache => {
-          cache.put(event.request, networkResponse.clone());
+    caches.match(event.request).then(cachedResponse => {
+      const fetchPromise = fetch(event.request)
+        .then(networkResponse => {
+          if (networkResponse && networkResponse.status === 200) {
+            caches.open(CACHE_NAME).then(cache =>
+              cache.put(event.request, networkResponse.clone())
+            );
+          }
           return networkResponse;
+        })
+        .catch(() => {
+          return cachedResponse;
         });
-      })
-      .catch(() => {
-        return caches.match(event.request);
-      })
+
+      return cachedResponse || fetchPromise;
+    })
   );
 });
