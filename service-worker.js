@@ -1,4 +1,4 @@
-const CACHE_NAME = 'Oliveira-Transportes-v3.1';
+const CACHE_NAME = 'Oliveira-Transportes-v3.2';
 const UPDATE_INTERVAL = 3600000;
 
 const urlsToCache = [
