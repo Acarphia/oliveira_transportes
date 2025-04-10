@@ -164,13 +164,14 @@ document.addEventListener("DOMContentLoaded", function () {
 }
 
     if (fileInput && attachButton) {
-        attachButton.addEventListener("click", () => fileInput.click());
-        fileInput.addEventListener("change", () => {
-            if (fileInput.files.length > 0) {
-                sendImage(fileInput.files[0]);
-            }
-        });
-    }
+    attachButton.addEventListener("click", () => fileInput.click());
+    fileInput.addEventListener("change", () => {
+        if (fileInput.files.length > 0) {
+            sendImage(fileInput.files[0]);
+            fileInput.value = "";
+        }
+    });
+}
 
     function handleCPFInput(message) {
         cpf = message.replace(/\D/g, "");
