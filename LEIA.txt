@@ -27,14 +27,6 @@ Adicione um novo CPF dentro do objeto usersData, com o seguinte modelo:
 }
 ⚠️ Lembre-se: o CPF é a chave principal para identificar o motorista!
 
-❗️❗️❗️ ATUALIZAR O SERVICE WORKER:
-O sistema funciona offline com a ajuda do service-worker.js.
-SEMPRE que fizer QUALQUER alteração em qualquer arquivo, você deve mudar o número da versão dentro do service-worker.js.
-📍 No início do arquivo service-worker.js você verá algo assim:
-const CACHE_NAME = "chatbot-v9";
-Se você alterou qualquer coisa no código, mude o número da versão para forçar a atualização do cache. Exemplo:
-const CACHE_NAME = "chatbot-v10";
-
 📬 FORMULÁRIOS E ENVIO DE INFORMAÇÕES
 O sistema envia informações e fotos através do FormSubmit, usando formulários dinâmicos.
 Nenhum dado fica salvo no servidor — tudo é enviado diretamente para o e-mail especificado no código.
