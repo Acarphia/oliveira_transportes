@@ -38,7 +38,7 @@ function updateOnlineStatus() {
   }
 }
 
-window.addEventListener('load', updateOnlineStatus);
+updateOnlineStatus();
 window.addEventListener('online', updateOnlineStatus);
 window.addEventListener('offline', updateOnlineStatus);
 
