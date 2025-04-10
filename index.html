@@ -32,35 +32,34 @@
   </div>
   <button id="installBtn" style="display: none;">Instalar App</button>
   
- <script>
+<script>
   if ('serviceWorker' in navigator) {
-    window.addEventListener('load', function() {
-      navigator.serviceWorker.register('service-worker.js').then(function(reg) {
-        reg.update();
-        
-        document.addEventListener('visibilitychange', function() {
-          if (!document.hidden) reg.update();
-        });
+    let refreshing = false;
+    
+    navigator.serviceWorker.addEventListener('controllerchange', () => {
+      if (refreshing) return;
+      refreshing = true;
+      window.location.reload();
+    });
 
-        setInterval(function() {
-          reg.update();
-        }, 43200000);
-
-        reg.onupdatefound = function() {
-          const worker = reg.installing;
-          worker.onstatechange = function() {
-            if (worker.state === 'installed' && navigator.serviceWorker.controller) {
-              worker.postMessage({type: 'FORCE_UPDATE'});
-            }
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/service-worker.js')
+        .then(reg => {
+          reg.onupdatefound = () => {
+            const newWorker = reg.installing;
+            newWorker.onstatechange = () => {
+              if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                newWorker.postMessage('SKIP_WAITING');
+              }
+            };
           };
-        };
-      });
-
-      navigator.serviceWorker.addEventListener('message', function(event) {
-        if (event.data.type === 'FORCE_RELOAD') {
-          window.location.reload();
-        }
-      });
+          
+          // Força verificação a cada acesso
+          reg.update();
+          
+          // Verificação periódica (a cada 15 minutos)
+          setInterval(() => reg.update(), 900000);
+        });
     });
   }
 </script>
