@@ -34,6 +34,8 @@ body {
     flex-direction: column;
     gap: 10px;
     background-color: #e5ddd5;
+    margin: 0;
+    border: none;
 }
 
 .message {
@@ -170,6 +172,7 @@ body {
     font-size: 14px;
     color: #333;
     text-align: center;
+    border-bottom: none; /* Garantido: sem borda */
 }
 
 .status-dot {
