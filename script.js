@@ -92,6 +92,15 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     function sendMessage() {
+         const envioValido = 
+        (currentContext === "embarque" && lastOptionSelected === "3") ||
+        (currentContext === "desembarque" && lastOptionSelected === "2");
+
+        if (!envioValido) {
+            displayMessage("⚠️ Formato inválido.", "bot-message");
+            return;
+    }
+}
         const message = userInput.value.trim();
         if (message === "") return;
         displayMessage(message, "user-message");
@@ -319,7 +328,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 "2": "Supervisor Otávio: (34) 9 9894-2493",
                 "3": "Ouvidoria: ouvidoria@oliveiratransportes.com.br"
             };
-            displayMessage(responses[message] || "Opção inválida.", "bot-message");
+            displayMessage(responses[message] || "⚠️ Opção inválida.", "bot-message");
             setTimeout(displayMenuAfterAction, 1000);
         }
     }
