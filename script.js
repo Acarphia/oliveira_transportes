@@ -162,9 +162,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 } else if (currentContext === "desembarque" && lastOptionSelected === "2") {
                     enviarImagemParaFormsubmit(file, cpf, "desembarque");
                 }
-
-                lastOptionSelected = "";
-                displayMenuAfterAction();
             }, 1000);
         };
         reader.readAsDataURL(file);
@@ -180,7 +177,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     function handleCPFInput(message) {
-        cpf = message.replace(/\D/g, ""); // remove caracteres não numéricos
+        cpf = message.replace(/\D/g, "");
         const localData = localStorage.getItem(cpf);
 
         if (usersData[cpf]) {
@@ -211,6 +208,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     function handleMainMenu(message) {
         if (message === "0") {
+            lastOptionSelected = "";
             displayMainMenu();
             return;
         }
@@ -250,6 +248,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         if (message === "0") {
             currentContext = "";
+            lastOptionSelected = "";
             displayMainMenu();
             return;
         }
