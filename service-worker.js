@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'v4.0';
+const CACHE_VERSION = 'v4.1';
 const CACHE_NAME = 'Oliveira-Transportes-' + CACHE_VERSION;
 
 const urlsToCache = [
