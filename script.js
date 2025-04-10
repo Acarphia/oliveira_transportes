@@ -193,12 +193,12 @@ document.addEventListener("DOMContentLoaded", function () {
     function displayMainMenu() {
         const user = usersData[cpf];
         displayMessage(
-            `Olá, ${user.nome}! Escolha uma opção:<br>
-            1️⃣ Embarque<br>
-            2️⃣ Rota<br>
-            3️⃣ Desembarque<br>
-            4️⃣ Pós-viagem<br>
-            5️⃣ Contatos úteis<br>`,
+            `Olá, ${user.nome}! Escolha uma opção:
+            1️⃣ Embarque
+            2️⃣ Rota
+            3️⃣ Desembarque
+            4️⃣ Pós-viagem
+            5️⃣ Contatos úteis`,
             "bot-message"
         );
     }
