@@ -39,7 +39,7 @@ document.addEventListener("DOMContentLoaded", function () {
         .then(data => {
             console.log("Success:", data);
             displayMessage("✅ Informações enviadas!", "bot-message");
-            setTimeout(displayMenuAfterAction, 3000);
+            setTimeout(displayMenuAfterAction, 1000);
         })
         .catch(error => {
             console.error("Error:", error);
@@ -63,7 +63,7 @@ document.addEventListener("DOMContentLoaded", function () {
             console.log("Success:", data);
             displayMessage("✅ Foto enviada com sucesso!", "bot-message");
             lastOptionSelected = "";
-            setTimeout(displayMenuAfterAction, 3000);
+            setTimeout(displayMenuAfterAction, );
         })
         .catch(error => {
             console.error("Error:", error);
@@ -140,7 +140,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 }
 
                 lastOptionSelected = "";
-            }, 3000);
+            }, 1000);
         };
         reader.readAsDataURL(file);
     }
@@ -160,11 +160,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
         if (usersData[cpf]) {
             localStorage.setItem(cpf, JSON.stringify(usersData[cpf]));
-            setTimeout(displayMainMenu, 3000);
+            setTimeout(displayMainMenu, 1000);
         } else if (localData) {
             const offlineUser = JSON.parse(localData);
             usersData[cpf] = offlineUser;
-            setTimeout(displayMainMenu, 3000);
+            setTimeout(displayMainMenu, 1000);
         } else {
             displayMessage("CPF não encontrado.", "bot-message");
             cpf = "";
@@ -175,22 +175,22 @@ document.addEventListener("DOMContentLoaded", function () {
         switch (message) {
             case "1":
                 currentContext = "embarque";
-                setTimeout(() => displayMenu("embarque"), 3000);
+                setTimeout(() => displayMenu("embarque"), 1000);
                 break;
             case "2":
                 currentContext = "rota";
-                setTimeout(() => displayMenu("rota"), 3000);
+                setTimeout(() => displayMenu("rota"), 1000);
                 break;
             case "3":
                 currentContext = "desembarque";
-                setTimeout(() => displayMenu("desembarque"), 3000);
+                setTimeout(() => displayMenu("desembarque"), 1000);
                 break;
             case "4":
-                setTimeout(() => displayMessage("Para pós-viagem, contate Otávio: (34) 99894-2493", "bot-message"), 3000);
+                setTimeout(() => displayMessage("Para pós-viagem, contate Otávio: (34) 99894-2493", "bot-message"), 1000);
                 break;
             case "5":
                 currentContext = "contato";
-                setTimeout(() => displayMenu("contato"), 3000);
+                setTimeout(() => displayMenu("contato"), 1000);
                 break;
             default:
                 displayMessage("Opção inválida. Escolha de 1 a 5.", "bot-message");
@@ -203,14 +203,14 @@ document.addEventListener("DOMContentLoaded", function () {
         const user = usersData[cpf];
         setTimeout(() => {
             displayMessage(`Como posso ajudar ${user.nome}? ☺️\n1 - Embarque da carga\n2 - Rota da viagem\n3 - Desembarque da carga\n4 - Pós-viagem\n5 - Canais de contato`, "bot-message");
-        }, 3000);
+        }, 1000);
     }
 
     function displayMenuAfterAction() {
         if (currentContext) {
-            setTimeout(() => displayMenu(currentContext), 3000);
+            setTimeout(() => displayMenu(currentContext), 1000);
         } else {
-            setTimeout(displayMainMenu, 3000);
+            setTimeout(displayMainMenu, 1000);
         }
     }
 
@@ -224,7 +224,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         setTimeout(() => {
             displayMessage(menus[menuType], "bot-message");
-        }, 3000);
+        }, 1000);
     }
 
     function handleContextResponses(message) {
@@ -300,7 +300,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 "3": "Ouvidoria: ouvidoria@oliveiratransportes.com.br"
             };
             displayMessage(responses[message] || "Opção inválida.", "bot-message");
-            setTimeout(displayMenuAfterAction, 3000);
+            setTimeout(displayMenuAfterAction, 1000);
         }
     }
 });
