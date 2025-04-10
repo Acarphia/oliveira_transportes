@@ -47,7 +47,6 @@ document.addEventListener("DOMContentLoaded", function () {
         for (const key in data) {
             formData.append(key, data[key]);
         }
-
         formData.append("_subject", `📌 Atualizações de ${contexto} - CPF ${data.cpf}`);
         formData.append("_captcha", "false");
 
@@ -57,11 +56,9 @@ document.addEventListener("DOMContentLoaded", function () {
         })
             .then(response => response.json())
             .then(data => {
-                console.log("Success:", data);
                 displayMessage("✅ Informações enviadas!", "bot-message");
             })
             .catch(error => {
-                console.error("Error:", error);
                 displayMessage("❌ Erro ao enviar informações. Tente novamente.", "bot-message");
             });
     }
@@ -79,13 +76,11 @@ document.addEventListener("DOMContentLoaded", function () {
         })
             .then(response => response.json())
             .then(data => {
-                console.log("Success:", data);
                 displayMessage("✅ Foto enviada com sucesso!", "bot-message");
                 lastOptionSelected = "";
                 displayMenuAfterAction();
             })
             .catch(error => {
-                console.error("Error:", error);
                 displayMessage("❌ Erro ao enviar foto. Tente novamente.", "bot-message");
             });
     }
@@ -185,7 +180,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     function handleCPFInput(message) {
-        cpf = message;
+        cpf = message.replace(/\D/g, ""); // remove caracteres não numéricos
         const localData = localStorage.getItem(cpf);
 
         if (usersData[cpf]) {
@@ -199,6 +194,20 @@ document.addEventListener("DOMContentLoaded", function () {
             displayMessage("CPF não encontrado.", "bot-message");
             cpf = "";
         }
+    }
+
+    function displayMainMenu() {
+        const user = usersData[cpf];
+        displayMessage(
+            `Olá, ${user.nome}! Escolha uma opção:<br>
+            1️⃣ Embarque<br>
+            2️⃣ Rota<br>
+            3️⃣ Desembarque<br>
+            4️⃣ Pós-viagem<br>
+            5️⃣ Contatos úteis<br>
+            (Digite o número da opção desejada ou 0 para voltar)`,
+            "bot-message"
+        );
     }
 
     function handleMainMenu(message) {
@@ -241,6 +250,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const isNumber = !isNaN(Number(message));
 
         if (message === "0") {
+            currentContext = "";
             displayMainMenu();
             return;
         }
@@ -314,6 +324,24 @@ document.addEventListener("DOMContentLoaded", function () {
             };
             displayMessage(responses[message] || "⚠️ Opção inválida.", "bot-message");
             setTimeout(displayMenuAfterAction, 1000);
+        }
+    }
+
+    function displayMenu(contexto) {
+        const menus = {
+            "embarque": `Embarque:\n1️⃣ Local e responsável\n2️⃣ Tipo de carga\n3️⃣ Enviar foto da carga\n4️⃣ KM inicial\n(0 para voltar)`,
+            "rota": `Rota:\n1️⃣ Abrir mapa\n2️⃣ Ver paradas\n3️⃣ Ver rota\n4️⃣ Registrar observações\n5️⃣ Registrar custos\n(0 para voltar)`,
+            "desembarque": `Desembarque:\n1️⃣ Local e responsável\n2️⃣ Enviar foto da carga\n3️⃣ KM final\n(0 para voltar)`,
+            "contato": `Contatos:\n1️⃣ Emergência\n2️⃣ Supervisor\n3️⃣ Ouvidoria\n(0 para voltar)`
+        };
+        displayMessage(menus[contexto] || "⚠️ Menu não disponível.", "bot-message");
+    }
+
+    function displayMenuAfterAction() {
+        if (currentContext) {
+            displayMenu(currentContext);
+        } else {
+            displayMainMenu();
         }
     }
 });
