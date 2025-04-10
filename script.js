@@ -202,117 +202,118 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     function handleMainMenu(message) {
-    if (message === "0") {
-        displayMainMenu();
-        return;
+        if (message === "0") {
+            displayMainMenu();
+            return;
+        }
+
+        switch (message) {
+            case "1":
+                currentContext = "embarque";
+                lastOptionSelected = "";
+                displayMenu("embarque");
+                break;
+            case "2":
+                currentContext = "rota";
+                lastOptionSelected = "";
+                displayMenu("rota");
+                break;
+            case "3":
+                currentContext = "desembarque";
+                lastOptionSelected = "";
+                displayMenu("desembarque");
+                break;
+            case "4":
+                displayMessage("Para pós-viagem, contate Otávio: (34) 99894-2493", "bot-message");
+                break;
+            case "5":
+                currentContext = "contato";
+                lastOptionSelected = "";
+                displayMenu("contato");
+                break;
+            default:
+                displayMessage("Opção inválida. Escolha de 1 a 5.", "bot-message");
+        }
     }
 
-    switch (message) {
-        case "1":
-            currentContext = "embarque";
-            lastOptionSelected = ""; // Resetar opção anterior
-            displayMenu("embarque");
-            break;
-        case "2":
-            currentContext = "rota";
-            lastOptionSelected = ""; // Resetar opção anterior
-            displayMenu("rota");
-            break;
-        case "3":
-            currentContext = "desembarque";
-            lastOptionSelected = ""; // Resetar opção anterior
-            displayMenu("desembarque");
-            break;
-        case "4":
-            displayMessage("Para pós-viagem, contate Otávio: (34) 99894-2493", "bot-message");
-            break;
-        case "5":
-            currentContext = "contato";
-            lastOptionSelected = ""; // Resetar opção anterior
-            displayMenu("contato");
-            break;
-        default:
-            displayMessage("Opção inválida. Escolha de 1 a 5.", "bot-message");
+    function handleContextResponses(message) {
+        const user = usersData[cpf];
+        const isNumber = !isNaN(Number(message));
+
+        if (message === "0") {
+            displayMainMenu();
+            return;
+        }
+
+        if (currentContext === "embarque" && lastOptionSelected === "4" && isNumber) {
+            displayMessage("✅ KM inicial registrado: " + message, "bot-message");
+            enviarParaFormsubmit({ cpf, quilometroInicial: message }, "embarque");
+            lastOptionSelected = "";
+            setTimeout(displayMenuAfterAction, 1000);
+            return;
+        }
+
+        if (currentContext === "desembarque" && lastOptionSelected === "3" && isNumber) {
+            displayMessage("✅ KM final registrado: " + message, "bot-message");
+            enviarParaFormsubmit({ cpf, quilometroFinal: message }, "desembarque");
+            lastOptionSelected = "";
+            setTimeout(displayMenuAfterAction, 1000);
+            return;
+        }
+
+        if (currentContext === "rota" && lastOptionSelected === "4") {
+            displayMessage("✅ Observações registradas: " + message, "bot-message");
+            enviarParaFormsubmit({ cpf, observacoesCarga: message }, "rota");
+            lastOptionSelected = "";
+            setTimeout(displayMenuAfterAction, 1000);
+            return;
+        }
+
+        if (currentContext === "rota" && lastOptionSelected === "5" && isNumber) {
+            displayMessage("✅ Custos registrados: R$ " + message, "bot-message");
+            enviarParaFormsubmit({ cpf, custos: message }, "rota");
+            lastOptionSelected = "";
+            setTimeout(displayMenuAfterAction, 1000);
+            return;
+        }
+
+        lastOptionSelected = message;
+
+        if (currentContext === "embarque") {
+            const responses = {
+                "1": `Local: ${user.embarqueLocal}\nResponsável: ${user.embarqueResponsavel}`,
+                "2": `Tipo de carga: ${user.tipoCarga}`,
+                "3": "Envie a foto da carga no embarque:",
+                "4": "Digite o KM inicial:"
+            };
+            displayMessage(responses[message] || "Opção inválida.", "bot-message");
+
+        } else if (currentContext === "rota") {
+            const responses = {
+                "1": "Instale o Waze, disponível para Android e IOS, ou acesse: https://www.waze.com/pt-BR/live-map/",
+                "2": "Paradas: " + user.paradasProgramadas,
+                "3": "Instale o Waze, disponível para Android e IOS, ou acesse: https://www.waze.com/pt-BR/live-map/",
+                "4": "Digite suas observações:",
+                "5": "Digite os custos da viagem:"
+            };
+            displayMessage(responses[message] || "Opção inválida.", "bot-message");
+
+        } else if (currentContext === "desembarque") {
+            const responses = {
+                "1": `Local: ${user.desembarqueLocal}\nResponsável: ${user.desembarqueResponsavel}`,
+                "2": "Envie a foto da carga no desembarque:",
+                "3": "Digite o KM final:"
+            };
+            displayMessage(responses[message] || "Opção inválida.", "bot-message");
+
+        } else if (currentContext === "contato") {
+            const responses = {
+                "1": "Emergência 24h:\n192\nSOS Estradas:\nhttps://postocidadedemarilia.com.br/telefone-de-emergencia-das-rodovias-guia/",
+                "2": "Supervisor Otávio: (34) 9 9894-2493",
+                "3": "Ouvidoria: ouvidoria@oliveiratransportes.com.br"
+            };
+            displayMessage(responses[message] || "⚠️ Opção inválida.", "bot-message");
+            setTimeout(displayMenuAfterAction, 1000);
+        }
     }
-}
-
-function handleContextResponses(message) {
-    const user = usersData[cpf];
-    const isNumber = !isNaN(Number(message));
-
-    if (message === "0") {
-        displayMainMenu();
-        return;
-    }
-
-    if (currentContext === "embarque" && lastOptionSelected === "4" && isNumber) {
-        displayMessage("✅ KM inicial registrado: " + message, "bot-message");
-        enviarParaFormsubmit({ cpf, quilometroInicial: message }, "embarque");
-        lastOptionSelected = "";
-        setTimeout(displayMenuAfterAction, 1000);
-        return;
-    }
-
-    if (currentContext === "desembarque" && lastOptionSelected === "3" && isNumber) {
-        displayMessage("✅ KM final registrado: " + message, "bot-message");
-        enviarParaFormsubmit({ cpf, quilometroFinal: message }, "desembarque");
-        lastOptionSelected = "";
-        setTimeout(displayMenuAfterAction, 1000);
-        return;
-    }
-
-    if (currentContext === "rota" && lastOptionSelected === "4") {
-        displayMessage("✅ Observações registradas: " + message, "bot-message");
-        enviarParaFormsubmit({ cpf, observacoesCarga: message }, "rota");
-        lastOptionSelected = "";
-        setTimeout(displayMenuAfterAction, 1000);
-        return;
-    }
-
-    if (currentContext === "rota" && lastOptionSelected === "5" && isNumber) {
-        displayMessage("✅ Custos registrados: R$ " + message, "bot-message");
-        enviarParaFormsubmit({ cpf, custos: message }, "rota");
-        lastOptionSelected = "";
-        setTimeout(displayMenuAfterAction, 1000);
-        return;
-    }
-
-    lastOptionSelected = message;
-
-    if (currentContext === "embarque") {
-        const responses = {
-            "1": `Local: ${user.embarqueLocal}\nResponsável: ${user.embarqueResponsavel}`,
-            "2": `Tipo de carga: ${user.tipoCarga}`,
-            "3": "Envie a foto da carga no embarque:",
-            "4": "Digite o KM inicial:"
-        };
-        displayMessage(responses[message] || "Opção inválida.", "bot-message");
-
-    } else if (currentContext === "rota") {
-        const responses = {
-            "1": "Instale o Waze, disponível para Android e IOS, ou acesse: https://www.waze.com/pt-BR/live-map/",
-            "2": "Paradas: " + user.paradasProgramadas,
-            "3": "Instale o Waze, disponível para Android e IOS, ou acesse: https://www.waze.com/pt-BR/live-map/",
-            "4": "Digite suas observações:",
-            "5": "Digite os custos da viagem:"
-        };
-        displayMessage(responses[message] || "Opção inválida.", "bot-message");
-
-    } else if (currentContext === "desembarque") {
-        const responses = {
-            "1": `Local: ${user.desembarqueLocal}\nResponsável: ${user.desembarqueResponsavel}`,
-            "2": "Envie a foto da carga no desembarque:",
-            "3": "Digite o KM final:"
-        };
-        displayMessage(responses[message] || "Opção inválida.", "bot-message");
-
-    } else if (currentContext === "contato") {
-        const responses = {
-            "1": "Emergência 24h:\n192\nSOS Estradas:\nhttps://postocidadedemarilia.com.br/telefone-de-emergencia-das-rodovias-guia/",
-            "2": "Supervisor Otávio: (34) 9 9894-2493",
-            "3": "Ouvidoria: ouvidoria@oliveiratransportes.com.br"
-        };
-        displayMessage(responses[message] || "⚠️ Opção inválida.", "bot-message");
-        setTimeout(displayMenuAfterAction, 1000);
-    }
-}
+});
