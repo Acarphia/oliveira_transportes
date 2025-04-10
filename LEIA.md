@@ -1,0 +1,39 @@
+📄 LEIA-ME
+Este é o sistema de chatbot para os caminhoneiros da Oliveira Transporte, onde eles podem consultar e enviar informações relacionadas ao transporte de cargas, como embarque, rota, desembarque e pós-viagem.
+
+🧠 BANCO DE DADOS (dados dos motoristas):
+Os dados dos motoristas estão cadastrados diretamente no arquivo script.js, na variável usersData.
+📍 const usersData = {
+    "15347693665": {
+        nome: "Luiza",
+        tipoCarga: "Alimentos.",
+        embarqueLocal: "Uberlândia.",
+        embarqueResponsavel: "Eduarda.",
+        desembarqueLocal: "Londrina.",
+        desembarqueResponsavel: "Augusto.",
+        paradasProgramadas: "Sem paradas."
+    }
+};
+Adicione um novo CPF dentro do objeto usersData, com o seguinte modelo:
+"CPF_DO_MOTORISTA": {
+    nome: "NOME_DO_MOTORISTA",
+    tipoCarga: "TIPO DA CARGA",
+    embarqueLocal: "LOCAL DE EMBARQUE",
+    embarqueResponsavel: "RESPONSÁVEL PELO EMBARQUE",
+    desembarqueLocal: "LOCAL DE DESEMBARQUE",
+    desembarqueResponsavel: "RESPONSÁVEL PELO DESEMBARQUE",
+    paradasProgramadas: "PARADAS PROGRAMADAS (ou 'Sem paradas')"
+}
+⚠️ Lembre-se: o CPF é a chave principal para identificar o motorista!
+
+🔄 ATUALIZAR O SERVICE WORKER:
+O sistema funciona offline com a ajuda do service-worker.js.
+Sempre que fizer qualquer alteração no código, você deve mudar o número da versão dentro do service-worker.js.
+📍 No início do arquivo service-worker.js você verá algo assim:
+const CACHE_NAME = "chatbot-v9";
+Se você alterou qualquer coisa no código, mude o número da versão para forçar a atualização do cache. Exemplo:
+const CACHE_NAME = "chatbot-v10";
+
+📬 FORMULÁRIOS E ENVIO DE INFORMAÇÕES
+O sistema envia informações e fotos através do FormSubmit, usando formulários dinâmicos.
+Nenhum dado fica salvo no servidor — tudo é enviado diretamente para o e-mail especificado no código.
