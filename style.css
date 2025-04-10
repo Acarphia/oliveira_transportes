@@ -178,12 +178,13 @@ body {
     height: 10px;
     border-radius: 50%;
     background-color: gray;
+    transition: background-color 0.3s;
 }
 
-.status-online {
-    background-color: #4caf50; /* Verde */
+.status-dot.online {
+    background-color: #4caf50;
 }
 
-.status-offline {
-    background-color: #f44336; /* Vermelho */
+.status-dot.offline {
+    background-color: #f44336;
 }
