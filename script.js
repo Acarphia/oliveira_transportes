@@ -23,6 +23,25 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     };
 
+function updateOnlineStatus() {
+  const dot = document.getElementById('status-dot');
+  const text = document.getElementById('status-text');
+
+  if (navigator.onLine) {
+    dot.classList.remove('status-offline');
+    dot.classList.add('status-online');
+    text.textContent = 'Você está online';
+  } else {
+    dot.classList.remove('status-online');
+    dot.classList.add('status-offline');
+    text.textContent = 'Você está offline';
+  }
+}
+
+window.addEventListener('load', updateOnlineStatus);
+window.addEventListener('online', updateOnlineStatus);
+window.addEventListener('offline', updateOnlineStatus);
+
 function enviarParaFormsubmit(data, contexto) {
         const formData = new FormData();
         
