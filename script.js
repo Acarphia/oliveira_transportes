@@ -23,11 +23,10 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     };
 
-document.addEventListener('DOMContentLoaded', function () {
     function verificarStatus() {
         const statusDot = document.getElementById('status-dot');
         const statusText = document.getElementById('status-text');
-        
+
         if (navigator.onLine) {
             statusDot.classList.remove('offline');
             statusDot.classList.add('online');
@@ -42,18 +41,17 @@ document.addEventListener('DOMContentLoaded', function () {
     setTimeout(verificarStatus, 1000);
     window.addEventListener('online', verificarStatus);
     window.addEventListener('offline', verificarStatus);
-});
 
-function enviarParaFormsubmit(data, contexto) {
+    function enviarParaFormsubmit(data, contexto) {
         const formData = new FormData();
-        
+
         for (const key in data) {
             formData.append(key, data[key]);
         }
-        
+
         formData.append("_subject", `📌 Atualizações de ${contexto} - CPF ${data.cpf}`);
         formData.append("_captcha", "false");
-        
+
         fetch("https://formsubmit.co/ajax/luizapavarina2004@gmail.com", {
             method: "POST",
             body: formData
@@ -71,13 +69,11 @@ function enviarParaFormsubmit(data, contexto) {
 
     function enviarImagemParaFormsubmit(file, cpf, contexto) {
         const formData = new FormData();
-        
         formData.append("foto", file);
-        
         formData.append("cpf", cpf);
         formData.append("_subject", `📸 Foto de ${contexto} enviada - CPF ${cpf}`);
         formData.append("_captcha", "false");
-        
+
         fetch("https://formsubmit.co/ajax/luizapavarina2004@gmail.com", {
             method: "POST",
             body: formData
@@ -86,7 +82,6 @@ function enviarParaFormsubmit(data, contexto) {
         .then(data => {
             console.log("Success:", data);
             displayMessage("✅ Foto enviada com sucesso!", "bot-message");
-            
             lastOptionSelected = "";
             displayMenuAfterAction();
         })
@@ -201,11 +196,11 @@ function enviarParaFormsubmit(data, contexto) {
         switch (message) {
             case "1":
                 currentContext = "embarque";
-                ("embarque");
+                displayMenu("embarque");
                 break;
             case "2":
                 currentContext = "rota";
-                ("rota");
+                displayMenu("rota");
                 break;
             case "3":
                 currentContext = "desembarque";
@@ -227,7 +222,7 @@ function enviarParaFormsubmit(data, contexto) {
         currentContext = "";
         lastOptionSelected = "";
         const user = usersData[cpf];
-        displayMessage(Como posso ajudar ${user.nome}? ☺️\n1 - Embarque da carga\n2 - Rota da viagem\n3 - Desembarque da carga\n4 - Pós-viagem\n5 - Canais de contato, "bot-message");
+        displayMessage(`Como posso ajudar ${user.nome}? ☺️\n1 - Embarque da carga\n2 - Rota da viagem\n3 - Desembarque da carga\n4 - Pós-viagem\n5 - Canais de contato`, "bot-message");
     }
 
     function displayMenuAfterAction() {
@@ -263,7 +258,6 @@ function enviarParaFormsubmit(data, contexto) {
             lastOptionSelected = "";
             setTimeout(displayMenuAfterAction, 1000);
             return;
-}
         }
 
         if (currentContext === "desembarque" && lastOptionSelected === "3" && isNumber) {
@@ -272,8 +266,6 @@ function enviarParaFormsubmit(data, contexto) {
             lastOptionSelected = "";
             setTimeout(displayMenuAfterAction, 1000);
             return;
-}
-
         }
 
         if (currentContext === "rota" && lastOptionSelected === "4") {
@@ -296,8 +288,8 @@ function enviarParaFormsubmit(data, contexto) {
 
         if (currentContext === "embarque") {
             const responses = {
-                "1": Local: ${user.embarqueLocal}\nResponsável: ${user.embarqueResponsavel},
-                "2": Tipo de carga: ${user.tipoCarga},
+                "1": `Local: ${user.embarqueLocal}\nResponsável: ${user.embarqueResponsavel}`,
+                "2": `Tipo de carga: ${user.tipoCarga}`,
                 "3": "Envie a foto da carga no embarque:",
                 "4": "Digite o KM inicial:"
             };
@@ -315,7 +307,7 @@ function enviarParaFormsubmit(data, contexto) {
 
         } else if (currentContext === "desembarque") {
             const responses = {
-                "1": Local: ${user.desembarqueLocal}\nResponsável: ${user.desembarqueResponsavel},
+                "1": `Local: ${user.desembarqueLocal}\nResponsável: ${user.desembarqueResponsavel}`,
                 "2": "Envie a foto da carga no desembarque:",
                 "3": "Digite o KM final:"
             };
