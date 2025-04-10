@@ -13,7 +13,7 @@ let updateInterval = setInterval(() => {
   if (navigator.onLine) {
     caches.open(CACHE_NAME).then(cache => {
       urlsToCache.forEach(url => {
-        fetch(url + '?v=' + Date.now()) // Bypass cache
+        fetch(url + '?v=' + Date.now()) 
           .then(res => res.status === 200 && cache.put(url, res.clone()))
           .catch(() => {});
       });
@@ -22,7 +22,7 @@ let updateInterval = setInterval(() => {
 }, 60000);
 
 self.addEventListener('install', event => {
-  self.skipWaiting(); // Ativação imediata
+  self.skipWaiting();
   event.waitUntil(
     caches.open(CACHE_NAME)
       .then(cache => cache.addAll(urlsToCache))
@@ -30,8 +30,8 @@ self.addEventListener('install', event => {
 });
 
 self.addEventListener('activate', event => {
-  clearInterval(updateInterval); // Limpa timer antigo
-  updateInterval = setInterval(() => { /*...*/ }, 60000); // Novo timer
+  clearInterval(updateInterval); 
+  updateInterval = setInterval(() => { /*...*/ }, 60000);
   
   event.waitUntil(
     caches.keys().then(keys => 
@@ -47,7 +47,6 @@ self.addEventListener('fetch', event => {
     caches.match(event.request).then(cached => {
       const networkFetch = fetch(event.request)
         .then(res => {
-          // Atualiza cache em segundo plano
           caches.open(CACHE_NAME)
             .then(cache => cache.put(event.request, res.clone()));
           return res;
