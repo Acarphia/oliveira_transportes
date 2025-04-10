@@ -204,8 +204,7 @@ document.addEventListener("DOMContentLoaded", function () {
             2️⃣ Rota<br>
             3️⃣ Desembarque<br>
             4️⃣ Pós-viagem<br>
-            5️⃣ Contatos úteis<br>
-            (Digite o número da opção desejada ou 0 para voltar)`,
+            5️⃣ Contatos úteis<br>`,
             "bot-message"
         );
     }
@@ -329,10 +328,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
     function displayMenu(contexto) {
         const menus = {
-            "embarque": `Embarque:\n1️⃣ Local e responsável\n2️⃣ Tipo de carga\n3️⃣ Enviar foto da carga\n4️⃣ KM inicial\n(0 para voltar)`,
-            "rota": `Rota:\n1️⃣ Abrir mapa\n2️⃣ Ver paradas\n3️⃣ Ver rota\n4️⃣ Registrar observações\n5️⃣ Registrar custos\n(0 para voltar)`,
-            "desembarque": `Desembarque:\n1️⃣ Local e responsável\n2️⃣ Enviar foto da carga\n3️⃣ KM final\n(0 para voltar)`,
-            "contato": `Contatos:\n1️⃣ Emergência\n2️⃣ Supervisor\n3️⃣ Ouvidoria\n(0 para voltar)`
+            "embarque": `Embarque:\n1️⃣ Local e responsável\n2️⃣ Tipo de carga\n3️⃣ Enviar foto da carga\n4️⃣ KM inicial\n0️⃣ Voltar ao menu principal`,
+            "rota": `Rota:\n1️⃣ Abrir mapa\n2️⃣ Ver paradas\n3️⃣ Ver rota\n4️⃣ Registrar observações\n5️⃣ Registrar custos\n0️⃣ Voltar ao menu principal`,
+            "desembarque": `Desembarque:\n1️⃣ Local e responsável\n2️⃣ Enviar foto da carga\n3️⃣ KM final\n0️⃣ Voltar ao menu principal`,
+            "contato": `Contatos:\n1️⃣ Emergência\n2️⃣ Supervisor\n3️⃣ Ouvidoria\n0️⃣ Voltar ao menu principal`
         };
         displayMessage(menus[contexto] || "⚠️ Menu não disponível.", "bot-message");
     }
