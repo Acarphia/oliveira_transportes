@@ -158,3 +158,30 @@ body {
     display: block;
     margin-bottom: 8px;
 }
+
+.status-indicator {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    background-color: #f0f0f0;
+    border-bottom: 1px solid #ccc;
+    font-weight: 500;
+    font-size: 14px;
+    color: #333;
+}
+
+.status-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background-color: gray;
+}
+
+.status-online {
+    background-color: #4caf50; /* Verde */
+}
+
+.status-offline {
+    background-color: #f44336; /* Vermelho */
+}
