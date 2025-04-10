@@ -46,10 +46,8 @@
       window.addEventListener('load', () => {
         navigator.serviceWorker.register('/service-worker.js')
           .then(reg => {
-            // Verificação imediata ao carregar
             reg.update();
             
-            // Verificação a cada 1 minuto quando online
             updateInterval = setInterval(() => {
               if (navigator.onLine) reg.update();
             }, 60000);
@@ -65,7 +63,6 @@
           });
       });
 
-      // Limpa o intervalo quando a página é fechada
       window.addEventListener('beforeunload', () => {
         if (updateInterval) clearInterval(updateInterval);
       });
