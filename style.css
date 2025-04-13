@@ -34,7 +34,7 @@ body {
    background-color: #e5ddd5;
    margin-top: 0 !important;
    border-top: none !important;
-   padding-top: 30px !important; /* Aumentado para dar mais espaço */
+   padding-top: 30px !important;
 }
 .message {
    max-width: 75%;
@@ -48,7 +48,7 @@ body {
    background-color: white;
    margin-right: auto;
    margin-left: 10px;
-   margin-top: 15px; /* Adicionado espaço acima da mensagem */
+   margin-top: 15px;
    border-radius: 18px 18px 18px 0;
    align-self: flex-start;
 }
