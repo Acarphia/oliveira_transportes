@@ -1,33 +1,30 @@
-const CACHE_VERSION = 'v6.2';
+const CACHE_VERSION = 'v6.5'; // Forçar atualização
 const CACHE_NAME = 'Oliveira-Transportes-' + CACHE_VERSION;
+const urlsToCache = [
+  '/',
+  '/index.html',
+  '/style.css',
+  '/script.js',
+  '/icons/icon-192.png',
+  '/icons/icon-512.png',
+  '/manifest.json'
+];
 
 self.addEventListener('install', event => {
   self.skipWaiting();
-  console.log('Instalando nova versão:', CACHE_VERSION);
-  
   event.waitUntil(
     caches.open(CACHE_NAME)
-      .then(cache => cache.addAll([
-        '/',
-        '/index.html?sw=' + CACHE_VERSION,
-        '/style.css?sw=' + CACHE_VERSION,
-        '/script.js?sw=' + CACHE_VERSION,
-        '/icons/icon-192.png',
-        '/icons/icon-512.png',
-        '/manifest.json'
-      ]))
+      .then(cache => cache.addAll(urlsToCache))
   );
 });
 
+// Ativação - limpa caches antigos
 self.addEventListener('activate', event => {
-  console.log('Ativando nova versão:', CACHE_VERSION);
   event.waitUntil(
     caches.keys().then(cacheNames => {
       return Promise.all(
         cacheNames.map(cacheName => {
-          if (cacheName.startsWith('Oliveira-Transportes-') && 
-              cacheName !== CACHE_NAME) {
-            console.log('Removendo cache antigo:', cacheName);
+          if (cacheName !== CACHE_NAME) {
             return caches.delete(cacheName);
           }
         })
@@ -37,17 +34,44 @@ self.addEventListener('activate', event => {
 });
 
 self.addEventListener('fetch', event => {
+
   if (event.request.method !== 'GET') return;
   
+  const url = new URL(event.request.url);
+  if (url.origin !== location.origin) return;
+  
   event.respondWith(
-    fetch(event.request)
-      .then(networkResponse => {
-        if (networkResponse.ok) {
-          const clone = networkResponse.clone();
-          caches.open(CACHE_NAME).then(cache => cache.put(event.request, clone));
-        }
-        return networkResponse;
-      })
-      .catch(() => caches.match(event.request))
+    caches.match(event.request).then(cachedResponse => {
+      const fetchPromise = fetch(event.request)
+        .then(networkResponse => {
+          if (networkResponse && networkResponse.status === 200) {
+            const clonedResponse = networkResponse.clone();
+            caches.open(CACHE_NAME).then(cache => {
+              cache.put(event.request, clonedResponse);
+            });
+          }
+          return networkResponse;
+        })
+        .catch(error => {
+          console.error('Falha ao buscar:', error);
+          return cachedResponse || new Response('Você está offline e este conteúdo não está em cache.');
+        });
+
+      return cachedResponse || fetchPromise;
+    })
   );
+});
+
+self.addEventListener('message', event => {
+  if (event.data === 'UPDATE_NOW') {
+    caches.delete(CACHE_NAME)
+      .then(() => {
+        self.skipWaiting();
+        self.clients.matchAll().then(clients => {
+          clients.forEach(client => {
+            client.postMessage('CACHE_UPDATED');
+          });
+        });
+      });
+  }
 });
