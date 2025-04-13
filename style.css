@@ -197,8 +197,9 @@ body {
    margin-bottom: 8px;
 }
 
+/* Estilos atualizados para o indicador de status */
 .status-indicator {
-   display: flex;
+   display: flex !important; /* Forçando display flex */
    justify-content: center;
    align-items: center;
    gap: 8px;
@@ -212,6 +213,8 @@ body {
    margin-bottom: 0 !important;
    border: 0 !important;
    transition: background-color 0.3s;
+   z-index: 10; /* Garantir que fique acima de outros elementos */
+   position: relative; /* Para o z-index funcionar */
 }
 
 .status-dot {
@@ -220,6 +223,7 @@ body {
    border-radius: 50%;
    background-color: gray;
    transition: background-color 0.3s, box-shadow 0.3s;
+   display: block !important; /* Garantir que o dot seja exibido */
 }
 
 .status-dot.online {
