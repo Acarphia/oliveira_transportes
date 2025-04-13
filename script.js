@@ -16,9 +16,9 @@ document.addEventListener("DOMContentLoaded", function () {
             nome: "Luiza",
             tipoCarga: "Alimentos.",
             embarqueLocal: "Uberlândia.",
-            embarqueResponsavel: "Eduarda.",
+            embarqueResponsavel: "Maria.",
             desembarqueLocal: "Londrina.",
-            desembarqueResponsavel: "Augusto.",
+            desembarqueResponsavel: "Carmen.",
             paradasProgramadas: "Sem paradas."
         }
     };
