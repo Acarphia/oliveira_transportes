@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'v4.3'; 
+const CACHE_VERSION = 'v4.4'; 
 const CACHE_NAME = 'Oliveira-Transportes-' + CACHE_VERSION;
 const OFFLINE_URL = '/offline.html';
 
