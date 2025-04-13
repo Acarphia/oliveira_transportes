@@ -23,55 +23,73 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     };
     
-    if ('serviceWorker' in navigator) {
+function verificarStatus() {
+  const statusDot = document.getElementById('status-dot');
+  const statusText = document.getElementById('status-text');
+  
+  if (navigator.onLine) {
+    statusDot.classList.remove('offline');
+    statusDot.classList.add('online');
+    statusText.textContent = 'Você está online';
+  } else {
+    statusDot.classList.remove('online');
+    statusDot.classList.add('offline');
+    statusText.textContent = 'Você está offline';
+  }
+}
+
+function atualizarServiceWorker() {
+  if ('serviceWorker' in navigator && navigator.onLine) {
+    navigator.serviceWorker.ready.then(registration => {
+      console.log('Atualizando o service worker...');
+      registration.update()
+        .then(() => console.log('Service worker atualizado com sucesso'))
+        .catch(err => console.error('Erro ao atualizar service worker:', err));
+    });
+  }
+}
+
+if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('/service-worker.js')
     .then(registration => {
-      window.addEventListener('online', () => {
-        registration.update();
-      });
+      console.log('Service Worker registrado com sucesso:', registration.scope);
       
       setInterval(() => {
         if (navigator.onLine) {
-          registration.update();
+          atualizarServiceWorker();
         }
-      }, 3600000);
+      }, 60000); // 1 minuto
       
-      navigator.serviceWorker.addEventListener('message', event => {
-        if (event.data.type === 'SW_UPDATED') {
-          window.location.reload();
-        }
-      });
-      
-      registration.update();
-    });
+      atualizarServiceWorker();
+    })
+    .catch(err => console.error('Falha ao registrar Service Worker:', err));
+  
+  navigator.serviceWorker.addEventListener('message', event => {
+    if (event.data === 'CACHE_UPDATED' || event.data.type === 'SW_UPDATED') {
+      console.log('Conteúdo atualizado disponível, recarregando...');
+      window.location.reload();
+    }
+  });
 }
 
 window.addEventListener('online', () => {
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.ready.then(registration => {
-      registration.update();
-    });
+  console.log('Conexão restaurada, atualizando conteúdo...');
+  verificarStatus();
+  atualizarServiceWorker();
+  
+  if (navigator.serviceWorker && navigator.serviceWorker.controller) {
+    navigator.serviceWorker.controller.postMessage('UPDATE_NOW');
   }
 });
 
-    function verificarStatus() {
-        const statusDot = document.getElementById('status-dot');
-        const statusText = document.getElementById('status-text');
+window.addEventListener('offline', () => {
+  console.log('Conexão perdida, usando conteúdo em cache...');
+  verificarStatus();
+});
 
-        if (navigator.onLine) {
-            statusDot.classList.remove('offline');
-            statusDot.classList.add('online');
-            statusText.textContent = 'Você está online';
-        } else {
-            statusDot.classList.remove('online');
-            statusDot.classList.add('offline');
-            statusText.textContent = 'Você está offline';
-        }
-    }
-
-    setTimeout(verificarStatus, 1000);
-    window.addEventListener('online', verificarStatus);
-    window.addEventListener('offline', verificarStatus);
+document.addEventListener('DOMContentLoaded', () => {
+  verificarStatus();
+});
 
     function enviarParaFormsubmit(data, contexto) {
     const formData = new FormData();
