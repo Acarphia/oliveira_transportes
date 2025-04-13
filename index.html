@@ -5,12 +5,20 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#1d994b">
   <title>ChatBot Oliveira Transportes</title>
-  <link rel="stylesheet" href="style.css">
-  <link rel="manifest" href="manifest.json">
+  
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  
+  <link rel="stylesheet" href="style.css?sw=v6.1">
+  <link rel="manifest" href="manifest.json?sw=v6.1">
+  
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
-  <link rel="apple-touch-icon" href="icons/icon-192.png">
-  <link rel="icon" type="image/png" href="icons/icon-192.png">
+  <link rel="apple-touch-icon" href="icons/icon-192.png?sw=v6.1">
+  <link rel="icon" type="image/png" href="icons/icon-192.png?sw=v6.1">
+  
+  <meta name="app-version" content="v6.1">
 </head>
 <body>
   <div class="chat-container">
@@ -32,6 +40,41 @@
   </div>
   <button id="installBtn" style="display: none;">Instalar App</button>
   
-  <script src="script.js"></script>
+  <script src="script.js?sw=v6.1"></script>
+  
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/service-worker.js')
+        .then(registration => {
+          console.log('ServiceWorker registrado com sucesso:', registration.scope);
+          
+          setInterval(() => {
+            registration.update().then(() => {
+              console.log('Verificando atualizações...');
+            });
+          }, 60000);
+          
+          document.addEventListener('visibilitychange', () => {
+            if (!document.hidden) {
+              registration.update();
+            }
+          });
+        })
+        .catch(error => {
+          console.log('Falha no registro do ServiceWorker:', error);
+        });
+      
+      navigator.serviceWorker.addEventListener('controllerchange', () => {
+        window.location.reload();
+      });
+    }
+    
+    window.addEventListener('load', () => {
+      if (window.matchMedia('(display-mode: standalone)').matches || 
+          window.navigator.standalone === true) {
+        document.getElementById('installBtn').style.display = 'none';
+      }
+    });
+  </script>
 </body>
 </html>
