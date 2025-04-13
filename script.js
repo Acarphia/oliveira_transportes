@@ -14,7 +14,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const usersData = {
         "15347693665": {
             nome: "Luiza",
-            tipoCarga: "Alimentos.",
+            tipoCarga: "Animais.",
             embarqueLocal: "Uberlândia.",
             embarqueResponsavel: "Maria.",
             desembarqueLocal: "Londrina.",
