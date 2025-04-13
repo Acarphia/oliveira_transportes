@@ -1,6 +1,6 @@
-const CACHE_VERSION = 'v4.7'; // Atualize sempre que fizer mudanças
+const CACHE_VERSION = 'v4.8'; // Atualize sempre que fizer mudanças
 const CACHE_NAME = 'Oliveira-Transportes-' + CACHE_VERSION;
-const OFFLINE_URL = '/offline.html'; // Crie esta página simples
+const OFFLINE_URL = '/offline.html';
 
 const urlsToCache = [
   '/',
