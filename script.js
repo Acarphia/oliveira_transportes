@@ -87,10 +87,7 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 }
 
-// Inicia a verificação periódica
-setInterval(checkForUpdates, 60 * 1000); // 1 minuto
-
-// Verificação imediata quando volta online
+setInterval(checkForUpdates, 60 * 1000);
 window.addEventListener('online', checkForUpdates);
 
     function enviarParaFormsubmit(data, contexto) {
