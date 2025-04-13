@@ -24,36 +24,40 @@ document.addEventListener("DOMContentLoaded", function () {
     };
     
     function registerServiceWorker() {
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('/service-worker.js')
-                .then(registration => {
-                    console.log('ServiceWorker registrado com sucesso');
-                    
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('/service-worker.js')
+            .then(registration => {
+                console.log('ServiceWorker registrado com sucesso');
 
-                    setInterval(() => {
-                        if (navigator.onLine) {
-                            registration.update();
-                        }
-                    }, 60 * 1000); 
-                    
-                    window.addEventListener('online', () => {
+                registration.update();
+                
+                const updateInterval = setInterval(() => {
+                    if (navigator.onLine) {
                         registration.update().then(() => {
-                            console.log('Service Worker atualizado (online)');
-                            window.location.reload();
+                            console.log('Verificação de atualizações realizada');
                         });
+                    }
+                }, 60 * 1000);
+                
+                const onlineHandler = () => {
+                    registration.update().then(() => {
+                        console.log('Service Worker atualizado (online)');
+                        window.location.reload();
                     });
-
-                    navigator.serviceWorker.addEventListener('message', event => {
-                        if (event.data === 'SW_UPDATED') {
-                            window.location.reload();
-                        }
-                    });
-                })
-                .catch(err => {
-                    console.log('Falha no registro do ServiceWorker:', err);
+                };
+                
+                window.addEventListener('online', onlineHandler);
+                
+                window.addEventListener('beforeunload', () => {
+                    clearInterval(updateInterval);
+                    window.removeEventListener('online', onlineHandler);
                 });
-        }
+            })
+            .catch(err => {
+                console.log('Falha no registro do ServiceWorker:', err);
+            });
     }
+}
 
     registerServiceWorker();
 
@@ -118,33 +122,33 @@ window.addEventListener('online', checkForUpdates);
     }
 
     function enviarImagemParaFormsubmit(file, cpf, contexto) {
-        const formData = new FormData();
-        formData.append("file", file);
-        formData.append("cpf", cpf);
-        formData.append("_subject", `📸 Foto de ${contexto} enviada - CPF ${cpf}`);
-        formData.append("_captcha", "false");
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("cpf", cpf);
+    formData.append("_subject", `📸 Foto de ${contexto} enviada - CPF ${cpf}`);
+    formData.append("_captcha", "false");
 
-        fetch("https://formsubmit.co/luizapavarina2004@gmail.com", {
-            method: "POST",
-            body: formData
-        })
-        .then(response => {
-            if (response.ok) {
-                displayMessage("✅ Foto enviada!", "bot-message");
-                lastOptionSelected = "";
-                displayMenuAfterAction();
-            } else {
-                throw new Error("Erro ao enviar foto");
-            }
-        })
-        .catch(error => {
-            console.error(error);
-            displayMessage("❌ Erro ao enviar foto. Tente novamente mais tarde.", "bot-message");
-            setTimeout(() => {
-                displayMenuAfterAction();
-            }, 1500);
-        });
-    }
+    fetch("https://formsubmit.co/luizapavarina2004@gmail.com", {
+        method: "POST",
+        body: formData
+    })
+    .then(response => {
+        if (response.ok) {
+            displayMessage("✅ Foto enviada!", "bot-message");
+            lastOptionSelected = "";
+            displayMenuAfterAction();
+        } else {
+            throw new Error("Erro ao enviar foto");
+        }
+    })
+    .catch(error => {
+        console.error(error);
+        displayMessage("❌ Erro ao enviar foto. Tente novamente mais tarde.", "bot-message");
+        setTimeout(() => {
+            displayMenuAfterAction();
+        }, 1500);
+    });
+}
 
     function sendMessage() {
         const message = userInput.value.trim();
