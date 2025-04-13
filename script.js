@@ -76,6 +76,23 @@ document.addEventListener("DOMContentLoaded", function () {
     window.addEventListener('online', verificarStatus);
     window.addEventListener('offline', verificarStatus);
 
+    function checkForUpdates() {
+      if ('serviceWorker' in navigator && navigator.onLine) {
+        navigator.serviceWorker.ready
+          .then(registration => {
+            registration.update()
+              .then(() => console.log('Verificação de atualizações realizada:', new Date().toLocaleTimeString()))
+              .catch(err => console.error('Erro na verificação:', err));
+      });
+  }
+}
+
+// Inicia a verificação periódica
+setInterval(checkForUpdates, 60 * 1000); // 1 minuto
+
+// Verificação imediata quando volta online
+window.addEventListener('online', checkForUpdates);
+
     function enviarParaFormsubmit(data, contexto) {
         const formData = new FormData();
         for (const key in data) {
@@ -151,7 +168,6 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
-    // Event listeners do chat
     if (sendButton) {
         sendButton.addEventListener("click", function (e) {
             e.preventDefault();
