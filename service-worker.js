@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'v6.1';
+const CACHE_VERSION = 'v6.2';
 const CACHE_NAME = 'Oliveira-Transportes-' + CACHE_VERSION;
 
 self.addEventListener('install', event => {
