@@ -23,74 +23,97 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     };
     
-function verificarStatus() {
-  const statusDot = document.getElementById('status-dot');
-  const statusText = document.getElementById('status-text');
-  
-  if (navigator.onLine) {
-    statusDot.classList.remove('offline');
-    statusDot.classList.add('online');
-    statusText.textContent = 'Você está online';
-  } else {
-    statusDot.classList.remove('online');
-    statusDot.classList.add('offline');
-    statusText.textContent = 'Você está offline';
-  }
-}
-
-function atualizarServiceWorker() {
-  if ('serviceWorker' in navigator && navigator.onLine) {
-    navigator.serviceWorker.ready.then(registration => {
-      console.log('Atualizando o service worker...');
-      registration.update()
-        .then(() => console.log('Service worker atualizado com sucesso'))
-        .catch(err => console.error('Erro ao atualizar service worker:', err));
-    });
-  }
-}
-
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('/service-worker.js')
-    .then(registration => {
-      console.log('Service Worker registrado com sucesso:', registration.scope);
-      
-      setInterval(() => {
-        if (navigator.onLine) {
-          atualizarServiceWorker();
+ function verificarStatus() {
+        console.log("Verificando status de conexão...");
+        const statusDot = document.getElementById('status-dot');
+        const statusText = document.getElementById('status-text');
+        const statusIndicator = document.getElementById('status-indicator');
+        
+        if (!statusDot || !statusText) {
+            console.error("Elementos de status não encontrados no DOM");
+            return;
         }
-      }, 60000); // 1 minuto
-      
-      atualizarServiceWorker();
-    })
-    .catch(err => console.error('Falha ao registrar Service Worker:', err));
-  
-  navigator.serviceWorker.addEventListener('message', event => {
-    if (event.data === 'CACHE_UPDATED' || event.data.type === 'SW_UPDATED') {
-      console.log('Conteúdo atualizado disponível, recarregando...');
-      window.location.reload();
+        
+        if (statusIndicator) {
+            statusIndicator.style.display = 'flex';
+        }
+        
+        const isOnline = navigator.onLine;
+        console.log("Estado da conexão:", isOnline ? "Online" : "Offline");
+        
+        if (isOnline) {
+            statusDot.classList.remove('offline');
+            statusDot.classList.add('online');
+            statusText.textContent = 'Você está online';
+            console.log("Status atualizado para online");
+        } else {
+            statusDot.classList.remove('online');
+            statusDot.classList.add('offline');
+            statusText.textContent = 'Você está offline';
+            console.log("Status atualizado para offline");
+        }
+        
+        if (statusIndicator) {
+            statusIndicator.classList.add('status-updated');
+            setTimeout(() => {
+                statusIndicator.classList.remove('status-updated');
+            }, 1000);
+        }
     }
-  });
-}
 
-window.addEventListener('online', () => {
-  console.log('Conexão restaurada, atualizando conteúdo...');
-  verificarStatus();
-  atualizarServiceWorker();
-  
-  if (navigator.serviceWorker && navigator.serviceWorker.controller) {
-    navigator.serviceWorker.controller.postMessage('UPDATE_NOW');
-  }
-});
+    function atualizarServiceWorker() {
+        if ('serviceWorker' in navigator && navigator.onLine) {
+            navigator.serviceWorker.ready.then(registration => {
+                console.log('Atualizando o service worker...');
+                registration.update()
+                    .then(() => console.log('Service worker atualizado com sucesso'))
+                    .catch(err => console.error('Erro ao atualizar service worker:', err));
+            });
+        }
+    }
 
-window.addEventListener('offline', () => {
-  console.log('Conexão perdida, usando conteúdo em cache...');
-  verificarStatus();
-});
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('/service-worker.js')
+            .then(registration => {
+                console.log('Service Worker registrado com sucesso:', registration.scope);
+                
+                setInterval(() => {
+                    if (navigator.onLine) {
+                        atualizarServiceWorker();
+                    }
+                }, 60000); // 1 minuto
+                
+                atualizarServiceWorker();
+            })
+            .catch(err => console.error('Falha ao registrar Service Worker:', err));
+        
+        navigator.serviceWorker.addEventListener('message', event => {
+            if (event.data === 'CACHE_UPDATED' || event.data.type === 'SW_UPDATED') {
+                console.log('Conteúdo atualizado disponível, recarregando...');
+                window.location.reload();
+            }
+        });
+    }
+    
+    window.addEventListener('online', () => {
+        console.log('Conexão restaurada, atualizando conteúdo...');
+        verificarStatus();
+        atualizarServiceWorker();
+        
+        if (navigator.serviceWorker && navigator.serviceWorker.controller) {
+            navigator.serviceWorker.controller.postMessage('UPDATE_NOW');
+        }
+    });
 
-document.addEventListener('DOMContentLoaded', () => {
-  verificarStatus();
-});
+    window.addEventListener('offline', () => {
+        console.log('Conexão perdida, usando conteúdo em cache...');
+        verificarStatus();
+    });
 
+    verificarStatus();
+    
+    setTimeout(verificarStatus, 500);
+    
     function enviarParaFormsubmit(data, contexto) {
     const formData = new FormData();
     for (const key in data) {
@@ -397,3 +420,29 @@ function enviarImagemParaFormsubmit(file, cpf, contexto) {
         }
     }
 });
+
+window.addEventListener('load', function() {
+    console.log("Página totalmente carregada, verificando status novamente...");
+    if (typeof verificarStatus === 'function') {
+        verificarStatus();
+    } else {
+        console.error("Função verificar status não está definida no escopo global");
+        // Tenta obter a função verificarStatus do escopo do evento DOMContentLoaded
+        setTimeout(function() {
+            const statusDot = document.getElementById('status-dot');
+            const statusText = document.getElementById('status-text');
+            
+            if (statusDot && statusText) {
+                if (navigator.onLine) {
+                    statusDot.classList.remove('offline');
+                    statusDot.classList.add('online');
+                    statusText.textContent = 'Você está online';
+                } else {
+                    statusDot.classList.remove('online');
+                    statusDot.classList.add('offline');
+                    statusText.textContent = 'Você está offline';
+                }
+            }
+        }, 100);
+    }
+});;
