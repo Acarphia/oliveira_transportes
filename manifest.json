@@ -1,8 +1,10 @@
 {
+  "start_url": "/?source=pwa",
+  "display": "standalone",
+  "orientation": "portrait"
   "name": "Oliveira Transportes Chat Bot",
   "short_name": "Oliveira Transportes",
-  "start_url": "/?source=pwa",
-  "scope": "/",
+  "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#1d994b",
@@ -11,16 +13,12 @@
     {
       "src": "icons/icon-192.png",
       "type": "image/png",
-      "sizes": "192x192",
-      "purpose": "any maskable"
+      "sizes": "192x192"
     },
     {
       "src": "icons/icon-512.png",
       "type": "image/png",
-      "sizes": "512x512",
-      "purpose": "any maskable"
+      "sizes": "512x512"
     }
-  ],
-  "description": "Chat Bot para Oliveira Transportes",
-  "categories": ["transport", "business", "communication"]
+  ]
 }
