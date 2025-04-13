@@ -70,5 +70,13 @@
     }
   </script>
   <script src="script.js"></script>
+  <script>
+    // Trata redirecionamento do 404
+    const urlParams = new URLSearchParams(window.location.search);
+    const redirect = urlParams.get('redirect');
+    if (redirect) {
+        history.replaceState(null, null, redirect);
+    }
+</script>
 </body>
 </html>
