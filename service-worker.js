@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'v5.3'; // Forçar atualização
+const CACHE_VERSION = 'v5.4'; // Forçar atualização
 const CACHE_NAME = 'Oliveira-Transportes-' + CACHE_VERSION;
 const urlsToCache = [
   '/',
