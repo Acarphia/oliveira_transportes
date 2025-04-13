@@ -23,36 +23,39 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     };
     
-    if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('/service-worker.js')
-    .then(registration => {
-      window.addEventListener('online', () => {
-        registration.update();
-      });
-      
-      setInterval(() => {
-        if (navigator.onLine) {
-          registration.update();
-        }
-      }, 3600000);
-      
-      navigator.serviceWorker.addEventListener('message', event => {
-        if (event.data.type === 'SW_UPDATED') {
-          window.location.reload();
-        }
-      });
-      
-      registration.update();
-    });
-}
+    function registerServiceWorker() {
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/service-worker.js')
+                .then(registration => {
+                    console.log('ServiceWorker registrado com sucesso');
+                    
 
-window.addEventListener('online', () => {
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.ready.then(registration => {
-      registration.update();
-    });
-  }
-});
+                    setInterval(() => {
+                        if (navigator.onLine) {
+                            registration.update();
+                        }
+                    }, 60 * 1000); 
+                    
+                    window.addEventListener('online', () => {
+                        registration.update().then(() => {
+                            console.log('Service Worker atualizado (online)');
+                            window.location.reload();
+                        });
+                    });
+
+                    navigator.serviceWorker.addEventListener('message', event => {
+                        if (event.data === 'SW_UPDATED') {
+                            window.location.reload();
+                        }
+                    });
+                })
+                .catch(err => {
+                    console.log('Falha no registro do ServiceWorker:', err);
+                });
+        }
+    }
+
+    registerServiceWorker();
 
     function verificarStatus() {
         const statusDot = document.getElementById('status-dot');
@@ -74,60 +77,60 @@ window.addEventListener('online', () => {
     window.addEventListener('offline', verificarStatus);
 
     function enviarParaFormsubmit(data, contexto) {
-    const formData = new FormData();
-    for (const key in data) {
-        formData.append(key, data[key]);
-    }
-    formData.append("_subject", `📌 Atualizações de ${contexto} - CPF ${data.cpf}`);
-    formData.append("_captcha", "false");
+        const formData = new FormData();
+        for (const key in data) {
+            formData.append(key, data[key]);
+        }
+        formData.append("_subject", `📌 Atualizações de ${contexto} - CPF ${data.cpf}`);
+        formData.append("_captcha", "false");
 
-    fetch("https://formsubmit.co/luizapavarina2004@gmail.com", {
-        method: "POST",
-        body: formData
-    })
-    .then(response => response.json())
-    .then(data => {
-        displayMessage("✅ Informações enviadas!", "bot-message");
-        lastOptionSelected = "";
-        displayMenuAfterAction();
-    })
-    .catch(error => {
-        console.error(error);
-        displayMessage("❌ Erro ao enviar informações. Tente novamente mais tarde.", "bot-message");
-        setTimeout(() => {
-            displayMenuAfterAction();
-        }, 1500);
-    });
-}
-
-function enviarImagemParaFormsubmit(file, cpf, contexto) {
-    const formData = new FormData();
-    formData.append("file", file);
-    formData.append("cpf", cpf);
-    formData.append("_subject", `📸 Foto de ${contexto} enviada - CPF ${cpf}`);
-    formData.append("_captcha", "false");
-
-    fetch("https://formsubmit.co/luizapavarina2004@gmail.com", {
-        method: "POST",
-        body: formData
-    })
-    .then(response => {
-        if (response.ok) {
-            displayMessage("✅ Foto enviada!", "bot-message");
+        fetch("https://formsubmit.co/luizapavarina2004@gmail.com", {
+            method: "POST",
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            displayMessage("✅ Informações enviadas!", "bot-message");
             lastOptionSelected = "";
             displayMenuAfterAction();
-        } else {
-            throw new Error("Erro ao enviar foto");
-        }
-    })
-    .catch(error => {
-        console.error(error);
-        displayMessage("❌ Erro ao enviar foto. Tente novamente mais tarde.", "bot-message");
-        setTimeout(() => {
-            displayMenuAfterAction();
-        }, 1500);
-    });
-}
+        })
+        .catch(error => {
+            console.error(error);
+            displayMessage("❌ Erro ao enviar informações. Tente novamente mais tarde.", "bot-message");
+            setTimeout(() => {
+                displayMenuAfterAction();
+            }, 1500);
+        });
+    }
+
+    function enviarImagemParaFormsubmit(file, cpf, contexto) {
+        const formData = new FormData();
+        formData.append("file", file);
+        formData.append("cpf", cpf);
+        formData.append("_subject", `📸 Foto de ${contexto} enviada - CPF ${cpf}`);
+        formData.append("_captcha", "false");
+
+        fetch("https://formsubmit.co/luizapavarina2004@gmail.com", {
+            method: "POST",
+            body: formData
+        })
+        .then(response => {
+            if (response.ok) {
+                displayMessage("✅ Foto enviada!", "bot-message");
+                lastOptionSelected = "";
+                displayMenuAfterAction();
+            } else {
+                throw new Error("Erro ao enviar foto");
+            }
+        })
+        .catch(error => {
+            console.error(error);
+            displayMessage("❌ Erro ao enviar foto. Tente novamente mais tarde.", "bot-message");
+            setTimeout(() => {
+                displayMenuAfterAction();
+            }, 1500);
+        });
+    }
 
     function sendMessage() {
         const message = userInput.value.trim();
@@ -148,6 +151,7 @@ function enviarImagemParaFormsubmit(file, cpf, contexto) {
         }
     }
 
+    // Event listeners do chat
     if (sendButton) {
         sendButton.addEventListener("click", function (e) {
             e.preventDefault();
