@@ -9,6 +9,9 @@
 html, body {
    height: 100%;
    overscroll-behavior: none;
+   width: 100%;
+   overflow-x: hidden;
+   position: fixed;
 }
 
 body {
@@ -17,11 +20,12 @@ body {
    justify-content: center;
    align-items: center;
    height: 100vh;
-   padding: 20px;
+   padding: 0;
    padding-top: env(safe-area-inset-top); 
    padding-bottom: env(safe-area-inset-bottom);
    padding-left: env(safe-area-inset-left);
    padding-right: env(safe-area-inset-right);
+   touch-action: manipulation;
 }
 
 .chat-container {
@@ -33,7 +37,7 @@ body {
    overflow: hidden;
    display: flex;
    flex-direction: column;
-   height: 80vh;
+   height: 100vh;
    gap: 0 !important;
    position: relative;
 }
@@ -145,6 +149,7 @@ body {
    justify-content: center;
    align-items: center;
    transition: background-color 0.3s, transform 0.2s;
+   min-width: 42px;
 }
 
 .attach-btn:hover, .attach-btn:active {
@@ -164,6 +169,7 @@ body {
    cursor: pointer;
    font-weight: 500;
    transition: background-color 0.3s, transform 0.2s;
+   white-space: nowrap; 
 }
 
 #send-button:hover {
@@ -197,9 +203,8 @@ body {
    margin-bottom: 8px;
 }
 
-/* Estilos atualizados para o indicador de status */
 .status-indicator {
-   display: flex !important; /* Forçando display flex */
+   display: flex !important;
    justify-content: center;
    align-items: center;
    gap: 8px;
@@ -213,8 +218,8 @@ body {
    margin-bottom: 0 !important;
    border: 0 !important;
    transition: background-color 0.3s;
-   z-index: 10; /* Garantir que fique acima de outros elementos */
-   position: relative; /* Para o z-index funcionar */
+   z-index: 10; 
+   position: relative;
 }
 
 .status-dot {
@@ -223,7 +228,8 @@ body {
    border-radius: 50%;
    background-color: gray;
    transition: background-color 0.3s, box-shadow 0.3s;
-   display: block !important; /* Garantir que o dot seja exibido */
+   display: block !important;
+   flex-shrink: 0;
 }
 
 .status-dot.online {
@@ -281,6 +287,7 @@ body {
       height: 100vh;
       max-width: 100%;
       border-radius: 0;
+      width: 100vw;
    }
 }
 
@@ -293,10 +300,49 @@ body {
       height: 100vh;
       max-width: 100%;
       border-radius: 0;
+      width: 100%;
    }
    
    .message {
       max-width: 85%;
+   }
+   
+   .input-container {
+      padding: 8px 10px;
+   }
+   
+   #user-input {
+      padding: 10px 14px;
+      font-size: 14px;
+   }
+   
+   #send-button {
+      padding: 10px 14px;
+      font-size: 14px;
+   }
+}
+
+@media (max-width: 320px) {
+   .input-container {
+      padding: 6px 8px;
+      gap: 6px;
+   }
+   
+   #user-input {
+      padding: 8px 12px;
+      font-size: 13px;
+   }
+   
+   .attach-btn {
+      width: 36px;
+      height: 36px;
+      min-width: 36px;
+      font-size: 18px;
+   }
+   
+   #send-button {
+      padding: 8px 12px;
+      font-size: 13px;
    }
 }
 
