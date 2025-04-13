@@ -13,7 +13,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const usersData = {
         "15347693665": {
-            nome: "Luzia",
+            nome: "Luiza",
             tipoCarga: "Alimentos.",
             embarqueLocal: "Uberlândia.",
             embarqueResponsavel: "Eduarda.",
@@ -23,43 +23,36 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     };
     
-    function registerServiceWorker() {
     if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('/service-worker.js')
-            .then(registration => {
-                console.log('ServiceWorker registrado com sucesso');
-
-                registration.update();
-                
-                const updateInterval = setInterval(() => {
-                    if (navigator.onLine) {
-                        registration.update().then(() => {
-                            console.log('Verificação de atualizações realizada');
-                        });
-                    }
-                }, 60 * 1000);
-                
-                const onlineHandler = () => {
-                    registration.update().then(() => {
-                        console.log('Service Worker atualizado (online)');
-                        window.location.reload();
-                    });
-                };
-                
-                window.addEventListener('online', onlineHandler);
-                
-                window.addEventListener('beforeunload', () => {
-                    clearInterval(updateInterval);
-                    window.removeEventListener('online', onlineHandler);
-                });
-            })
-            .catch(err => {
-                console.log('Falha no registro do ServiceWorker:', err);
-            });
-    }
+  navigator.serviceWorker.register('/service-worker.js')
+    .then(registration => {
+      window.addEventListener('online', () => {
+        registration.update();
+      });
+      
+      setInterval(() => {
+        if (navigator.onLine) {
+          registration.update();
+        }
+      }, 3600000);
+      
+      navigator.serviceWorker.addEventListener('message', event => {
+        if (event.data.type === 'SW_UPDATED') {
+          window.location.reload();
+        }
+      });
+      
+      registration.update();
+    });
 }
 
-    registerServiceWorker();
+window.addEventListener('online', () => {
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.ready.then(registration => {
+      registration.update();
+    });
+  }
+});
 
     function verificarStatus() {
         const statusDot = document.getElementById('status-dot');
@@ -80,48 +73,34 @@ document.addEventListener("DOMContentLoaded", function () {
     window.addEventListener('online', verificarStatus);
     window.addEventListener('offline', verificarStatus);
 
-    function checkForUpdates() {
-      if ('serviceWorker' in navigator && navigator.onLine) {
-        navigator.serviceWorker.ready
-          .then(registration => {
-            registration.update()
-              .then(() => console.log('Verificação de atualizações realizada:', new Date().toLocaleTimeString()))
-              .catch(err => console.error('Erro na verificação:', err));
-      });
-  }
+    function enviarParaFormsubmit(data, contexto) {
+    const formData = new FormData();
+    for (const key in data) {
+        formData.append(key, data[key]);
+    }
+    formData.append("_subject", `📌 Atualizações de ${contexto} - CPF ${data.cpf}`);
+    formData.append("_captcha", "false");
+
+    fetch("https://formsubmit.co/luizapavarina2004@gmail.com", {
+        method: "POST",
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        displayMessage("✅ Informações enviadas!", "bot-message");
+        lastOptionSelected = "";
+        displayMenuAfterAction();
+    })
+    .catch(error => {
+        console.error(error);
+        displayMessage("❌ Erro ao enviar informações. Tente novamente mais tarde.", "bot-message");
+        setTimeout(() => {
+            displayMenuAfterAction();
+        }, 1500);
+    });
 }
 
-setInterval(checkForUpdates, 60 * 1000);
-window.addEventListener('online', checkForUpdates);
-
-    function enviarParaFormsubmit(data, contexto) {
-        const formData = new FormData();
-        for (const key in data) {
-            formData.append(key, data[key]);
-        }
-        formData.append("_subject", `📌 Atualizações de ${contexto} - CPF ${data.cpf}`);
-        formData.append("_captcha", "false");
-
-        fetch("https://formsubmit.co/luizapavarina2004@gmail.com", {
-            method: "POST",
-            body: formData
-        })
-        .then(response => response.json())
-        .then(data => {
-            displayMessage("✅ Informações enviadas!", "bot-message");
-            lastOptionSelected = "";
-            displayMenuAfterAction();
-        })
-        .catch(error => {
-            console.error(error);
-            displayMessage("❌ Erro ao enviar informações. Tente novamente mais tarde.", "bot-message");
-            setTimeout(() => {
-                displayMenuAfterAction();
-            }, 1500);
-        });
-    }
-
-    function enviarImagemParaFormsubmit(file, cpf, contexto) {
+function enviarImagemParaFormsubmit(file, cpf, contexto) {
     const formData = new FormData();
     formData.append("file", file);
     formData.append("cpf", cpf);
