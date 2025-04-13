@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'v6.6'; // Forçar atualização
+const CACHE_VERSION = 'v6.7';
 const CACHE_NAME = 'Oliveira-Transportes-' + CACHE_VERSION;
 const urlsToCache = [
   '/',
@@ -28,49 +28,49 @@ self.addEventListener('activate', event => {
           }
         })
       );
-    }).then(() => self.clients.claim())
+    }).then(() => {
+      return self.clients.claim();
+    }).then(() => {
+      return self.clients.matchAll().then(clients => {
+        clients.forEach(client => {
+          client.postMessage('RELOAD_PAGE');
+        });
+      });
+    })
   );
 });
 
+// Busca sempre da rede primeiro; se falhar, usa o cache
 self.addEventListener('fetch', event => {
-
   if (event.request.method !== 'GET') return;
-  
-  const url = new URL(event.request.url);
-  if (url.origin !== location.origin) return;
-  
-  event.respondWith(
-    caches.match(event.request).then(cachedResponse => {
-      const fetchPromise = fetch(event.request)
-        .then(networkResponse => {
-          if (networkResponse && networkResponse.status === 200) {
-            const clonedResponse = networkResponse.clone();
-            caches.open(CACHE_NAME).then(cache => {
-              cache.put(event.request, clonedResponse);
-            });
-          }
-          return networkResponse;
-        })
-        .catch(error => {
-          console.error('Falha ao buscar:', error);
-          return cachedResponse || new Response('Você está offline e este conteúdo não está em cache.');
-        });
 
-      return cachedResponse || fetchPromise;
-    })
+  event.respondWith(
+    fetch(event.request)
+      .then(networkResponse => {
+        if (networkResponse && networkResponse.status === 200) {
+          const responseClone = networkResponse.clone();
+          caches.open(CACHE_NAME).then(cache => {
+            cache.put(event.request, responseClone);
+          });
+        }
+        return networkResponse;
+      })
+      .catch(() => {
+        return caches.match(event.request)
+          .then(cached => cached || new Response('Você está offline e este conteúdo não está em cache.'));
+      })
   );
 });
 
 self.addEventListener('message', event => {
   if (event.data === 'UPDATE_NOW') {
-    caches.delete(CACHE_NAME)
-      .then(() => {
-        self.skipWaiting();
-        self.clients.matchAll().then(clients => {
-          clients.forEach(client => {
-            client.postMessage('CACHE_UPDATED');
-          });
+    caches.delete(CACHE_NAME).then(() => {
+      self.skipWaiting();
+      self.clients.matchAll().then(clients => {
+        clients.forEach(client => {
+          client.postMessage('CACHE_UPDATED');
         });
       });
+    });
   }
 });
