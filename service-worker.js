@@ -1,6 +1,6 @@
-const CACHE_VERSION = 'v4.6'; 
+const CACHE_VERSION = 'v4.7'; // Atualize sempre que fizer mudanças
 const CACHE_NAME = 'Oliveira-Transportes-' + CACHE_VERSION;
-const OFFLINE_URL = '/offline.html';
+const OFFLINE_URL = '/offline.html'; // Crie esta página simples
 
 const urlsToCache = [
   '/',
@@ -10,92 +10,67 @@ const urlsToCache = [
   '/icons/icon-192.png',
   '/icons/icon-512.png',
   '/manifest.json',
+  '/404.html', // Adicione esta linha
   OFFLINE_URL
 ];
 
 self.addEventListener('install', event => {
+  self.skipWaiting();
   event.waitUntil(
     caches.open(CACHE_NAME)
-      .then(cache => {
-        return cache.addAll(urlsToCache)
-          .catch(error => {
-            console.error('Falha ao adicionar ao cache:', error);
-          });
-      })
-      .then(() => self.skipWaiting())
+      .then(cache => cache.addAll(urlsToCache))
+      .catch(err => console.error('Falha no cache inicial:', err))
   );
 });
 
 self.addEventListener('activate', event => {
   event.waitUntil(
-    caches.keys().then(cacheNames => {
-      return Promise.all(
-        cacheNames.map(cacheName => {
-          if (cacheName !== CACHE_NAME && cacheName.startsWith('Oliveira-Transportes-')) {
-            return caches.delete(cacheName);
+    caches.keys().then(keys => 
+      Promise.all(
+        keys.map(key => {
+          if (key !== CACHE_NAME && key.startsWith('Oliveira-Transportes-')) {
+            return caches.delete(key);
           }
         })
-      );
-    }).then(() => self.clients.claim())
+      )
+    ).then(() => self.clients.claim())
   );
 });
 
 self.addEventListener('fetch', event => {
-  if (event.request.method !== 'GET' || 
-      event.request.url.includes('chrome-extension') || 
-      event.request.url.includes('sockjs-node')) {
-    return;
-  }
+  if (event.request.method !== 'GET') return;
 
+  // Tratamento especial para navegação
   if (event.request.mode === 'navigate') {
     event.respondWith(
       fetch(event.request)
-        .then(response => {
-          const responseClone = response.clone();
-          caches.open(CACHE_NAME)
-            .then(cache => cache.put(event.request, responseClone));
-          return response;
-        })
-        .catch(() => {
-          return caches.match(event.request)
-            .then(cachedResponse => cachedResponse || caches.match(OFFLINE_URL));
-        })
+        .catch(() => caches.match('/index.html')) // Sempre retorna index.html para rotas
     );
     return;
   }
 
+  // Para outros recursos
   event.respondWith(
     caches.match(event.request)
-      .then(cachedResponse => {
-        const fetchPromise = fetch(event.request)
-          .then(networkResponse => {
-            const responseClone = networkResponse.clone();
+      .then(cached => {
+        const networkFetch = fetch(event.request)
+          .then(res => {
+            // Atualiza cache em background
             caches.open(CACHE_NAME)
-              .then(cache => cache.put(event.request, responseClone));
-            return networkResponse;
+              .then(cache => cache.put(event.request, res.clone()));
+            return res;
           })
-          .catch(() => {});
-
-        return cachedResponse || fetchPromise;
+          .catch(() => cached || caches.match(OFFLINE_URL));
+        
+        return cached || networkFetch;
       })
   );
 });
 
+// Mensagem para atualização forçada
 self.addEventListener('message', event => {
   if (event.data === 'UPDATE_NOW') {
-    caches.keys().then(cacheNames => {
-      return Promise.all(
-        cacheNames.map(cacheName => {
-          if (cacheName.startsWith('Oliveira-Transportes-')) {
-            return caches.delete(cacheName);
-          }
-        })
-      );
-    }).then(() => {
-      self.skipWaiting();
-      self.clients.matchAll().then(clients => {
-        clients.forEach(client => client.postMessage('RELOAD_PAGE'));
-      });
-    });
+    caches.delete(CACHE_NAME)
+      .then(() => self.skipWaiting());
   }
 });
